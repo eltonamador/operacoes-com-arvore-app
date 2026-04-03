@@ -191,7 +191,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
                   <div className="summary-data-value" style={{ fontSize: 17 }}>{studentData.nome || '—'}</div>
                 </div>
                 <div className="summary-data-item">
-                  <div className="summary-data-label">Nº de Ordem</div>
+                  <div className="summary-data-label">Nº</div>
                   <div className="summary-data-value">{studentData.ordem || '—'}</div>
                 </div>
                 <div className="summary-data-item">

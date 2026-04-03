@@ -160,21 +160,21 @@ export default function App() {
   }
 
   async function deleteEvaluation(id) {
-    const confirmDelete = window.confirm('Deseja excluir esta avaliação?')
-    if (!confirmDelete) return
+  const confirmDelete = window.confirm('Deseja excluir esta avaliação?')
+  if (!confirmDelete) return
 
-    const { error } = await supabase
-      .from('avaliacoes')
-      .delete()
-      .eq('id', id)
+  const { error } = await supabase
+    .from('avaliacoes')
+    .delete()
+    .eq('id', id)
 
-    if (error) {
-      console.error('Erro ao excluir avaliação:', error)
-      alert('Erro ao excluir avaliação.')
-      return
-    }
+  if (error) {
+    console.error('Erro ao excluir avaliação:', error)
+    alert('Erro ao excluir avaliação no banco de dados.')
+    return
+  }
 
-    setSavedEvaluations(prev => prev.filter(e => e.id !== id))
+  setSavedEvaluations(prev => prev.filter(e => e.id !== id))
   }
 
   async function clearAllEvaluations() {

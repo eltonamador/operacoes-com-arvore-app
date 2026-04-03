@@ -1,5 +1,3 @@
-import { generateCollectiveSignatureSheet } from '../utils/collectiveSignatureSheet'
-
 function formatDate(dateStr) {
   if (!dateStr) return '—'
   const date = new Date(dateStr)
@@ -36,7 +34,15 @@ export default function Reports({
       : '0.00'
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-main)' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        overflow: 'hidden',
+        background: 'var(--bg-main)',
+      }}
+    >
       <header className="header no-print">
         <div className="header-emblem">📋</div>
         <div className="header-titles">
@@ -73,7 +79,17 @@ export default function Reports({
         </div>
       </header>
 
-      <div style={{ padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: 'auto',
+          padding: '20px 28px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 20,
+        }}
+      >
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(180px, 1fr))', gap: 16 }}>
           <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 16 }}>
             <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700 }}>
@@ -104,24 +120,19 @@ export default function Reports({
           </div>
         </div>
 
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius)',
+            overflow: 'hidden',
+            minHeight: 0,
+          }}
+        >
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase' }}>
-              Avaliações Registradas ({total})
+              Avaliações Registradas
             </div>
-            <button
-              className="btn btn-secondary"
-              style={{
-                fontSize: 12,
-                padding: '8px 16px',
-                minHeight: 36,
-                display: savedEvaluations.length === 0 ? 'none' : 'flex',
-              }}
-              onClick={() => generateCollectiveSignatureSheet(savedEvaluations)}
-              title="Gera ficha coletiva com todos os alunos para colher assinatura manuscrita"
-            >
-              📄 Ficha Coletiva de Assinaturas
-            </button>
           </div>
 
           {reportsLoading ? (
@@ -132,9 +143,9 @@ export default function Reports({
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ background: '#121212' }}>
+                  <tr style={{ background: '#121212', position: 'sticky', top: 0, zIndex: 1 }}>
                     <th style={thStyle}>Aluno</th>
-                    <th style={thStyle}>Ordem</th>
+                    <th style={thStyle}>Nº</th>
                     <th style={thStyle}>Pelotão</th>
                     <th style={thStyle}>Data</th>
                     <th style={thStyle}>Avaliador</th>

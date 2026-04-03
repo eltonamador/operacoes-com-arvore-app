@@ -94,7 +94,7 @@ export default function Signature({ state, goTo, setVistoData }) {
           <span className="header-org">CBMAP</span>
           <span className="header-title">Visto de Prova / Ciência do Resultado</span>
           <span className="header-subtitle">
-            {studentData.nome || 'Aluno não informado'} | Ord. {studentData.ordem || '—'}
+            {studentData.nome || 'Aluno não informado'} | Nº {studentData.ordem || '—'}
           </span>
         </div>
         <div className="header-spacer" />
