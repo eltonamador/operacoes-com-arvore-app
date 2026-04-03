@@ -9,8 +9,8 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
   const [showAlunoList, setShowAlunoList] = useState(false)
   const [showInstrutorList, setShowInstrutorList] = useState(false)
 
-  const students = studentsData.students
-  const instructors = instructorsData.instructors
+  const students = studentsData?.students || []
+  const instructors = instructorsData?.instructors || []
 
   // Obter lista de pelotões únicos
   const pelotoes = [...new Set(students.map(s => s.pelotao))].sort()
@@ -22,7 +22,7 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
       const matchSearch = !searchAluno || student.nome.toLowerCase().includes(searchAluno.toLowerCase())
       return matchPelotao && matchSearch
     })
-  }, [form.pelotao, searchAluno])
+  }, [form.pelotao, searchAluno, students])
 
   // Filtrar instrutores por busca
   const filteredInstructors = useMemo(() => {

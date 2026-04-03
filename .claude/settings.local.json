@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(npm install:*)",
-      "Bash(start cmd:*)"
+      "Bash(start cmd:*)",
+      "Bash(python3:*)",
+      "Read(//c/Users/elton/OneDrive/**)",
+      "Bash(find . -name *CFSD* -o -name *PLANO*)"
     ]
   }
 }
