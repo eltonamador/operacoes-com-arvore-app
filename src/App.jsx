@@ -1,20 +1,10 @@
-import { useState } from 'react'
-import { calcScore } from './data/penalties'
+import { useEffect, useState } from 'react'
 import StudentForm from './screens/StudentForm'
 import Evaluation from './screens/Evaluation'
 import Signature from './screens/Signature'
 import Summary from './screens/Summary'
 import Reports from './screens/Reports'
-
-const STORAGE_KEY = 'cfsd2026_avaliacoes'
-
-function loadSaved() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
-  } catch {
-    return []
-  }
-}
+import { supabase } from './lib/supabase'
 
 const initialEval = {
   studentData: { nome: '', ordem: '', data: '', pelotao: '', avaliador: '' },
@@ -26,9 +16,64 @@ const initialEval = {
   screen: 'form',
 }
 
+function mapDbEvaluationToUi(row) {
+  return {
+    id: row.id,
+    savedAt: row.created_at,
+    studentData: {
+      nome: row.nome_aluno || '',
+      ordem: row.numero_ordem || '',
+      data: row.data_avaliacao || '',
+      pelotao: row.pelotao || '',
+      avaliador: row.avaliador || '',
+    },
+    checkedItems: row.itens_avaliados?.itens_penalizados?.map(item => item.id) || [],
+    criticalErrors: row.itens_avaliados?.erros_criticos || false,
+    observations: row.observacoes || '',
+    customError: row.itens_avaliados?.erro_nao_previsto
+      ? {
+          description: row.itens_avaliados.erro_nao_previsto.descricao || '',
+          discount: row.itens_avaliados.erro_nao_previsto.desconto || '',
+        }
+      : { description: '', discount: '' },
+    signatureDataUrl: row.itens_avaliados?.assinatura || null,
+    totalDiscount: Number(row.penalidades || 0),
+    finalScore: Number(row.nota_final || 0),
+    isPassing: row.itens_avaliados?.resultado === 'APROVADO',
+    raw: row,
+  }
+}
+
 export default function App() {
   const [state, setState] = useState(initialEval)
-  const [savedEvaluations, setSavedEvaluations] = useState(loadSaved)
+  const [savedEvaluations, setSavedEvaluations] = useState([])
+  const [reportsLoading, setReportsLoading] = useState(false)
+
+  useEffect(() => {
+    loadEvaluations()
+  }, [])
+
+  async function loadEvaluations() {
+    try {
+      setReportsLoading(true)
+
+      const { data, error } = await supabase
+        .from('avaliacoes')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        console.error('Erro ao carregar avaliações:', error)
+        return
+      }
+
+      setSavedEvaluations((data || []).map(mapDbEvaluationToUi))
+    } catch (error) {
+      console.error('Erro inesperado ao carregar avaliações:', error)
+    } finally {
+      setReportsLoading(false)
+    }
+  }
 
   function updateStudentData(data) {
     setState(s => ({ ...s, studentData: data }))
@@ -67,45 +112,77 @@ export default function App() {
     setState(initialEval)
   }
 
-  function saveEvaluation() {
-    const customDiscount = parseFloat(state.customError?.discount) || 0
-    const { totalDiscount, finalScore } = calcScore(state.checkedItems, customDiscount)
-    const record = {
-      id: Date.now(),
-      savedAt: new Date().toISOString(),
-      studentData: { ...state.studentData },
-      checkedItems: [...state.checkedItems],
-      criticalErrors: state.criticalErrors,
-      observations: state.observations,
-      customError: { ...state.customError },
-      signatureDataUrl: state.signatureDataUrl,
-      totalDiscount,
-      finalScore,
-      isPassing: finalScore >= 7.0 && !state.criticalErrors,
+  async function saveEvaluation(dadosAvaliacao) {
+    const { data, error } = await supabase
+      .from('avaliacoes')
+      .insert([dadosAvaliacao])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Erro ao salvar no Supabase:', error)
+      throw error
     }
-    const next = [...savedEvaluations, record]
-    setSavedEvaluations(next)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+
+    const mapped = mapDbEvaluationToUi(data)
+    setSavedEvaluations(prev => [mapped, ...prev])
     setState(s => ({ ...s, screen: 'reports' }))
+
+    return data
   }
 
-  function deleteEvaluation(id) {
-    const next = savedEvaluations.filter(e => e.id !== id)
-    setSavedEvaluations(next)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+  async function deleteEvaluation(id) {
+    const confirmDelete = window.confirm('Deseja excluir esta avaliação?')
+    if (!confirmDelete) return
+
+    const { error } = await supabase
+      .from('avaliacoes')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      console.error('Erro ao excluir avaliação:', error)
+      alert('Erro ao excluir avaliação.')
+      return
+    }
+
+    setSavedEvaluations(prev => prev.filter(e => e.id !== id))
   }
 
-  function clearAllEvaluations() {
+  async function clearAllEvaluations() {
+    const confirmDelete = window.confirm('Deseja excluir TODAS as avaliações?')
+    if (!confirmDelete) return
+
+    const { error } = await supabase
+      .from('avaliacoes')
+      .delete()
+      .gt('id', 0)
+
+    if (error) {
+      console.error('Erro ao limpar avaliações:', error)
+      alert('Erro ao limpar avaliações.')
+      return
+    }
+
     setSavedEvaluations([])
-    localStorage.removeItem(STORAGE_KEY)
   }
 
   const props = {
     state,
-    updateStudentData, toggleItem, setCriticalErrors,
-    setObservations, setCustomError, setSignature,
-    goTo, reset, saveEvaluation,
-    savedEvaluations, deleteEvaluation, clearAllEvaluations,
+    updateStudentData,
+    toggleItem,
+    setCriticalErrors,
+    setObservations,
+    setCustomError,
+    setSignature,
+    goTo,
+    reset,
+    saveEvaluation,
+    savedEvaluations,
+    deleteEvaluation,
+    clearAllEvaluations,
+    loadEvaluations,
+    reportsLoading,
   }
 
   return (

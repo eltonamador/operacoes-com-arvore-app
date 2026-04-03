@@ -22,9 +22,47 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
     return `${d}/${m}/${y}`
   }
 
+  async function handleSaveEvaluation() {
+    try {
+      const dadosAvaliacao = {
+        nome_aluno: studentData.nome || '',
+        numero_ordem: studentData.ordem || '',
+        pelotao: studentData.pelotao || '',
+        avaliador: studentData.avaliador || '',
+        data_avaliacao: studentData.data || new Date().toISOString().slice(0, 10),
+        nota_final: Number(finalScore.toFixed(2)),
+        penalidades: Number(totalDiscount.toFixed(2)),
+        observacoes: observations || '',
+        itens_avaliados: {
+          resultado: isPassing ? 'APROVADO' : 'REPROVADO',
+          erros_criticos: criticalErrors,
+          assinatura: signatureDataUrl || null,
+          erro_nao_previsto: hasCustomError
+            ? {
+                descricao: customError.description,
+                desconto: Number(customDiscount.toFixed(2)),
+              }
+            : null,
+          itens_penalizados: penalizedItems.map(({ section, item }) => ({
+            secao: section.title,
+            id: item.id,
+            descricao: item.description,
+            desconto: Number(item.discount.toFixed(2)),
+          })),
+        },
+      }
+
+      await saveEvaluation(dadosAvaliacao)
+      alert('Avaliação salva com sucesso.')
+      goTo('reports')
+    } catch (error) {
+      console.error(error)
+      alert('Erro ao salvar avaliação.')
+    }
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-      {/* Header */}
       <header className="header no-print">
         <div className="header-emblem">🔥</div>
         <div className="header-titles">
@@ -58,7 +96,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
           <button
             className="btn btn-gold"
             style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
-            onClick={saveEvaluation}
+            onClick={handleSaveEvaluation}
           >
             💾 Salvar e Ver Relatório
           </button>
@@ -72,39 +110,42 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
         </div>
       </header>
 
-      {/* Content */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-
-        {/* Result banner */}
-        <div style={{
-          background: isPassing
-            ? 'linear-gradient(135deg, #0a1a00 0%, #1a2a00 100%)'
-            : 'linear-gradient(135deg, #1a0000 0%, #2a0a0a 100%)',
-          border: `2px solid ${isPassing ? '#4CAF50' : 'var(--red)'}`,
-          borderRadius: 'var(--radius)',
-          padding: '20px 28px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 24,
-        }}>
+        <div
+          style={{
+            background: isPassing
+              ? 'linear-gradient(135deg, #0a1a00 0%, #1a2a00 100%)'
+              : 'linear-gradient(135deg, #1a0000 0%, #2a0a0a 100%)',
+            border: `2px solid ${isPassing ? '#4CAF50' : 'var(--red)'}`,
+            borderRadius: 'var(--radius)',
+            padding: '20px 28px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 24,
+          }}
+        >
           <div style={{ fontSize: 52 }}>{isPassing ? '✅' : '❌'}</div>
           <div style={{ flex: 1 }}>
-            <div style={{
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: 2,
-              color: isPassing ? '#88cc44' : 'var(--red-light)',
-              textTransform: 'uppercase',
-              marginBottom: 4,
-            }}>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: 2,
+                color: isPassing ? '#88cc44' : 'var(--red-light)',
+                textTransform: 'uppercase',
+                marginBottom: 4,
+              }}
+            >
               Resultado Final
             </div>
-            <div style={{
-              fontSize: 28,
-              fontWeight: 900,
-              color: isPassing ? '#aee86a' : '#ff6666',
-              lineHeight: 1,
-            }}>
+            <div
+              style={{
+                fontSize: 28,
+                fontWeight: 900,
+                color: isPassing ? '#aee86a' : '#ff6666',
+                lineHeight: 1,
+              }}
+            >
               {isPassing ? 'APROVADO' : 'REPROVADO'}
             </div>
             {criticalErrors && (
@@ -114,14 +155,18 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
             )}
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>NOTA FINAL</div>
-            <div style={{
-              fontSize: 56,
-              fontWeight: 900,
-              color: isPassing ? 'var(--gold)' : 'var(--red-light)',
-              lineHeight: 1,
-              textShadow: isPassing ? '0 0 30px rgba(255,215,0,0.4)' : '0 0 30px rgba(204,0,0,0.4)',
-            }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>
+              NOTA FINAL
+            </div>
+            <div
+              style={{
+                fontSize: 56,
+                fontWeight: 900,
+                color: isPassing ? 'var(--gold)' : 'var(--red-light)',
+                lineHeight: 1,
+                textShadow: isPassing ? '0 0 30px rgba(255,215,0,0.4)' : '0 0 30px rgba(204,0,0,0.4)',
+              }}
+            >
               {finalScore.toFixed(2).replace('.', ',')}
             </div>
             <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
@@ -130,13 +175,8 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
           </div>
         </div>
 
-        {/* Two columns */}
         <div style={{ display: 'flex', gap: 20, flex: 1, minHeight: 0 }}>
-
-          {/* Left column */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16, minWidth: 0 }}>
-
-            {/* Student data */}
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '16px 20px' }}>
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12 }}>
                 Dados do Aluno
@@ -165,7 +205,6 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
               </div>
             </div>
 
-            {/* Penalized items */}
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '16px 20px', flex: 1, overflow: 'auto' }}>
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12 }}>
                 Itens Penalizados ({penalizedItems.length})
@@ -193,16 +232,18 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
                       <span className="summary-penalty-val">–{customDiscount.toFixed(2).replace('.', ',')}</span>
                     </div>
                   )}
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    paddingTop: 8,
-                    borderTop: '1px solid #2a2a2a',
-                    marginTop: 4,
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: 'var(--red-light)',
-                  }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      paddingTop: 8,
+                      borderTop: '1px solid #2a2a2a',
+                      marginTop: 4,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: 'var(--red-light)',
+                    }}
+                  >
                     Total: –{totalDiscount.toFixed(2).replace('.', ',')}
                   </div>
                 </div>
@@ -210,10 +251,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
             </div>
           </div>
 
-          {/* Right column */}
           <div style={{ width: 280, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
-
-            {/* Observations */}
             {observations && (
               <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '16px' }}>
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 10 }}>
@@ -225,14 +263,15 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
               </div>
             )}
 
-            {/* Signature */}
-            <div style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '16px',
-              flex: 1,
-            }}>
+            <div
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius)',
+                padding: '16px',
+                flex: 1,
+              }}
+            >
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 10 }}>
                 Assinatura do Aluno
               </div>
@@ -243,33 +282,36 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
                     alt="Assinatura do aluno"
                     style={{ maxWidth: '100%', maxHeight: 140, objectFit: 'contain' }}
                   />
-                  <div style={{
-                    borderTop: '1.5px solid #ccc',
-                    marginTop: 8,
-                    paddingTop: 6,
-                    fontSize: 11,
-                    color: '#888',
-                    letterSpacing: 1,
-                  }}>
+                  <div
+                    style={{
+                      borderTop: '1.5px solid #ccc',
+                      marginTop: 8,
+                      paddingTop: 6,
+                      fontSize: 11,
+                      color: '#888',
+                      letterSpacing: 1,
+                    }}
+                  >
                     Assinatura do Aluno
                   </div>
                 </div>
               ) : (
-                <div style={{
-                  background: '#1a1a1a',
-                  borderRadius: 8,
-                  padding: 20,
-                  textAlign: 'center',
-                  color: 'var(--text-muted)',
-                  fontSize: 13,
-                  fontStyle: 'italic',
-                }}>
+                <div
+                  style={{
+                    background: '#1a1a1a',
+                    borderRadius: 8,
+                    padding: 20,
+                    textAlign: 'center',
+                    color: 'var(--text-muted)',
+                    fontSize: 13,
+                    fontStyle: 'italic',
+                  }}
+                >
                   Sem assinatura registrada
                 </div>
               )}
             </div>
 
-            {/* Score summary */}
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '16px' }}>
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 10 }}>
                 Pontuação
@@ -287,11 +329,13 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
                 ))}
                 <div style={{ borderTop: '1px solid #2a2a2a', paddingTop: 8, display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)' }}>NOTA FINAL</span>
-                  <span style={{
-                    fontSize: 22,
-                    fontWeight: 900,
-                    color: isPassing ? 'var(--gold)' : 'var(--red-light)',
-                  }}>
+                  <span
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 900,
+                      color: isPassing ? 'var(--gold)' : 'var(--red-light)',
+                    }}
+                  >
                     {finalScore.toFixed(2).replace('.', ',')}
                   </span>
                 </div>
