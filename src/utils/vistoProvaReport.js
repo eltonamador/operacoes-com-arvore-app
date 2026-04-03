@@ -147,19 +147,31 @@ export function generateVistoProvaReport(evaluations, pelotao, data, avaliador) 
 
         .num-col {
           text-align: center;
-          width: 5%;
+          width: 8%;
           font-weight: bold;
         }
 
         .nome-col {
-          width: 70%;
+          width: 55%;
         }
 
         .nota-col {
           text-align: center;
-          width: 20%;
+          width: 15%;
           font-weight: bold;
           color: #CC0000;
+        }
+
+        .assinatura-col {
+          text-align: center;
+          width: 22%;
+          height: 60px;
+          vertical-align: bottom;
+          padding-bottom: 5px !important;
+          border-bottom: 1px solid #000 !important;
+          border-top: none !important;
+          border-left: none !important;
+          border-right: none !important;
         }
 
         .footer {
@@ -231,16 +243,18 @@ export function generateVistoProvaReport(evaluations, pelotao, data, avaliador) 
               <th class="num-col">Nº</th>
               <th class="nome-col">Aluno</th>
               <th class="nota-col">Nota</th>
+              <th class="assinatura-col">Assinatura</th>
             </tr>
           </thead>
           <tbody>
             ${filtered
               .map(
-                (item, idx) => `
+                item => `
               <tr>
-                <td class="num-col">${idx + 1}</td>
+                <td class="num-col">${item.studentData?.ordem || '—'}</td>
                 <td class="nome-col">${item.studentData?.nome || '—'}</td>
                 <td class="nota-col">${item.finalScore.toFixed(2).replace('.', ',')}</td>
+                <td class="assinatura-col"></td>
               </tr>
             `,
               )

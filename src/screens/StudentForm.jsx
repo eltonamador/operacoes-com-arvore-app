@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import studentsData from '../data/students.json'
 import instructorsData from '../data/instructors.json'
 
@@ -14,6 +14,15 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
   const [searchInstrutor, setSearchInstrutor] = useState('')
   const [showAlunoList, setShowAlunoList] = useState(false)
   const [showInstrutorList, setShowInstrutorList] = useState(false)
+
+  // Sincronizar form com state quando state muda (ex: após reset)
+  useEffect(() => {
+    setForm(initialForm)
+    setSearchAluno('')
+    setSearchInstrutor('')
+    setShowAlunoList(false)
+    setShowInstrutorList(false)
+  }, [state.studentData.nome, state.studentData.ordem, state.studentData.pelotao])
 
   const students = studentsData?.students || []
   const instructors = instructorsData?.instructors || []
