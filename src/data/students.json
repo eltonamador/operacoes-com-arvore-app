@@ -1,0 +1,19 @@
+{
+  "students": [
+    { "nome": "João Silva Pereira", "numero": "001", "pelotao": "1º Pelotão" },
+    { "nome": "Maria Santos Costa", "numero": "002", "pelotao": "1º Pelotão" },
+    { "nome": "Pedro Oliveira Mendes", "numero": "003", "pelotao": "1º Pelotão" },
+    { "nome": "Ana Carolina Rocha", "numero": "004", "pelotao": "1º Pelotão" },
+    { "nome": "Carlos Eduardo Lima", "numero": "005", "pelotao": "1º Pelotão" },
+    { "nome": "Fernanda Ribeiro Dias", "numero": "006", "pelotao": "2º Pelotão" },
+    { "nome": "Lucas Martins Gomes", "numero": "007", "pelotao": "2º Pelotão" },
+    { "nome": "Patrícia Alves Ferreira", "numero": "008", "pelotao": "2º Pelotão" },
+    { "nome": "Roberto Santos Junior", "numero": "009", "pelotao": "2º Pelotão" },
+    { "nome": "Juliana Costa Silva", "numero": "010", "pelotao": "2º Pelotão" },
+    { "nome": "Diego Fernandes Barbosa", "numero": "011", "pelotao": "3º Pelotão" },
+    { "nome": "Camila Morais Xavier", "numero": "012", "pelotao": "3º Pelotão" },
+    { "nome": "Rafael Teixeira Nunes", "numero": "013", "pelotao": "3º Pelotão" },
+    { "nome": "Beatriz Miranda Lopes", "numero": "014", "pelotao": "3º Pelotão" },
+    { "nome": "Gustavo Pires Sousa", "numero": "015", "pelotao": "3º Pelotão" }
+  ]
+}

@@ -1,12 +1,62 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import studentsData from '../data/students.json'
+import instructorsData from '../data/instructors.json'
 
 export default function StudentForm({ state, updateStudentData, goTo }) {
   const [form, setForm] = useState(state.studentData)
+  const [searchAluno, setSearchAluno] = useState('')
+  const [searchInstrutor, setSearchInstrutor] = useState('')
+  const [showAlunoList, setShowAlunoList] = useState(false)
+  const [showInstrutorList, setShowInstrutorList] = useState(false)
+
+  const students = studentsData.students
+  const instructors = instructorsData.instructors
+
+  // Obter lista de pelotões únicos
+  const pelotoes = [...new Set(students.map(s => s.pelotao))].sort()
+
+  // Filtrar alunos pelo pelotão selecionado e busca
+  const filteredStudents = useMemo(() => {
+    return students.filter(student => {
+      const matchPelotao = !form.pelotao || student.pelotao === form.pelotao
+      const matchSearch = !searchAluno || student.nome.toLowerCase().includes(searchAluno.toLowerCase())
+      return matchPelotao && matchSearch
+    })
+  }, [form.pelotao, searchAluno])
+
+  // Filtrar instrutores por busca
+  const filteredInstructors = useMemo(() => {
+    return instructors.filter(instructor =>
+      !searchInstrutor || instructor.toLowerCase().includes(searchInstrutor.toLowerCase())
+    )
+  }, [searchInstrutor])
 
   function handleChange(e) {
-    const next = { ...form, [e.target.name]: e.target.value }
+    const { name, value } = e.target
+    const next = { ...form, [name]: value }
     setForm(next)
     updateStudentData(next)
+  }
+
+  function selectStudent(student) {
+    const next = {
+      ...form,
+      nome: student.nome,
+      ordem: student.numero,
+      pelotao: student.pelotao,
+    }
+    setForm(next)
+    updateStudentData(next)
+    setShowAlunoList(false)
+    setSearchAluno('')
+  }
+
+  function selectInstructor(instructor) {
+    const next = { ...form, avaliador: instructor }
+    setForm(next)
+    updateStudentData(next)
+    setShowInstrutorList(false)
+    setSearchInstrutor('')
   }
 
   const isValid = Object.values(form).every(v => v.trim() !== '')
@@ -59,38 +109,31 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
               Dados do Aluno e Avaliador
             </h2>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>
-              Preencha todos os campos antes de iniciar a avaliação.
+              Selecione o aluno e avaliador. Os dados serão preenchidos automaticamente.
             </p>
           </div>
 
           {/* Fields grid */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px 28px', marginBottom: 28 }}>
-            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-              <label className="form-label">Nome completo do aluno</label>
-              <input
-                className="form-input"
-                type="text"
-                name="nome"
-                value={form.nome}
-                onChange={handleChange}
-                placeholder="Ex: João da Silva Pereira"
-                autoComplete="off"
-              />
-            </div>
 
+            {/* Pelotão */}
             <div className="form-group">
-              <label className="form-label">Nº de Ordem</label>
-              <input
+              <label className="form-label">Pelotão</label>
+              <select
                 className="form-input"
-                type="text"
-                name="ordem"
-                value={form.ordem}
+                name="pelotao"
+                value={form.pelotao}
                 onChange={handleChange}
-                placeholder="Ex: 001"
-                autoComplete="off"
-              />
+                style={{ appearance: 'auto', cursor: 'pointer' }}
+              >
+                <option value="">Selecione um Pelotão</option>
+                {pelotoes.map(p => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
             </div>
 
+            {/* Data (não tem pelotão, ocupa 2 colunas no topo direito) */}
             <div className="form-group">
               <label className="form-label">Data da Avaliação</label>
               <input
@@ -103,30 +146,146 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
               />
             </div>
 
+            {/* Aluno com autocomplete */}
+            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+              <label className="form-label">Aluno</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  className="form-input"
+                  type="text"
+                  placeholder="Digite ou selecione o aluno..."
+                  value={showAlunoList ? searchAluno : form.nome}
+                  onChange={(e) => {
+                    setSearchAluno(e.target.value)
+                    setShowAlunoList(true)
+                  }}
+                  onFocus={() => setShowAlunoList(true)}
+                  autoComplete="off"
+                />
+                {showAlunoList && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
+                    background: '#1a1a1a',
+                    border: '1px solid #444',
+                    borderTop: 'none',
+                    borderRadius: '0 0 8px 8px',
+                    maxHeight: 280,
+                    overflowY: 'auto',
+                    zIndex: 10,
+                  }}>
+                    {filteredStudents.length === 0 ? (
+                      <div style={{ padding: 12, color: 'var(--text-muted)', fontSize: 13, textAlign: 'center' }}>
+                        Nenhum aluno encontrado
+                      </div>
+                    ) : (
+                      filteredStudents.map(student => (
+                        <button
+                          key={student.numero}
+                          onClick={() => selectStudent(student)}
+                          style={{
+                            display: 'block',
+                            width: '100%',
+                            padding: '12px 16px',
+                            background: 'transparent',
+                            border: 'none',
+                            borderBottom: '1px solid #2a2a2a',
+                            color: 'var(--text-primary)',
+                            textAlign: 'left',
+                            cursor: 'pointer',
+                            fontSize: 14,
+                            transition: 'background 0.2s',
+                          }}
+                          onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                          onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                        >
+                          <strong>{student.numero}</strong> – {student.nome}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Nº (ordem) - preenchido automaticamente */}
             <div className="form-group">
-              <label className="form-label">Pelotão</label>
+              <label className="form-label">Nº</label>
               <input
                 className="form-input"
                 type="text"
-                name="pelotao"
-                value={form.pelotao}
-                onChange={handleChange}
-                placeholder="Ex: 1º Pelotão"
-                autoComplete="off"
+                name="ordem"
+                value={form.ordem}
+                readOnly
+                style={{ background: '#161616', cursor: 'not-allowed', color: 'var(--gold)' }}
+                placeholder="Preenchido automaticamente"
               />
             </div>
 
+            {/* Avaliador com autocomplete */}
             <div className="form-group">
-              <label className="form-label">Nome do Avaliador</label>
-              <input
-                className="form-input"
-                type="text"
-                name="avaliador"
-                value={form.avaliador}
-                onChange={handleChange}
-                placeholder="Ex: Sgt. Pedro Souza"
-                autoComplete="off"
-              />
+              <label className="form-label">Avaliador / Instrutor</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  className="form-input"
+                  type="text"
+                  placeholder="Digite ou selecione o instrutor..."
+                  value={showInstrutorList ? searchInstrutor : form.avaliador}
+                  onChange={(e) => {
+                    setSearchInstrutor(e.target.value)
+                    setShowInstrutorList(true)
+                  }}
+                  onFocus={() => setShowInstrutorList(true)}
+                  autoComplete="off"
+                />
+                {showInstrutorList && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
+                    background: '#1a1a1a',
+                    border: '1px solid #444',
+                    borderTop: 'none',
+                    borderRadius: '0 0 8px 8px',
+                    maxHeight: 240,
+                    overflowY: 'auto',
+                    zIndex: 10,
+                  }}>
+                    {filteredInstructors.length === 0 ? (
+                      <div style={{ padding: 12, color: 'var(--text-muted)', fontSize: 13, textAlign: 'center' }}>
+                        Nenhum instrutor encontrado
+                      </div>
+                    ) : (
+                      filteredInstructors.map(instructor => (
+                        <button
+                          key={instructor}
+                          onClick={() => selectInstructor(instructor)}
+                          style={{
+                            display: 'block',
+                            width: '100%',
+                            padding: '12px 16px',
+                            background: 'transparent',
+                            border: 'none',
+                            borderBottom: '1px solid #2a2a2a',
+                            color: 'var(--text-primary)',
+                            textAlign: 'left',
+                            cursor: 'pointer',
+                            fontSize: 14,
+                            transition: 'background 0.2s',
+                          }}
+                          onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                          onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                        >
+                          {instructor}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -141,8 +300,7 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
             color: '#ccaa44',
             lineHeight: 1.5,
           }}>
-            <strong>ℹ Instruções:</strong> Após iniciar, marque cada erro cometido durante a avaliação.
-            Os descontos são calculados automaticamente. Nota inicial: <strong>10,0</strong>.
+            <strong>ℹ Dica:</strong> Use a busca para filtrar alunos e instrutores. O número do aluno (Nº) é preenchido automaticamente.
           </div>
 
           {/* Button */}
@@ -156,6 +314,24 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
           </button>
         </div>
       </div>
+
+      {/* Fechar dropdown ao clicar fora */}
+      {(showAlunoList || showInstrutorList) && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 5,
+          }}
+          onClick={() => {
+            setShowAlunoList(false)
+            setShowInstrutorList(false)
+          }}
+        />
+      )}
     </div>
   )
 }
