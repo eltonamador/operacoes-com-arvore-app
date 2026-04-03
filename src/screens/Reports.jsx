@@ -27,16 +27,25 @@ export default function Reports({
   reportsLoading,
 }) {
   const [selectedPelotaoForReport, setSelectedPelotaoForReport] = useState(null)
+  const [selectedDate, setSelectedDate] = useState('')
 
-  const total = savedEvaluations.length
-  const approved = savedEvaluations.filter(item => item.isPassing).length
+  // Filtrar avaliações por data se houver data selecionada
+  const filteredByDate = selectedDate
+    ? savedEvaluations.filter(item => item.studentData?.data === selectedDate)
+    : savedEvaluations
+
+  const total = filteredByDate.length
+  const approved = filteredByDate.filter(item => item.isPassing).length
   const failed = total - approved
   const average =
     total > 0
       ? (
-          savedEvaluations.reduce((sum, item) => sum + Number(item.finalScore || 0), 0) / total
+          filteredByDate.reduce((sum, item) => sum + Number(item.finalScore || 0), 0) / total
         ).toFixed(2)
       : '0.00'
+
+  // Extrair datas únicas para sugestão
+  const uniqueDates = [...new Set(savedEvaluations.map(e => e.studentData?.data).filter(Boolean))].sort().reverse()
 
   return (
     <div
@@ -118,6 +127,86 @@ export default function Reports({
           gap: 20,
         }}
       >
+        {/* Filtro por Data */}
+        <div
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius)',
+            padding: '16px 20px',
+          }}
+        >
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12 }}>
+            Filtrar por Data
+          </div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={e => setSelectedDate(e.target.value)}
+              style={{
+                padding: '10px 12px',
+                borderRadius: 6,
+                border: '1px solid var(--border)',
+                background: 'var(--bg-main)',
+                color: 'var(--text-primary)',
+                fontSize: 13,
+                colorScheme: 'dark',
+              }}
+            />
+            {selectedDate && (
+              <button
+                onClick={() => setSelectedDate('')}
+                style={{
+                  padding: '10px 16px',
+                  borderRadius: 6,
+                  border: '1px solid var(--border)',
+                  background: 'transparent',
+                  color: 'var(--text-secondary)',
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                }}
+              >
+                ✕ Limpar Filtro
+              </button>
+            )}
+            {uniqueDates.length > 0 && (
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', flex: 1 }}>
+                {uniqueDates.map(date => {
+                  const dateObj = new Date(date + 'T00:00:00')
+                  const formatted = dateObj.toLocaleDateString('pt-BR')
+                  const count = savedEvaluations.filter(e => e.studentData?.data === date).length
+                  return (
+                    <button
+                      key={date}
+                      onClick={() => setSelectedDate(date)}
+                      style={{
+                        padding: '8px 12px',
+                        borderRadius: 6,
+                        border: selectedDate === date ? '2px solid var(--gold)' : '1px solid var(--border)',
+                        background: selectedDate === date ? 'rgba(255, 215, 0, 0.1)' : 'transparent',
+                        color: selectedDate === date ? 'var(--gold)' : 'var(--text-secondary)',
+                        fontSize: 12,
+                        cursor: 'pointer',
+                        fontWeight: selectedDate === date ? 700 : 600,
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {formatted} ({count})
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+          {selectedDate && (
+            <div style={{ marginTop: 12, fontSize: 12, color: 'var(--text-secondary)' }}>
+              📅 Mostrando {total} avaliação(ções) de {new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR')}
+            </div>
+          )}
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(180px, 1fr))', gap: 16 }}>
           <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 16 }}>
             <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700 }}>
@@ -161,14 +250,16 @@ export default function Reports({
         >
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase' }}>
-              Avaliações Registradas ({savedEvaluations.length})
+              Avaliações Registradas ({filteredByDate.length}{selectedDate ? ` de ${savedEvaluations.length}` : ''})
             </div>
           </div>
 
           {reportsLoading ? (
             <div style={{ padding: 24, color: 'var(--text-muted)' }}>Carregando avaliações...</div>
-          ) : savedEvaluations.length === 0 ? (
-            <div style={{ padding: 24, color: 'var(--text-muted)' }}>Nenhuma avaliação encontrada.</div>
+          ) : filteredByDate.length === 0 ? (
+            <div style={{ padding: 24, color: 'var(--text-muted)' }}>
+              {selectedDate ? `Nenhuma avaliação encontrada para ${new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR')}.` : 'Nenhuma avaliação encontrada.'}
+            </div>
           ) : (
             <div style={{ overflowY: 'auto', overflowX: 'auto', flex: 1, minHeight: 0 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -186,7 +277,7 @@ export default function Reports({
                   </tr>
                 </thead>
                 <tbody>
-                  {savedEvaluations.map(item => (
+                  {filteredByDate.map(item => (
                     <tr key={item.id} style={{ borderTop: '1px solid var(--border)' }}>
                       <td style={tdStyle}>{item.studentData?.nome || '—'}</td>
                       <td style={tdStyle}>{item.studentData?.ordem || '—'}</td>
