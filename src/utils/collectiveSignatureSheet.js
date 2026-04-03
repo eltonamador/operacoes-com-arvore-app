@@ -27,8 +27,8 @@ export function generateCollectiveSignatureSheet(evaluations) {
     .map(
       (e, idx) => `
     <tr class="signature-row">
-      <td class="col-numero">${String(idx + 1).padStart(2, '0')}</td>
-      <td class="col-ordem">${e.studentData?.ordem || '—'}</td>
+      <td class="col-item">${String(idx + 1).padStart(2, '0')}</td>
+      <td class="col-numero">${e.studentData?.ordem || '—'}</td>
       <td class="col-nome">${e.studentData?.nome || '—'}</td>
       <td class="col-nota">${e.finalScore?.toFixed(2)?.replace('.', ',') || '—'}</td>
       <td class="col-assinatura">&nbsp;</td>
@@ -153,31 +153,32 @@ export function generateCollectiveSignatureSheet(evaluations) {
       vertical-align: middle;
     }
 
+    .col-item {
+      width: 7%;
+      text-align: center;
+      font-weight: 700;
+      color: #666;
+    }
+
     .col-numero {
-      width: 6%;
+      width: 7%;
       text-align: center;
       font-weight: 700;
     }
 
-    .col-ordem {
-      width: 8%;
-      text-align: center;
-      font-weight: 600;
-    }
-
     .col-nome {
-      width: 45%;
+      width: 42%;
       text-align: left;
     }
 
     .col-nota {
-      width: 12%;
+      width: 13%;
       text-align: center;
       font-weight: 600;
     }
 
     .col-assinatura {
-      width: 29%;
+      width: 31%;
       vertical-align: bottom;
       padding-bottom: 2mm;
     }
@@ -260,8 +261,8 @@ export function generateCollectiveSignatureSheet(evaluations) {
       <table>
         <thead>
           <tr>
+            <th class="col-item">Item</th>
             <th class="col-numero">Nº</th>
-            <th class="col-ordem">Ordem</th>
             <th class="col-nome">Nome do Aluno</th>
             <th class="col-nota">Nota Final</th>
             <th class="col-assinatura">Assinatura</th>
