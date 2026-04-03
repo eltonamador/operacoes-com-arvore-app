@@ -12,6 +12,7 @@ const initialEval = {
   criticalErrors: false,
   observations: '',
   customError: { description: '', discount: '' },
+  signatureDataUrl: null,
   vistoConfirmado: false,
   vistoPinConfirmado: false,
   vistoDataHora: null,
@@ -127,6 +128,10 @@ export default function App() {
     }))
   }
 
+  function setVistoData(data) {
+  setState(s => ({ ...s, ...data }))
+  }
+
   function goTo(screen) {
     setState(s => ({ ...s, screen }))
   }
@@ -198,7 +203,7 @@ export default function App() {
     setObservations,
     setCustomError,
     setVistoConfirmado,
-    setVistoNomeConfirmacao,
+    setVistoData,
     setDeclaracaoCiencia,
     confirmarVisto,
     goTo,
