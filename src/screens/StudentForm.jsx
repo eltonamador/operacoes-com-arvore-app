@@ -95,7 +95,7 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
     String(form.avaliador || '').trim() !== ''
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+    <div className="screen-container">
       <header className="header">
         <div className="header-emblem">🔥</div>
         <div className="header-titles">
@@ -107,56 +107,18 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
         <div className="header-badge">CFSD 2026</div>
       </header>
 
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '24px',
-          overflow: 'auto',
-        }}
-      >
-        <div
-          style={{
-            background: 'var(--bg-card)',
-            borderRadius: 14,
-            border: '1px solid #2a2a2a',
-            padding: '32px 40px',
-            width: '100%',
-            maxWidth: 720,
-            boxShadow: 'var(--shadow)',
-          }}
-        >
+      <div className="screen-content screen-content--centered">
+        <div className="card card--form">
           <div style={{ marginBottom: 28 }}>
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: 2,
-                color: 'var(--gold)',
-                textTransform: 'uppercase',
-                marginBottom: 6,
-              }}
-            >
-              Identificação
-            </div>
-            <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-              Dados do Aluno e Avaliador
-            </h2>
-            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>
+            <div className="card-label">Identificação</div>
+            <h2 className="card-title">Dados do Aluno e Avaliador</h2>
+            <p className="card-subtitle">
               Selecione o aluno e avaliador. Os dados serão preenchidos automaticamente.
             </p>
           </div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '20px 28px',
-              marginBottom: 28,
-            }}
-          >
+          <div className="form-grid">
+
             <div className="form-group">
               <label className="form-label">Pelotão</label>
               <select
@@ -372,18 +334,7 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
             </div>
           </div>
 
-          <div
-            style={{
-              background: '#1a1200',
-              border: '1px solid #3a2a00',
-              borderRadius: 8,
-              padding: '12px 16px',
-              marginBottom: 24,
-              fontSize: 13,
-              color: '#ccaa44',
-              lineHeight: 1.5,
-            }}
-          >
+          <div className="hint-box">
             <strong>ℹ Dica:</strong> Selecione primeiro o pelotão. Depois escolha o aluno. O
             número do aluno (Nº) é preenchido automaticamente.
           </div>

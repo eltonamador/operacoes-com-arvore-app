@@ -223,15 +223,19 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
               border: '1px solid var(--border)',
               borderRadius: 'var(--radius)',
               overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 300,
+              maxHeight: '600px',
             }}
           >
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase' }}>
                 🏆 Ranking de Desempenho
               </div>
             </div>
 
-            <div style={{ overflowX: 'auto' }}>
+            <div style={{ overflowY: 'auto', overflowX: 'auto', flex: 1, minHeight: 0 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ background: '#121212', position: 'sticky', top: 0, zIndex: 1 }}>
