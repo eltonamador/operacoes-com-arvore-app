@@ -79,9 +79,12 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
           <button
             className="btn btn-secondary"
             style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
-            onClick={() => goTo('signature')}
+            onClick={() => {
+              reset()
+              goTo('form')
+            }}
           >
-            ← Voltar
+            ← Nova Avaliação
           </button>
           <button
             className="btn btn-secondary"

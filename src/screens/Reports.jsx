@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { generateVistoProvaReport } from '../utils/vistoProvaReport'
+
 function formatDate(dateStr) {
   if (!dateStr) return '—'
   const date = new Date(dateStr)
@@ -23,6 +26,8 @@ export default function Reports({
   loadEvaluations,
   reportsLoading,
 }) {
+  const [selectedPelotaoForReport, setSelectedPelotaoForReport] = useState(null)
+
   const total = savedEvaluations.length
   const approved = savedEvaluations.filter(item => item.isPassing).length
   const failed = total - approved
@@ -67,6 +72,20 @@ export default function Reports({
             disabled={savedEvaluations.length === 0}
           >
             📊 Relatórios Avançados
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
+            onClick={() => {
+              const pelotao = savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.pelotao : null
+              const data = savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.data : new Date().toISOString().slice(0, 10)
+              const avaliador = savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.avaliador : null
+              generateVistoProvaReport(savedEvaluations, selectedPelotaoForReport || pelotao, data, avaliador)
+            }}
+            disabled={savedEvaluations.length === 0}
+          >
+            📄 Visto de Prova
           </button>
 
           <button

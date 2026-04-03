@@ -3,7 +3,13 @@ import studentsData from '../data/students.json'
 import instructorsData from '../data/instructors.json'
 
 export default function StudentForm({ state, updateStudentData, goTo }) {
-  const [form, setForm] = useState(state.studentData)
+  // Pré-preencher com data atual se não houver data
+  const initialForm = {
+    ...state.studentData,
+    data: state.studentData.data || new Date().toISOString().slice(0, 10),
+  }
+
+  const [form, setForm] = useState(initialForm)
   const [searchAluno, setSearchAluno] = useState('')
   const [searchInstrutor, setSearchInstrutor] = useState('')
   const [showAlunoList, setShowAlunoList] = useState(false)

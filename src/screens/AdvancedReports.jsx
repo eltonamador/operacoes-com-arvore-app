@@ -46,9 +46,9 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
   }, [filteredEvaluations])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', background: 'var(--bg-main)' }}>
       {/* Header */}
-      <header className="header">
+      <header className="header" style={{ flexShrink: 0 }}>
         <div className="header-emblem">📊</div>
         <div className="header-titles">
           <span className="header-org">CBMAP</span>
@@ -65,8 +65,8 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
         </button>
       </header>
 
-      {/* Content */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {/* Content - Com overflow explícito */}
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: 24, minHeight: 0 }}>
         {/* Filtro por Pelotão */}
         <div
           style={{
