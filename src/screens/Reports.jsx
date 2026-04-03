@@ -1,3 +1,5 @@
+import { generateCollectiveSignatureSheet } from '../utils/collectiveSignatureSheet'
+
 function formatDate(dateStr) {
   if (!dateStr) return '—'
   const date = new Date(dateStr)
@@ -103,10 +105,23 @@ export default function Reports({
         </div>
 
         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase' }}>
-              Avaliações Registradas
+              Avaliações Registradas ({total})
             </div>
+            <button
+              className="btn btn-secondary"
+              style={{
+                fontSize: 12,
+                padding: '8px 16px',
+                minHeight: 36,
+                display: savedEvaluations.length === 0 ? 'none' : 'flex',
+              }}
+              onClick={() => generateCollectiveSignatureSheet(savedEvaluations)}
+              title="Gera ficha coletiva com todos os alunos para colher assinatura manuscrita"
+            >
+              📄 Ficha Coletiva de Assinaturas
+            </button>
           </div>
 
           {reportsLoading ? (
