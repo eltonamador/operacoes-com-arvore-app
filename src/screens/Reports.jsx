@@ -62,6 +62,15 @@ export default function Reports({
 
           <button
             className="btn btn-secondary"
+            style={{ fontSize: 13, padding: '10px 18px', minHeight: 44, borderColor: 'var(--gold)', color: 'var(--gold)' }}
+            onClick={() => goTo('advanced-reports')}
+            disabled={savedEvaluations.length === 0}
+          >
+            📊 Relatórios Avançados
+          </button>
+
+          <button
+            className="btn btn-secondary"
             style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
             onClick={loadEvaluations}
           >
@@ -127,11 +136,13 @@ export default function Reports({
             borderRadius: 'var(--radius)',
             overflow: 'hidden',
             minHeight: 0,
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase' }}>
-              Avaliações Registradas
+              Avaliações Registradas ({savedEvaluations.length})
             </div>
           </div>
 
@@ -140,7 +151,7 @@ export default function Reports({
           ) : savedEvaluations.length === 0 ? (
             <div style={{ padding: 24, color: 'var(--text-muted)' }}>Nenhuma avaliação encontrada.</div>
           ) : (
-            <div style={{ overflowX: 'auto' }}>
+            <div style={{ overflowY: 'auto', overflowX: 'auto', flex: 1, minHeight: 0 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ background: '#121212', position: 'sticky', top: 0, zIndex: 1 }}>
