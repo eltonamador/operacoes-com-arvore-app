@@ -12,58 +12,75 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
   const students = studentsData?.students || []
   const instructors = instructorsData?.instructors || []
 
-  // Obter lista de pelotões únicos
-  const pelotoes = [...new Set(students.map(s => s.pelotao))].sort()
+  const pelotoes = [...new Set(students.map(s => s.pelotao).filter(Boolean))].sort()
 
-  // Filtrar alunos pelo pelotão selecionado e busca
   const filteredStudents = useMemo(() => {
     return students.filter(student => {
       const matchPelotao = !form.pelotao || student.pelotao === form.pelotao
-      const matchSearch = !searchAluno || student.nome.toLowerCase().includes(searchAluno.toLowerCase())
+      const matchSearch =
+        !searchAluno || student.nome.toLowerCase().includes(searchAluno.toLowerCase())
       return matchPelotao && matchSearch
     })
   }, [form.pelotao, searchAluno, students])
 
-  // Filtrar instrutores por busca
   const filteredInstructors = useMemo(() => {
     return instructors.filter(instructor =>
       !searchInstrutor || instructor.toLowerCase().includes(searchInstrutor.toLowerCase())
     )
-  }, [searchInstrutor])
+  }, [searchInstrutor, instructors])
+
+  function updateForm(next) {
+    setForm(next)
+    updateStudentData(next)
+  }
 
   function handleChange(e) {
     const { name, value } = e.target
-    const next = { ...form, [name]: value }
-    setForm(next)
-    updateStudentData(next)
+
+    let next = { ...form, [name]: value }
+
+    if (name === 'pelotao') {
+      next = {
+        ...next,
+        nome: '',
+        ordem: '',
+      }
+      setSearchAluno('')
+      setShowAlunoList(false)
+    }
+
+    updateForm(next)
   }
 
   function selectStudent(student) {
     const next = {
       ...form,
       nome: student.nome,
-      ordem: student.numero,
+      ordem: String(student.numero),
       pelotao: student.pelotao,
     }
-    setForm(next)
-    updateStudentData(next)
+
+    updateForm(next)
+    setSearchAluno(student.nome)
     setShowAlunoList(false)
-    setSearchAluno('')
   }
 
   function selectInstructor(instructor) {
     const next = { ...form, avaliador: instructor }
-    setForm(next)
-    updateStudentData(next)
+    updateForm(next)
+    setSearchInstrutor(instructor)
     setShowInstrutorList(false)
-    setSearchInstrutor('')
   }
 
-  const isValid = Object.values(form).every(v => v.trim() !== '')
+  const isValid =
+    String(form.nome || '').trim() !== '' &&
+    String(form.ordem || '').trim() !== '' &&
+    String(form.data || '').trim() !== '' &&
+    String(form.pelotao || '').trim() !== '' &&
+    String(form.avaliador || '').trim() !== ''
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-      {/* Header */}
       <header className="header">
         <div className="header-emblem">🔥</div>
         <div className="header-titles">
@@ -75,34 +92,38 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
         <div className="header-badge">CFSD 2026</div>
       </header>
 
-      {/* Content */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '24px',
-        overflow: 'auto',
-      }}>
-        <div style={{
-          background: 'var(--bg-card)',
-          borderRadius: 14,
-          border: '1px solid #2a2a2a',
-          padding: '32px 40px',
-          width: '100%',
-          maxWidth: 720,
-          boxShadow: 'var(--shadow)',
-        }}>
-          {/* Card header */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '24px',
+          overflow: 'auto',
+        }}
+      >
+        <div
+          style={{
+            background: 'var(--bg-card)',
+            borderRadius: 14,
+            border: '1px solid #2a2a2a',
+            padding: '32px 40px',
+            width: '100%',
+            maxWidth: 720,
+            boxShadow: 'var(--shadow)',
+          }}
+        >
           <div style={{ marginBottom: 28 }}>
-            <div style={{
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: 2,
-              color: 'var(--gold)',
-              textTransform: 'uppercase',
-              marginBottom: 6,
-            }}>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: 2,
+                color: 'var(--gold)',
+                textTransform: 'uppercase',
+                marginBottom: 6,
+              }}
+            >
               Identificação
             </div>
             <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
@@ -113,10 +134,14 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
             </p>
           </div>
 
-          {/* Fields grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px 28px', marginBottom: 28 }}>
-
-            {/* Pelotão */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '20px 28px',
+              marginBottom: 28,
+            }}
+          >
             <div className="form-group">
               <label className="form-label">Pelotão</label>
               <select
@@ -128,12 +153,13 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
               >
                 <option value="">Selecione um Pelotão</option>
                 {pelotoes.map(p => (
-                  <option key={p} value={p}>{p}</option>
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
                 ))}
               </select>
             </div>
 
-            {/* Data (não tem pelotão, ocupa 2 colunas no topo direito) */}
             <div className="form-group">
               <label className="form-label">Data da Avaliação</label>
               <input
@@ -146,44 +172,63 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
               />
             </div>
 
-            {/* Aluno com autocomplete */}
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <label className="form-label">Aluno</label>
               <div style={{ position: 'relative' }}>
                 <input
                   className="form-input"
                   type="text"
-                  placeholder="Digite ou selecione o aluno..."
+                  placeholder={
+                    form.pelotao
+                      ? 'Digite ou selecione o aluno...'
+                      : 'Selecione primeiro um pelotão...'
+                  }
                   value={showAlunoList ? searchAluno : form.nome}
-                  onChange={(e) => {
+                  disabled={!form.pelotao}
+                  onChange={e => {
                     setSearchAluno(e.target.value)
                     setShowAlunoList(true)
                   }}
-                  onFocus={() => setShowAlunoList(true)}
+                  onFocus={() => {
+                    if (form.pelotao) setShowAlunoList(true)
+                  }}
+                  onBlur={() => setTimeout(() => setShowAlunoList(false), 150)}
                   autoComplete="off"
                 />
-                {showAlunoList && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    right: 0,
-                    background: '#1a1a1a',
-                    border: '1px solid #444',
-                    borderTop: 'none',
-                    borderRadius: '0 0 8px 8px',
-                    maxHeight: 280,
-                    overflowY: 'auto',
-                    zIndex: 10,
-                  }}>
+
+                {showAlunoList && form.pelotao && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      background: '#1a1a1a',
+                      border: '1px solid #444',
+                      borderTop: 'none',
+                      borderRadius: '0 0 8px 8px',
+                      maxHeight: 280,
+                      overflowY: 'auto',
+                      zIndex: 20,
+                    }}
+                  >
                     {filteredStudents.length === 0 ? (
-                      <div style={{ padding: 12, color: 'var(--text-muted)', fontSize: 13, textAlign: 'center' }}>
+                      <div
+                        style={{
+                          padding: 12,
+                          color: 'var(--text-muted)',
+                          fontSize: 13,
+                          textAlign: 'center',
+                        }}
+                      >
                         Nenhum aluno encontrado
                       </div>
                     ) : (
                       filteredStudents.map(student => (
                         <button
+                          type="button"
                           key={student.numero}
+                          onMouseDown={e => e.preventDefault()}
                           onClick={() => selectStudent(student)}
                           style={{
                             display: 'block',
@@ -198,8 +243,12 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
                             fontSize: 14,
                             transition: 'background 0.2s',
                           }}
-                          onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
-                          onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.background = '#2a2a2a'
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.background = 'transparent'
+                          }}
                         >
                           <strong>{student.numero}</strong> – {student.nome}
                         </button>
@@ -210,7 +259,6 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
               </div>
             </div>
 
-            {/* Nº (ordem) - preenchido automaticamente */}
             <div className="form-group">
               <label className="form-label">Nº</label>
               <input
@@ -219,12 +267,15 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
                 name="ordem"
                 value={form.ordem}
                 readOnly
-                style={{ background: '#161616', cursor: 'not-allowed', color: 'var(--gold)' }}
+                style={{
+                  background: '#161616',
+                  cursor: 'not-allowed',
+                  color: 'var(--gold)',
+                }}
                 placeholder="Preenchido automaticamente"
               />
             </div>
 
-            {/* Avaliador com autocomplete */}
             <div className="form-group">
               <label className="form-label">Avaliador / Instrutor</label>
               <div style={{ position: 'relative' }}>
@@ -233,35 +284,48 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
                   type="text"
                   placeholder="Digite ou selecione o instrutor..."
                   value={showInstrutorList ? searchInstrutor : form.avaliador}
-                  onChange={(e) => {
+                  onChange={e => {
                     setSearchInstrutor(e.target.value)
                     setShowInstrutorList(true)
                   }}
                   onFocus={() => setShowInstrutorList(true)}
+                  onBlur={() => setTimeout(() => setShowInstrutorList(false), 150)}
                   autoComplete="off"
                 />
+
                 {showInstrutorList && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    right: 0,
-                    background: '#1a1a1a',
-                    border: '1px solid #444',
-                    borderTop: 'none',
-                    borderRadius: '0 0 8px 8px',
-                    maxHeight: 240,
-                    overflowY: 'auto',
-                    zIndex: 10,
-                  }}>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      background: '#1a1a1a',
+                      border: '1px solid #444',
+                      borderTop: 'none',
+                      borderRadius: '0 0 8px 8px',
+                      maxHeight: 240,
+                      overflowY: 'auto',
+                      zIndex: 20,
+                    }}
+                  >
                     {filteredInstructors.length === 0 ? (
-                      <div style={{ padding: 12, color: 'var(--text-muted)', fontSize: 13, textAlign: 'center' }}>
+                      <div
+                        style={{
+                          padding: 12,
+                          color: 'var(--text-muted)',
+                          fontSize: 13,
+                          textAlign: 'center',
+                        }}
+                      >
                         Nenhum instrutor encontrado
                       </div>
                     ) : (
                       filteredInstructors.map(instructor => (
                         <button
+                          type="button"
                           key={instructor}
+                          onMouseDown={e => e.preventDefault()}
                           onClick={() => selectInstructor(instructor)}
                           style={{
                             display: 'block',
@@ -276,8 +340,12 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
                             fontSize: 14,
                             transition: 'background 0.2s',
                           }}
-                          onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
-                          onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.background = '#2a2a2a'
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.background = 'transparent'
+                          }}
                         >
                           {instructor}
                         </button>
@@ -289,21 +357,22 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
             </div>
           </div>
 
-          {/* Info box */}
-          <div style={{
-            background: '#1a1200',
-            border: '1px solid #3a2a00',
-            borderRadius: 8,
-            padding: '12px 16px',
-            marginBottom: 24,
-            fontSize: 13,
-            color: '#ccaa44',
-            lineHeight: 1.5,
-          }}>
-            <strong>ℹ Dica:</strong> Use a busca para filtrar alunos e instrutores. O número do aluno (Nº) é preenchido automaticamente.
+          <div
+            style={{
+              background: '#1a1200',
+              border: '1px solid #3a2a00',
+              borderRadius: 8,
+              padding: '12px 16px',
+              marginBottom: 24,
+              fontSize: 13,
+              color: '#ccaa44',
+              lineHeight: 1.5,
+            }}
+          >
+            <strong>ℹ Dica:</strong> Selecione primeiro o pelotão. Depois escolha o aluno. O
+            número do aluno (Nº) é preenchido automaticamente.
           </div>
 
-          {/* Button */}
           <button
             className="btn btn-primary btn-lg"
             onClick={() => goTo('evaluation')}
@@ -314,24 +383,6 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
           </button>
         </div>
       </div>
-
-      {/* Fechar dropdown ao clicar fora */}
-      {(showAlunoList || showInstrutorList) && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 5,
-          }}
-          onClick={() => {
-            setShowAlunoList(false)
-            setShowInstrutorList(false)
-          }}
-        />
-      )}
     </div>
   )
 }
