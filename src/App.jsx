@@ -12,7 +12,10 @@ const initialEval = {
   criticalErrors: false,
   observations: '',
   customError: { description: '', discount: '' },
-  signatureDataUrl: null,
+  vistoConfirmado: false,
+  vistoNomeConfirmacao: '',
+  vistoDataHora: null,
+  declaracaoCiencia: false,
   screen: 'form',
 }
 
@@ -36,7 +39,10 @@ function mapDbEvaluationToUi(row) {
           discount: row.itens_avaliados.erro_nao_previsto.desconto || '',
         }
       : { description: '', discount: '' },
-    signatureDataUrl: row.itens_avaliados?.assinatura || null,
+    vistoConfirmado: row.itens_avaliados?.visto_confirmado || false,
+    vistoNomeConfirmacao: row.itens_avaliados?.visto_nome_confirmacao || '',
+    vistoDataHora: row.itens_avaliados?.visto_data_hora || null,
+    declaracaoCiencia: row.itens_avaliados?.declaracao_ciencia || false,
     totalDiscount: Number(row.penalidades || 0),
     finalScore: Number(row.nota_final || 0),
     isPassing: row.itens_avaliados?.resultado === 'APROVADO',
@@ -100,8 +106,24 @@ export default function App() {
     setState(s => ({ ...s, customError: val }))
   }
 
-  function setSignature(dataUrl) {
-    setState(s => ({ ...s, signatureDataUrl: dataUrl }))
+  function setVistoConfirmado(val) {
+    setState(s => ({ ...s, vistoConfirmado: val }))
+  }
+
+  function setVistoNomeConfirmacao(val) {
+    setState(s => ({ ...s, vistoNomeConfirmacao: val }))
+  }
+
+  function setDeclaracaoCiencia(val) {
+    setState(s => ({ ...s, declaracaoCiencia: val }))
+  }
+
+  function confirmarVisto() {
+    setState(s => ({
+      ...s,
+      vistoConfirmado: true,
+      vistoDataHora: new Date().toISOString(),
+    }))
   }
 
   function goTo(screen) {
@@ -174,7 +196,10 @@ export default function App() {
     setCriticalErrors,
     setObservations,
     setCustomError,
-    setSignature,
+    setVistoConfirmado,
+    setVistoNomeConfirmacao,
+    setDeclaracaoCiencia,
+    confirmarVisto,
     goTo,
     reset,
     saveEvaluation,

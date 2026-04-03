@@ -1,66 +1,39 @@
-import { useRef, useEffect, useState } from 'react'
+import { useMemo } from 'react'
+import { SECTIONS } from '../data/penalties'
 
-export default function Signature({ state, setSignature, goTo }) {
-  const canvasRef = useRef(null)
-  const [isEmpty, setIsEmpty] = useState(true)
-  const drawing = useRef(false)
+export default function Signature({
+  state,
+  setVistoNomeConfirmacao,
+  setDeclaracaoCiencia,
+  confirmarVisto,
+  goTo,
+}) {
+  const { studentData, checkedItems, criticalErrors, observations, customError, vistoNomeConfirmacao, declaracaoCiencia } = state
 
-  useEffect(() => {
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    ctx.strokeStyle = '#1a1a1a'
-    ctx.lineWidth = 2.5
-    ctx.lineCap = 'round'
-    ctx.lineJoin = 'round'
-  }, [])
+  // Calcular desconto total
+  const penaltyItems = useMemo(() => {
+    const items = []
+    SECTIONS.forEach(section => {
+      section.items.forEach(item => {
+        if (checkedItems.has(item.id)) {
+          items.push({ ...item, section: section.id })
+        }
+      })
+    })
+    return items
+  }, [checkedItems])
 
-  function getPos(e, canvas) {
-    const rect = canvas.getBoundingClientRect()
-    const scaleX = canvas.width / rect.width
-    const scaleY = canvas.height / rect.height
-    const src = e.touches ? e.touches[0] : e
-    return {
-      x: (src.clientX - rect.left) * scaleX,
-      y: (src.clientY - rect.top) * scaleY,
-    }
-  }
+  const totalDiscount = penaltyItems.reduce((sum, item) => sum + item.discount, 0) + (customError.discount ? Number(customError.discount) : 0)
+  const finalScore = Math.max(0, 10 - totalDiscount)
+  const isPassing = finalScore >= 6.0
+  const hasCustomError = customError.description && customError.discount
 
-  function startDrawing(e) {
-    e.preventDefault()
-    drawing.current = true
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    const pos = getPos(e, canvas)
-    ctx.beginPath()
-    ctx.moveTo(pos.x, pos.y)
-    setIsEmpty(false)
-  }
+  // Validar: checkbox marcado E nome preenchido
+  const isConfirmationValid = declaracaoCiencia && vistoNomeConfirmacao.trim() !== ''
 
-  function draw(e) {
-    e.preventDefault()
-    if (!drawing.current) return
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    const pos = getPos(e, canvas)
-    ctx.lineTo(pos.x, pos.y)
-    ctx.stroke()
-  }
-
-  function stopDrawing(e) {
-    e.preventDefault()
-    drawing.current = false
-  }
-
-  function clear() {
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    setIsEmpty(true)
-  }
-
-  function confirm() {
-    const canvas = canvasRef.current
-    setSignature(canvas.toDataURL('image/png'))
+  function handleConfirmVisto() {
+    if (!isConfirmationValid) return
+    confirmarVisto()
     goTo('summary')
   }
 
@@ -70,151 +43,338 @@ export default function Signature({ state, setSignature, goTo }) {
       <header className="header">
         <div className="header-emblem">🔥</div>
         <div className="header-titles">
-          <span className="header-org">CBMAP</span>
-          <span className="header-title">Assinatura Digital do Aluno</span>
-          <span className="header-subtitle">
-            {state.studentData.nome || '—'} &nbsp;|&nbsp; Ord. {state.studentData.ordem || '—'}
-          </span>
+          <span className="header-org">CBMAP – Corpo de Bombeiros Militar do Amapá</span>
+          <span className="header-title">Operações de Corte de Árvore com Motosserra</span>
+          <span className="header-subtitle">Ciência do Resultado – CFSD 2026</span>
         </div>
         <div className="header-spacer" />
-        <button
-          className="btn btn-secondary"
-          style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
-          onClick={() => goTo('evaluation')}
-        >
-          ← Voltar
-        </button>
+        <div className="header-badge">CFSD 2026</div>
       </header>
 
       {/* Content */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px 32px',
-        gap: 32,
-      }}>
-
-        {/* Left instructions */}
-        <div style={{
-          width: 240,
-          flexShrink: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 16,
-        }}>
-          <div style={{
-            background: 'var(--bg-card)',
-            border: '1px solid #2a2a2a',
-            borderRadius: 'var(--radius)',
-            padding: '20px',
-          }}>
-            <div style={{
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: 2,
-              color: 'var(--gold)',
-              textTransform: 'uppercase',
-              marginBottom: 12,
-            }}>
-              Instrução
-            </div>
-            <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-              O aluno deve assinar na área ao lado usando o dedo ou a caneta stylus.
-            </p>
-            <hr className="divider" style={{ margin: '14px 0' }} />
-            <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-              A assinatura confirmará a ciência dos resultados registrados nesta avaliação.
-            </p>
-          </div>
-
-          {/* Student info recap */}
-          <div style={{
-            background: '#1a1200',
-            border: '1px solid #3a2a00',
-            borderRadius: 'var(--radius)',
-            padding: '16px',
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', marginBottom: 10, textTransform: 'uppercase' }}>
-              Aluno
-            </div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 4 }}>
-              {state.studentData.nome || '—'}
-            </div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-              Ord. {state.studentData.ordem} &nbsp;|&nbsp; {state.studentData.pelotao}
-            </div>
-          </div>
-        </div>
-
-        {/* Canvas area */}
-        <div style={{
+      <div
+        style={{
           flex: 1,
           display: 'flex',
-          flexDirection: 'column',
-          gap: 14,
-          maxWidth: 700,
-        }}>
-          <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center' }}>
-            Assine dentro da área abaixo
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '24px',
+          overflow: 'auto',
+        }}
+      >
+        <div
+          style={{
+            background: 'var(--bg-card)',
+            borderRadius: 14,
+            border: '1px solid #2a2a2a',
+            padding: '32px 40px',
+            width: '100%',
+            maxWidth: 800,
+            boxShadow: 'var(--shadow)',
+          }}
+        >
+          {/* Título */}
+          <div style={{ marginBottom: 28 }}>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: 2,
+                color: 'var(--gold)',
+                textTransform: 'uppercase',
+                marginBottom: 6,
+              }}
+            >
+              Confirmação de Resultados
+            </div>
+            <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+              Visto de Prova – Ciência do Resultado
+            </h2>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>
+              Confira os dados da avaliação e confirme sua ciência do resultado.
+            </p>
           </div>
 
-          <div className="sig-canvas-wrapper" style={{ position: 'relative' }}>
-            <canvas
-              ref={canvasRef}
-              className="sig-canvas"
-              width={680}
-              height={280}
-              style={{ width: '100%', height: 280 }}
-              onMouseDown={startDrawing}
-              onMouseMove={draw}
-              onMouseUp={stopDrawing}
-              onMouseLeave={stopDrawing}
-              onTouchStart={startDrawing}
-              onTouchMove={draw}
-              onTouchEnd={stopDrawing}
-            />
-            {isEmpty && (
-              <div className="sig-placeholder">
-                ✍ Assine aqui com o dedo
+          {/* Resumo de Dados do Aluno */}
+          <div
+            style={{
+              background: '#161616',
+              borderRadius: 8,
+              border: '1px solid #2a2a2a',
+              padding: '20px',
+              marginBottom: 24,
+            }}
+          >
+            <div style={{ marginBottom: 16 }}>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>ALUNO</span>
+              <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
+                {studentData.nome}
+              </p>
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr',
+                gap: '16px',
+                marginBottom: 16,
+              }}
+            >
+              <div>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>Nº</span>
+                <p style={{ fontSize: 14, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
+                  {studentData.ordem}
+                </p>
+              </div>
+              <div>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>PELOTÃO</span>
+                <p style={{ fontSize: 14, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
+                  {studentData.pelotao}
+                </p>
+              </div>
+              <div>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>DATA</span>
+                <p style={{ fontSize: 14, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
+                  {new Date(studentData.data).toLocaleDateString('pt-BR')}
+                </p>
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '16px',
+              }}
+            >
+              <div>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>AVALIADOR</span>
+                <p style={{ fontSize: 14, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
+                  {studentData.avaliador}
+                </p>
+              </div>
+              <div>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>DATA/HORA AVALIAÇÃO</span>
+                <p style={{ fontSize: 14, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
+                  {new Date(studentData.data).toLocaleDateString('pt-BR')}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Resultado Final */}
+          <div
+            style={{
+              background: isPassing ? 'rgba(34, 197, 94, 0.1)' : 'rgba(220, 38, 38, 0.1)',
+              border: `2px solid ${isPassing ? '#22c55e' : '#dc2626'}`,
+              borderRadius: 8,
+              padding: '20px',
+              marginBottom: 24,
+              textAlign: 'center',
+            }}
+          >
+            <div style={{ marginBottom: 12 }}>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>NOTA FINAL</span>
+            </div>
+            <div style={{ fontSize: 48, fontWeight: 900, color: isPassing ? '#22c55e' : '#dc2626', marginBottom: 12 }}>
+              {finalScore.toFixed(2)}
+            </div>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 700,
+                color: isPassing ? '#22c55e' : '#dc2626',
+              }}
+            >
+              {isPassing ? 'APROVADO' : 'REPROVADO'}
+            </div>
+
+            {criticalErrors && (
+              <div
+                style={{
+                  marginTop: 16,
+                  padding: '12px',
+                  background: 'rgba(220, 38, 38, 0.2)',
+                  borderRadius: 6,
+                  fontSize: 13,
+                  color: '#ff6b6b',
+                  fontWeight: 600,
+                }}
+              >
+                ⚠️ ERROS CRÍTICOS REGISTRADOS – Etapa 1
               </div>
             )}
           </div>
 
-          {/* Line label */}
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              display: 'inline-block',
-              borderTop: '1.5px solid #555',
-              width: 300,
-              paddingTop: 6,
-              fontSize: 12,
-              color: 'var(--text-muted)',
-              letterSpacing: 1,
-            }}>
-              Assinatura do Aluno / Candidato
+          {/* Resumo de Penalidades */}
+          {penaltyItems.length > 0 || hasCustomError ? (
+            <div
+              style={{
+                background: '#1a1a1a',
+                borderRadius: 8,
+                border: '1px solid #2a2a2a',
+                padding: '16px',
+                marginBottom: 24,
+              }}
+            >
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>ITENS PENALIZADOS</span>
+              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {penaltyItems.map(item => (
+                  <div key={item.id} style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                    <span style={{ fontWeight: 600, color: '#ff6b6b' }}>−{item.discount.toFixed(2)}</span>
+                    {' — '}
+                    {item.description}
+                  </div>
+                ))}
+                {hasCustomError && (
+                  <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                    <span style={{ fontWeight: 600, color: '#ff6b6b' }}>−{Number(customError.discount).toFixed(2)}</span>
+                    {' — '}
+                    {customError.description}
+                  </div>
+                )}
+              </div>
             </div>
+          ) : null}
+
+          {/* Observações */}
+          {observations && (
+            <div
+              style={{
+                background: '#1a1a1a',
+                borderRadius: 8,
+                border: '1px solid #2a2a2a',
+                padding: '16px',
+                marginBottom: 24,
+              }}
+            >
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>OBSERVAÇÕES</span>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: 'var(--text-secondary)',
+                  margin: '8px 0 0 0',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {observations}
+              </p>
+            </div>
+          )}
+
+          {/* Declaração de Ciência */}
+          <div
+            style={{
+              background: 'rgba(255, 215, 0, 0.08)',
+              border: '1px solid #3a2a00',
+              borderRadius: 8,
+              padding: '20px',
+              marginBottom: 24,
+            }}
+          >
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+                cursor: 'pointer',
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={declaracaoCiencia}
+                onChange={e => setDeclaracaoCiencia(e.target.checked)}
+                style={{
+                  width: 24,
+                  height: 24,
+                  minWidth: 24,
+                  marginTop: 2,
+                  cursor: 'pointer',
+                  accent: 'var(--gold)',
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 14,
+                  color: 'var(--text-primary)',
+                  lineHeight: 1.6,
+                }}
+              >
+                <strong>Declaro que conferi os erros registrados nesta avaliação e tomei ciência da nota atribuída.</strong>
+              </span>
+            </label>
           </div>
 
-          {/* Action buttons */}
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+          {/* Campo de Confirmação */}
+          <div
+            style={{
+              background: '#161616',
+              border: '1px solid #2a2a2a',
+              borderRadius: 8,
+              padding: '20px',
+              marginBottom: 28,
+            }}
+          >
+            <label className="form-label">Nome para Confirmação</label>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '4px 0 12px 0' }}>
+              Digite seu nome completo para confirmar a ciência do resultado:
+            </p>
+            <input
+              type="text"
+              className="form-input"
+              placeholder="Digite seu nome completo..."
+              value={vistoNomeConfirmacao}
+              onChange={e => setVistoNomeConfirmacao(e.target.value)}
+              style={{ textTransform: 'uppercase' }}
+            />
+          </div>
+
+          {/* Botões */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '16px',
+            }}
+          >
             <button
-              className="btn btn-danger"
-              onClick={clear}
-              style={{ minWidth: 140 }}
+              className="btn btn-secondary btn-lg"
+              onClick={() => goTo('evaluation')}
+              style={{ width: '100%' }}
             >
-              ✕ Limpar
+              ← Voltar
             </button>
             <button
-              className="btn btn-gold btn-lg"
-              onClick={confirm}
-              disabled={isEmpty}
-              style={{ minWidth: 220 }}
+              className="btn btn-primary btn-lg"
+              onClick={handleConfirmVisto}
+              disabled={!isConfirmationValid}
+              style={{
+                width: '100%',
+                opacity: isConfirmationValid ? 1 : 0.5,
+                cursor: isConfirmationValid ? 'pointer' : 'not-allowed',
+              }}
             >
-              Confirmar Assinatura ✓
+              Confirmar e Continuar →
             </button>
           </div>
+
+          {/* Dica de Validação */}
+          {!isConfirmationValid && (
+            <div
+              style={{
+                marginTop: 16,
+                padding: '12px',
+                background: 'rgba(220, 38, 38, 0.1)',
+                borderRadius: 6,
+                fontSize: 13,
+                color: '#ff6b6b',
+                textAlign: 'center',
+              }}
+            >
+              ✓ Marque a declaração e digite seu nome para continuar.
+            </div>
+          )}
         </div>
       </div>
     </div>

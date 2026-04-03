@@ -1,7 +1,7 @@
 import { SECTIONS, calcScore } from '../data/penalties'
 
 export default function Summary({ state, reset, goTo, saveEvaluation, savedEvaluations }) {
-  const { studentData, checkedItems, criticalErrors, observations, signatureDataUrl, customError } = state
+  const { studentData, checkedItems, criticalErrors, observations, vistoConfirmado, vistoNomeConfirmacao, vistoDataHora, declaracaoCiencia, customError } = state
   const customDiscount = parseFloat(customError?.discount) || 0
   const hasCustomError = customError?.description?.trim() !== '' && customDiscount > 0
   const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
@@ -36,7 +36,10 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
         itens_avaliados: {
           resultado: isPassing ? 'APROVADO' : 'REPROVADO',
           erros_criticos: criticalErrors,
-          assinatura: signatureDataUrl || null,
+          visto_confirmado: vistoConfirmado,
+          visto_nome_confirmacao: vistoNomeConfirmacao || '',
+          visto_data_hora: vistoDataHora || null,
+          declaracao_ciencia: declaracaoCiencia,
           erro_nao_previsto: hasCustomError
             ? {
                 descricao: customError.description,
@@ -273,27 +276,21 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
               }}
             >
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 10 }}>
-                Assinatura do Aluno
+                Visto de Prova
               </div>
-              {signatureDataUrl ? (
-                <div style={{ background: '#fafafa', borderRadius: 8, padding: 8, textAlign: 'center' }}>
-                  <img
-                    src={signatureDataUrl}
-                    alt="Assinatura do aluno"
-                    style={{ maxWidth: '100%', maxHeight: 140, objectFit: 'contain' }}
-                  />
-                  <div
-                    style={{
-                      borderTop: '1.5px solid #ccc',
-                      marginTop: 8,
-                      paddingTop: 6,
-                      fontSize: 11,
-                      color: '#888',
-                      letterSpacing: 1,
-                    }}
-                  >
-                    Assinatura do Aluno
+              {vistoConfirmado ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid #22c55e', borderRadius: 6, padding: 12 }}>
+                    <div style={{ fontSize: 12, color: '#22c55e', fontWeight: 600, marginBottom: 6 }}>✓ Confirmado</div>
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                      <strong>{vistoNomeConfirmacao}</strong>
+                    </div>
                   </div>
+                  {vistoDataHora && (
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', borderTop: '1px solid #2a2a2a', paddingTop: 8 }}>
+                      {new Date(vistoDataHora).toLocaleString('pt-BR')}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div
@@ -307,7 +304,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
                     fontStyle: 'italic',
                   }}
                 >
-                  Sem assinatura registrada
+                  Sem visto de prova registrado
                 </div>
               )}
             </div>
