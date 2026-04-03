@@ -46,7 +46,7 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
   }, [filteredEvaluations])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', background: 'var(--bg-main)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-main)' }}>
       {/* Header */}
       <header className="header" style={{ flexShrink: 0 }}>
         <div className="header-emblem">📊</div>
@@ -65,8 +65,8 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
         </button>
       </header>
 
-      {/* Content - Com overflow explícito */}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: 24, minHeight: 0 }}>
+      {/* Content - Com overflow explícito e sem minHeight: 0 (que causa problemas) */}
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: 24 }}>
         {/* Filtro por Pelotão */}
         <div
           style={{

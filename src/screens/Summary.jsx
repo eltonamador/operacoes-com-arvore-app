@@ -58,6 +58,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
 
       await saveEvaluation(dadosAvaliacao)
       alert('Avaliação salva com sucesso.')
+      reset()
       goTo('reports')
     } catch (error) {
       console.error(error)
