@@ -1,380 +1,280 @@
-import { useMemo } from 'react'
-import { SECTIONS } from '../data/penalties'
+import { calcScore, SECTIONS } from '../data/penalties'
+import { useMemo, useState } from 'react'
+import studentsData from '../data/students.json'
 
-export default function Signature({
-  state,
-  setVistoNomeConfirmacao,
-  setDeclaracaoCiencia,
-  confirmarVisto,
-  goTo,
-}) {
-  const { studentData, checkedItems, criticalErrors, observations, customError, vistoNomeConfirmacao, declaracaoCiencia } = state
+export default function Signature({ state, goTo, setVistoData }) {
+  const [pinDigitado, setPinDigitado] = useState('')
+  const [ciencia, setCiencia] = useState(state.declaracaoCiencia || false)
+  const [erroPin, setErroPin] = useState('')
+  const [tentativas, setTentativas] = useState(0)
+  const [bloqueadoAte, setBloqueadoAte] = useState(null)
 
-  // Calcular desconto total
-  const penaltyItems = useMemo(() => {
-    const items = []
-    SECTIONS.forEach(section => {
-      section.items.forEach(item => {
+  const { studentData, checkedItems, criticalErrors, observations, customError } = state
+  const customDiscount = parseFloat(customError?.discount) || 0
+  const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
+  const isPassing = finalScore >= 7.0 && !criticalErrors
+
+  const students = studentsData?.students || []
+
+  const alunoAtual = students.find(
+    student => String(student.numero) === String(studentData.ordem)
+  )
+
+  const pinEsperado = alunoAtual
+    ? String(alunoAtual.pin || String(alunoAtual.numero).padStart(4, '0'))
+    : String(studentData.ordem || '').padStart(4, '0')
+
+  const bloqueado = bloqueadoAte && Date.now() < bloqueadoAte
+
+  const penalizedItems = useMemo(() => {
+    const result = []
+    for (const section of SECTIONS) {
+      for (const item of section.items) {
         if (checkedItems.has(item.id)) {
-          items.push({ ...item, section: section.id })
+          result.push(item)
         }
+      }
+    }
+    if (customError?.description?.trim() && customDiscount > 0) {
+      result.push({
+        id: 'EXTRA',
+        description: customError.description,
+        discount: customDiscount,
       })
+    }
+    return result
+  }, [checkedItems, customError, customDiscount])
+
+  const canConfirm =
+    ciencia &&
+    pinDigitado.trim().length === 4 &&
+    /^\d{4}$/.test(pinDigitado) &&
+    !bloqueado
+
+  function confirmarVisto() {
+    if (bloqueado) {
+      setErroPin('Muitas tentativas inválidas. Aguarde 30 segundos.')
+      return
+    }
+
+    if (!canConfirm) return
+
+    if (pinDigitado !== pinEsperado) {
+      const novasTentativas = tentativas + 1
+      setTentativas(novasTentativas)
+      setErroPin('PIN inválido.')
+
+      if (novasTentativas >= 3) {
+        setBloqueadoAte(Date.now() + 30000)
+        setErroPin('Muitas tentativas inválidas. Aguarde 30 segundos.')
+        setTentativas(0)
+      }
+
+      return
+    }
+
+    setErroPin('')
+
+    setVistoData({
+      vistoConfirmado: true,
+      vistoPinConfirmado: true,
+      vistoDataHora: new Date().toISOString(),
+      declaracaoCiencia: true,
+      vistoTipo: 'pin',
     })
-    return items
-  }, [checkedItems])
 
-  const totalDiscount = penaltyItems.reduce((sum, item) => sum + item.discount, 0) + (customError.discount ? Number(customError.discount) : 0)
-  const finalScore = Math.max(0, 10 - totalDiscount)
-  const isPassing = finalScore >= 6.0
-  const hasCustomError = customError.description && customError.discount
-
-  // Validar: checkbox marcado E nome preenchido
-  const isConfirmationValid = declaracaoCiencia && vistoNomeConfirmacao.trim() !== ''
-
-  function handleConfirmVisto() {
-    if (!isConfirmationValid) return
-    confirmarVisto()
     goTo('summary')
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-      {/* Header */}
       <header className="header">
-        <div className="header-emblem">🔥</div>
+        <div className="header-emblem">✅</div>
         <div className="header-titles">
-          <span className="header-org">CBMAP – Corpo de Bombeiros Militar do Amapá</span>
-          <span className="header-title">Operações de Corte de Árvore com Motosserra</span>
-          <span className="header-subtitle">Ciência do Resultado – CFSD 2026</span>
+          <span className="header-org">CBMAP</span>
+          <span className="header-title">Visto de Prova / Ciência do Resultado</span>
+          <span className="header-subtitle">
+            {studentData.nome || 'Aluno não informado'} | Ord. {studentData.ordem || '—'}
+          </span>
         </div>
         <div className="header-spacer" />
-        <div className="header-badge">CFSD 2026</div>
+        <button className="btn btn-secondary" onClick={() => goTo('evaluation')}>
+          ← Voltar
+        </button>
       </header>
 
-      {/* Content */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '24px',
-          overflow: 'auto',
-        }}
-      >
+      <div style={{ flex: 1, overflow: 'auto', padding: 24 }}>
         <div
           style={{
-            background: 'var(--bg-card)',
-            borderRadius: 14,
-            border: '1px solid #2a2a2a',
-            padding: '32px 40px',
-            width: '100%',
-            maxWidth: 800,
-            boxShadow: 'var(--shadow)',
+            maxWidth: 980,
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: '1.1fr 1.4fr',
+            gap: 24,
           }}
         >
-          {/* Título */}
-          <div style={{ marginBottom: 28 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div
               style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: 2,
-                color: 'var(--gold)',
-                textTransform: 'uppercase',
-                marginBottom: 6,
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 14,
+                padding: 20,
               }}
             >
-              Confirmação de Resultados
-            </div>
-            <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-              Visto de Prova – Ciência do Resultado
-            </h2>
-            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>
-              Confira os dados da avaliação e confirme sua ciência do resultado.
-            </p>
-          </div>
-
-          {/* Resumo de Dados do Aluno */}
-          <div
-            style={{
-              background: '#161616',
-              borderRadius: 8,
-              border: '1px solid #2a2a2a',
-              padding: '20px',
-              marginBottom: 24,
-            }}
-          >
-            <div style={{ marginBottom: 16 }}>
-              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>ALUNO</span>
-              <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
-                {studentData.nome}
-              </p>
-            </div>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr 1fr',
-                gap: '16px',
-                marginBottom: 16,
-              }}
-            >
-              <div>
-                <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>Nº</span>
-                <p style={{ fontSize: 14, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
-                  {studentData.ordem}
-                </p>
+              <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 12 }}>
+                Aluno
               </div>
-              <div>
-                <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>PELOTÃO</span>
-                <p style={{ fontSize: 14, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
-                  {studentData.pelotao}
-                </p>
-              </div>
-              <div>
-                <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>DATA</span>
-                <p style={{ fontSize: 14, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
-                  {new Date(studentData.data).toLocaleDateString('pt-BR')}
-                </p>
+              <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>{studentData.nome || '—'}</div>
+              <div style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                <div><strong>Nº:</strong> {studentData.ordem || '—'}</div>
+                <div><strong>Pelotão:</strong> {studentData.pelotao || '—'}</div>
+                <div><strong>Avaliador:</strong> {studentData.avaliador || '—'}</div>
+                <div><strong>Data:</strong> {studentData.data || '—'}</div>
               </div>
             </div>
 
             <div
               style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '16px',
+                background: '#1a1200',
+                border: '1px solid #3a2a00',
+                borderRadius: 14,
+                padding: 20,
               }}
             >
-              <div>
-                <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>AVALIADOR</span>
-                <p style={{ fontSize: 14, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
-                  {studentData.avaliador}
-                </p>
+              <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 12 }}>
+                Resultado
               </div>
-              <div>
-                <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>DATA/HORA AVALIAÇÃO</span>
-                <p style={{ fontSize: 14, color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
-                  {new Date(studentData.data).toLocaleDateString('pt-BR')}
-                </p>
+              <div style={{ fontSize: 36, fontWeight: 900, color: isPassing ? '#8ddf63' : '#ff6b6b' }}>
+                {finalScore.toFixed(2).replace('.', ',')}
               </div>
+              <div style={{ marginTop: 6, fontWeight: 700, color: isPassing ? '#8ddf63' : '#ff6b6b' }}>
+                {isPassing ? 'APROVADO' : 'REPROVADO'}
+              </div>
+              <div style={{ marginTop: 10, color: 'var(--text-secondary)' }}>
+                Total de descontos: {totalDiscount.toFixed(2).replace('.', ',')}
+              </div>
+              {criticalErrors && (
+                <div style={{ marginTop: 10, color: '#ff6b6b', fontSize: 13 }}>
+                  Há erros críticos registrados.
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Resultado Final */}
-          <div
-            style={{
-              background: isPassing ? 'rgba(34, 197, 94, 0.1)' : 'rgba(220, 38, 38, 0.1)',
-              border: `2px solid ${isPassing ? '#22c55e' : '#dc2626'}`,
-              borderRadius: 8,
-              padding: '20px',
-              marginBottom: 24,
-              textAlign: 'center',
-            }}
-          >
-            <div style={{ marginBottom: 12 }}>
-              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>NOTA FINAL</span>
-            </div>
-            <div style={{ fontSize: 48, fontWeight: 900, color: isPassing ? '#22c55e' : '#dc2626', marginBottom: 12 }}>
-              {finalScore.toFixed(2)}
-            </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div
               style={{
-                fontSize: 14,
-                fontWeight: 700,
-                color: isPassing ? '#22c55e' : '#dc2626',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 14,
+                padding: 20,
               }}
             >
-              {isPassing ? 'APROVADO' : 'REPROVADO'}
-            </div>
-
-            {criticalErrors && (
-              <div
-                style={{
-                  marginTop: 16,
-                  padding: '12px',
-                  background: 'rgba(220, 38, 38, 0.2)',
-                  borderRadius: 6,
-                  fontSize: 13,
-                  color: '#ff6b6b',
-                  fontWeight: 600,
-                }}
-              >
-                ⚠️ ERROS CRÍTICOS REGISTRADOS – Etapa 1
+              <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 12 }}>
+                Erros / Penalidades
               </div>
-            )}
-          </div>
 
-          {/* Resumo de Penalidades */}
-          {penaltyItems.length > 0 || hasCustomError ? (
-            <div
-              style={{
-                background: '#1a1a1a',
-                borderRadius: 8,
-                border: '1px solid #2a2a2a',
-                padding: '16px',
-                marginBottom: 24,
-              }}
-            >
-              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>ITENS PENALIZADOS</span>
-              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {penaltyItems.map(item => (
-                  <div key={item.id} style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-                    <span style={{ fontWeight: 600, color: '#ff6b6b' }}>−{item.discount.toFixed(2)}</span>
-                    {' — '}
-                    {item.description}
+              {penalizedItems.length === 0 ? (
+                <div style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                  Nenhum erro registrado.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {penalizedItems.map(item => (
+                    <div
+                      key={item.id}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: 12,
+                        padding: '10px 12px',
+                        border: '1px solid #2a2a2a',
+                        borderRadius: 8,
+                      }}
+                    >
+                      <span style={{ color: 'var(--text-primary)' }}>
+                        <strong>{item.id}</strong> — {item.description}
+                      </span>
+                      <span style={{ color: 'var(--red-light)', fontWeight: 700 }}>
+                        -{Number(item.discount).toFixed(2).replace('.', ',')}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {observations?.trim() && (
+                <div style={{ marginTop: 16 }}>
+                  <div style={{ fontWeight: 700, marginBottom: 6 }}>Observações</div>
+                  <div style={{ color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+                    {observations}
                   </div>
-                ))}
-                {hasCustomError && (
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-                    <span style={{ fontWeight: 600, color: '#ff6b6b' }}>−{Number(customError.discount).toFixed(2)}</span>
-                    {' — '}
-                    {customError.description}
+                </div>
+              )}
+            </div>
+
+            <div
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 14,
+                padding: 20,
+              }}
+            >
+              <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 16 }}>
+                Confirmação de Ciência
+              </div>
+
+              <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 18, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={ciencia}
+                  onChange={e => setCiencia(e.target.checked)}
+                  style={{ marginTop: 4 }}
+                />
+                <span style={{ color: 'var(--text-primary)', lineHeight: 1.5 }}>
+                  Declaro que conferi os erros registrados nesta avaliação e tomei ciência da nota atribuída.
+                </span>
+              </label>
+
+              <div className="form-group" style={{ marginBottom: 18 }}>
+                <label className="form-label">Digite seu PIN de 4 dígitos</label>
+                <input
+                  className="form-input"
+                  type="password"
+                  inputMode="numeric"
+                  maxLength={4}
+                  value={pinDigitado}
+                  onChange={e => {
+                    const valor = e.target.value.replace(/\D/g, '')
+                    setPinDigitado(valor)
+                    setErroPin('')
+                  }}
+                  placeholder="Digite seu PIN"
+                />
+                {erroPin && (
+                  <div style={{ marginTop: 8, fontSize: 12, color: '#ff6b6b' }}>
+                    {erroPin}
+                  </div>
+                )}
+                {bloqueado && (
+                  <div style={{ marginTop: 8, fontSize: 12, color: '#ffbb44' }}>
+                    Tente novamente em alguns segundos.
                   </div>
                 )}
               </div>
-            </div>
-          ) : null}
 
-          {/* Observações */}
-          {observations && (
-            <div
-              style={{
-                background: '#1a1a1a',
-                borderRadius: 8,
-                border: '1px solid #2a2a2a',
-                padding: '16px',
-                marginBottom: 24,
-              }}
-            >
-              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>OBSERVAÇÕES</span>
-              <p
-                style={{
-                  fontSize: 13,
-                  color: 'var(--text-secondary)',
-                  margin: '8px 0 0 0',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                }}
+              <button
+                className="btn btn-gold"
+                style={{ width: '100%', minHeight: 52, fontSize: 18, fontWeight: 800 }}
+                disabled={!canConfirm}
+                onClick={confirmarVisto}
               >
-                {observations}
-              </p>
+                Confirmar Visto ✓
+              </button>
             </div>
-          )}
-
-          {/* Declaração de Ciência */}
-          <div
-            style={{
-              background: 'rgba(255, 215, 0, 0.08)',
-              border: '1px solid #3a2a00',
-              borderRadius: 8,
-              padding: '20px',
-              marginBottom: 24,
-            }}
-          >
-            <label
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '12px',
-                cursor: 'pointer',
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={declaracaoCiencia}
-                onChange={e => setDeclaracaoCiencia(e.target.checked)}
-                style={{
-                  width: 24,
-                  height: 24,
-                  minWidth: 24,
-                  marginTop: 2,
-                  cursor: 'pointer',
-                  accent: 'var(--gold)',
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 14,
-                  color: 'var(--text-primary)',
-                  lineHeight: 1.6,
-                }}
-              >
-                <strong>Declaro que conferi os erros registrados nesta avaliação e tomei ciência da nota atribuída.</strong>
-              </span>
-            </label>
           </div>
-
-          {/* Campo de Confirmação */}
-          <div
-            style={{
-              background: '#161616',
-              border: '1px solid #2a2a2a',
-              borderRadius: 8,
-              padding: '20px',
-              marginBottom: 28,
-            }}
-          >
-            <label className="form-label">Nome para Confirmação</label>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '4px 0 12px 0' }}>
-              Digite seu nome completo para confirmar a ciência do resultado:
-            </p>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="Digite seu nome completo..."
-              value={vistoNomeConfirmacao}
-              onChange={e => setVistoNomeConfirmacao(e.target.value)}
-              style={{ textTransform: 'uppercase' }}
-            />
-          </div>
-
-          {/* Botões */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '16px',
-            }}
-          >
-            <button
-              className="btn btn-secondary btn-lg"
-              onClick={() => goTo('evaluation')}
-              style={{ width: '100%' }}
-            >
-              ← Voltar
-            </button>
-            <button
-              className="btn btn-primary btn-lg"
-              onClick={handleConfirmVisto}
-              disabled={!isConfirmationValid}
-              style={{
-                width: '100%',
-                opacity: isConfirmationValid ? 1 : 0.5,
-                cursor: isConfirmationValid ? 'pointer' : 'not-allowed',
-              }}
-            >
-              Confirmar e Continuar →
-            </button>
-          </div>
-
-          {/* Dica de Validação */}
-          {!isConfirmationValid && (
-            <div
-              style={{
-                marginTop: 16,
-                padding: '12px',
-                background: 'rgba(220, 38, 38, 0.1)',
-                borderRadius: 6,
-                fontSize: 13,
-                color: '#ff6b6b',
-                textAlign: 'center',
-              }}
-            >
-              ✓ Marque a declaração e digite seu nome para continuar.
-            </div>
-          )}
         </div>
       </div>
     </div>

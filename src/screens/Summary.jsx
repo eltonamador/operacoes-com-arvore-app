@@ -36,10 +36,11 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
         itens_avaliados: {
           resultado: isPassing ? 'APROVADO' : 'REPROVADO',
           erros_criticos: criticalErrors,
-          visto_confirmado: vistoConfirmado,
-          visto_nome_confirmacao: vistoNomeConfirmacao || '',
-          visto_data_hora: vistoDataHora || null,
-          declaracao_ciencia: declaracaoCiencia,
+          visto_confirmado: state.vistoConfirmado,
+          visto_data_hora: state.vistoDataHora,
+          declaracao_ciencia: state.declaracaoCiencia,
+          visto_tipo: state.vistoTipo || '',
+          visto_pin_confirmado: state.vistoPinConfirmado || false,
           erro_nao_previsto: hasCustomError
             ? {
                 descricao: customError.description,

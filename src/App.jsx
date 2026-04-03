@@ -13,9 +13,10 @@ const initialEval = {
   observations: '',
   customError: { description: '', discount: '' },
   vistoConfirmado: false,
-  vistoNomeConfirmacao: '',
+  vistoPinConfirmado: false,
   vistoDataHora: null,
   declaracaoCiencia: false,
+  vistoTipo: '',
   screen: 'form',
 }
 
