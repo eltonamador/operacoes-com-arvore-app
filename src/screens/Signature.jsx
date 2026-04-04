@@ -87,7 +87,7 @@ export default function Signature({ state, goTo, setVistoData }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+    <div className="screen-container">
       <header className="header">
         <div className="header-emblem">✅</div>
         <div className="header-titles">
@@ -103,16 +103,8 @@ export default function Signature({ state, goTo, setVistoData }) {
         </button>
       </header>
 
-      <div style={{ flex: 1, overflow: 'auto', padding: 24 }}>
-        <div
-          style={{
-            maxWidth: 980,
-            margin: '0 auto',
-            display: 'grid',
-            gridTemplateColumns: '1.1fr 1.4fr',
-            gap: 24,
-          }}
-        >
+      <div className="screen-content">
+        <div className="visto-grid">
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div
               style={{

@@ -48,15 +48,7 @@ export default function Reports({
   const uniqueDates = [...new Set(savedEvaluations.map(e => e.studentData?.data).filter(Boolean))].sort().reverse()
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        overflow: 'hidden',
-        background: 'var(--bg-main)',
-      }}
-    >
+    <div className="screen-container">
       <header className="header no-print">
         <div className="header-emblem">📋</div>
         <div className="header-titles">
@@ -65,7 +57,7 @@ export default function Reports({
           <span className="header-subtitle">Supabase • CFSD 2026</span>
         </div>
         <div className="header-spacer" />
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div className="header-actions">
           <button
             className="btn btn-secondary"
             style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
@@ -116,17 +108,7 @@ export default function Reports({
         </div>
       </header>
 
-      <div
-        style={{
-          flex: 1,
-          minHeight: 0,
-          overflowY: 'auto',
-          padding: '20px 28px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 20,
-        }}
-      >
+      <div className="screen-content" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {/* Filtro por Data */}
         <div
           style={{
@@ -207,33 +189,22 @@ export default function Reports({
           )}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(180px, 1fr))', gap: 16 }}>
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 16 }}>
-            <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700 }}>
-              Total
-            </div>
-            <div style={{ fontSize: 30, fontWeight: 900, marginTop: 8 }}>{total}</div>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-label">Total</div>
+            <div className="stat-value">{total}</div>
           </div>
-
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 16 }}>
-            <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700 }}>
-              Aprovados
-            </div>
-            <div style={{ fontSize: 30, fontWeight: 900, marginTop: 8, color: '#8ddf63' }}>{approved}</div>
+          <div className="stat-card">
+            <div className="stat-label">Aprovados</div>
+            <div className="stat-value" style={{ color: '#8ddf63' }}>{approved}</div>
           </div>
-
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 16 }}>
-            <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700 }}>
-              Reprovados
-            </div>
-            <div style={{ fontSize: 30, fontWeight: 900, marginTop: 8, color: '#ff6b6b' }}>{failed}</div>
+          <div className="stat-card">
+            <div className="stat-label">Reprovados</div>
+            <div className="stat-value" style={{ color: '#ff6b6b' }}>{failed}</div>
           </div>
-
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 16 }}>
-            <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700 }}>
-              Média Geral
-            </div>
-            <div style={{ fontSize: 30, fontWeight: 900, marginTop: 8 }}>{String(average).replace('.', ',')}</div>
+          <div className="stat-card">
+            <div className="stat-label">Média Geral</div>
+            <div className="stat-value">{String(average).replace('.', ',')}</div>
           </div>
         </div>
 

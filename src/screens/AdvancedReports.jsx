@@ -46,9 +46,9 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
   }, [filteredEvaluations])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-main)' }}>
+    <div className="screen-container">
       {/* Header */}
-      <header className="header" style={{ flexShrink: 0 }}>
+      <header className="header">
         <div className="header-emblem">📊</div>
         <div className="header-titles">
           <span className="header-org">CBMAP</span>
@@ -65,8 +65,8 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
         </button>
       </header>
 
-      {/* Content - Com overflow explícito e sem minHeight: 0 (que causa problemas) */}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {/* Content */}
+      <div className="screen-content" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         {/* Filtro por Pelotão */}
         <div
           style={{
@@ -79,19 +79,10 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
           <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12 }}>
             Filtrar por Pelotão
           </div>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <div className="filter-bar">
             <button
+              className={`filter-btn ${selectedPelotao === null ? 'filter-btn--active' : ''}`}
               onClick={() => setSelectedPelotao(null)}
-              style={{
-                padding: '10px 16px',
-                borderRadius: 6,
-                border: selectedPelotao === null ? '2px solid var(--gold)' : '1px solid var(--border)',
-                background: selectedPelotao === null ? 'rgba(255, 215, 0, 0.1)' : 'transparent',
-                color: selectedPelotao === null ? 'var(--gold)' : 'var(--text-secondary)',
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
             >
               Todos ({savedEvaluations.length})
             </button>
@@ -100,17 +91,8 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
               return (
                 <button
                   key={pelotao}
+                  className={`filter-btn ${selectedPelotao === pelotao ? 'filter-btn--active' : ''}`}
                   onClick={() => setSelectedPelotao(pelotao)}
-                  style={{
-                    padding: '10px 16px',
-                    borderRadius: 6,
-                    border: selectedPelotao === pelotao ? '2px solid var(--gold)' : '1px solid var(--border)',
-                    background: selectedPelotao === pelotao ? 'rgba(255, 215, 0, 0.1)' : 'transparent',
-                    color: selectedPelotao === pelotao ? 'var(--gold)' : 'var(--text-secondary)',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
                 >
                   {pelotao} ({count})
                 </button>
@@ -120,98 +102,33 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
         </div>
 
         {/* Dashboard de Desempenho */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: 16,
-          }}
-        >
-          <div
-            style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '20px',
-            }}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}>
-              Total Avaliado
-            </div>
-            <div style={{ fontSize: 32, fontWeight: 900 }}>{stats.total}</div>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-label">Total Avaliado</div>
+            <div className="stat-value">{stats.total}</div>
           </div>
-
-          <div
-            style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '20px',
-            }}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}>
-              Aprovados
-            </div>
-            <div style={{ fontSize: 32, fontWeight: 900, color: '#8ddf63' }}>{stats.approved}</div>
+          <div className="stat-card">
+            <div className="stat-label">Aprovados</div>
+            <div className="stat-value" style={{ color: '#8ddf63' }}>{stats.approved}</div>
             <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
               ({stats.approvalRate}% de aprovação)
             </div>
           </div>
-
-          <div
-            style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '20px',
-            }}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}>
-              Reprovados
-            </div>
-            <div style={{ fontSize: 32, fontWeight: 900, color: '#ff6b6b' }}>{stats.failed}</div>
+          <div className="stat-card">
+            <div className="stat-label">Reprovados</div>
+            <div className="stat-value" style={{ color: '#ff6b6b' }}>{stats.failed}</div>
           </div>
-
-          <div
-            style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '20px',
-            }}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}>
-              Média Geral
-            </div>
-            <div style={{ fontSize: 32, fontWeight: 900 }}>{String(stats.average).replace('.', ',')}</div>
+          <div className="stat-card">
+            <div className="stat-label">Média Geral</div>
+            <div className="stat-value">{String(stats.average).replace('.', ',')}</div>
           </div>
-
-          <div
-            style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '20px',
-            }}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}>
-              Maior Nota
-            </div>
-            <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--gold)' }}>{stats.maxScore.replace('.', ',')}</div>
+          <div className="stat-card">
+            <div className="stat-label">Maior Nota</div>
+            <div className="stat-value" style={{ color: 'var(--gold)' }}>{stats.maxScore.replace('.', ',')}</div>
           </div>
-
-          <div
-            style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '20px',
-            }}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}>
-              Menor Nota
-            </div>
-            <div style={{ fontSize: 32, fontWeight: 900, color: '#ff6b6b' }}>{stats.minScore.replace('.', ',')}</div>
+          <div className="stat-card">
+            <div className="stat-label">Menor Nota</div>
+            <div className="stat-value" style={{ color: '#ff6b6b' }}>{stats.minScore.replace('.', ',')}</div>
           </div>
         </div>
 
@@ -223,10 +140,6 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
               border: '1px solid var(--border)',
               borderRadius: 'var(--radius)',
               overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-              minHeight: 300,
-              maxHeight: '600px',
             }}
           >
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
@@ -235,7 +148,7 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
               </div>
             </div>
 
-            <div style={{ overflowY: 'auto', overflowX: 'auto', flex: 1, minHeight: 0 }}>
+            <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ background: '#121212', position: 'sticky', top: 0, zIndex: 1 }}>

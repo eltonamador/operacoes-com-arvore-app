@@ -67,7 +67,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+    <div className="screen-container">
       <header className="header no-print">
         <div className="header-emblem">🔥</div>
         <div className="header-titles">
@@ -76,7 +76,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
           <span className="header-subtitle">Resumo Final – CFSD 2026</span>
         </div>
         <div className="header-spacer" />
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div className="header-actions">
           <button
             className="btn btn-secondary"
             style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
@@ -118,8 +118,9 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
         </div>
       </header>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div className="screen-content" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         <div
+          className="result-banner-wrap"
           style={{
             background: isPassing
               ? 'linear-gradient(135deg, #0a1a00 0%, #1a2a00 100%)'
@@ -130,6 +131,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
             display: 'flex',
             alignItems: 'center',
             gap: 24,
+            flexWrap: 'wrap',
           }}
         >
           <div style={{ fontSize: 52 }}>{isPassing ? '✅' : '❌'}</div>
@@ -183,8 +185,8 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 20, flex: 1, minHeight: 0 }}>
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16, minWidth: 0 }}>
+        <div className="summary-layout">
+          <div className="summary-main">
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '16px 20px' }}>
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12 }}>
                 Dados do Aluno
@@ -259,7 +261,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
             </div>
           </div>
 
-          <div style={{ width: 280, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div className="summary-sidebar">
             {observations && (
               <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '16px' }}>
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 10 }}>

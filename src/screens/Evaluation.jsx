@@ -18,7 +18,7 @@ export default function Evaluation({ state, toggleItem, setCriticalErrors, setOb
   const hasCustomError = customError.description.trim() !== '' && customDiscount > 0
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+    <div className="screen-container">
       {/* Header */}
       <header className="header">
         <div className="header-emblem">🔥</div>
@@ -40,17 +40,10 @@ export default function Evaluation({ state, toggleItem, setCriticalErrors, setOb
       </header>
 
       {/* Main layout */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+      <div className="eval-layout">
 
         {/* LEFT: scrollable penalty list */}
-        <div style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '16px 20px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 20,
-        }}>
+        <div className="eval-left">
           {SECTIONS.map(section => (
             <div key={section.id}>
               <div className="section-header">
@@ -95,17 +88,7 @@ export default function Evaluation({ state, toggleItem, setCriticalErrors, setOb
         </div>
 
         {/* RIGHT: fixed panel */}
-        <div style={{
-          width: 316,
-          background: '#141414',
-          borderLeft: '1px solid #2a2a2a',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '16px',
-          gap: 14,
-          overflowY: 'auto',
-          flexShrink: 0,
-        }}>
+        <div className="eval-right">
 
           {/* Score panel */}
           <div>

@@ -5,7 +5,8 @@
       "Bash(start cmd:*)",
       "Bash(python3:*)",
       "Read(//c/Users/elton/OneDrive/**)",
-      "Bash(find . -name *CFSD* -o -name *PLANO*)"
+      "Bash(find . -name *CFSD* -o -name *PLANO*)",
+      "Bash(npx vite:*)"
     ]
   }
 }
