@@ -4,9 +4,11 @@ import instructorsData from '../data/instructors.json'
 
 export default function StudentForm({ state, updateStudentData, goTo }) {
   // Pré-preencher com data atual se não houver data
+  const todaySP = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' })
+
   const initialForm = {
     ...state.studentData,
-    data: state.studentData.data || new Date().toISOString().slice(0, 10),
+    data: state.studentData.data || todaySP,
   }
 
   const [form, setForm] = useState(initialForm)

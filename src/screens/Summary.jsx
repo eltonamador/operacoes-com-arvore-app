@@ -295,7 +295,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
                   </div>
                   {vistoDataHora && (
                     <div style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', borderTop: '1px solid #2a2a2a', paddingTop: 8 }}>
-                      {new Date(vistoDataHora).toLocaleString('pt-BR')}
+                      {new Date(vistoDataHora).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}
                     </div>
                   )}
                 </div>

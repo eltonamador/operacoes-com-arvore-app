@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { generateVistoProvaReport } from '../utils/vistoProvaReport'
 
+const TZ = 'America/Sao_Paulo'
+
 function formatDate(dateStr) {
   if (!dateStr) return '—'
   const date = new Date(dateStr)
@@ -8,14 +10,14 @@ function formatDate(dateStr) {
     const [y, m, d] = String(dateStr).split('-')
     return d && m && y ? `${d}/${m}/${y}` : dateStr
   }
-  return date.toLocaleDateString('pt-BR')
+  return date.toLocaleDateString('pt-BR', { timeZone: TZ })
 }
 
 function formatDateTime(dateStr) {
   if (!dateStr) return '—'
   const date = new Date(dateStr)
   if (Number.isNaN(date.getTime())) return dateStr
-  return date.toLocaleString('pt-BR')
+  return date.toLocaleString('pt-BR', { timeZone: TZ })
 }
 
 export default function Reports({
@@ -79,10 +81,10 @@ export default function Reports({
             className="btn btn-secondary"
             style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
             onClick={() => {
-              const pelotao = savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.pelotao : null
-              const data = savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.data : new Date().toISOString().slice(0, 10)
+              const pelotao = selectedPelotaoForReport || (savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.pelotao : null)
+              const data = selectedDate || (savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.data : null)
               const avaliador = savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.avaliador : null
-              generateVistoProvaReport(savedEvaluations, selectedPelotaoForReport || pelotao, data, avaliador)
+              generateVistoProvaReport(pelotao, data, avaliador)
             }}
             disabled={savedEvaluations.length === 0}
           >
