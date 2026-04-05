@@ -89,7 +89,7 @@ export default function Signature({ state, goTo, setVistoData }) {
   return (
     <div className="screen-container">
       <header className="header">
-        <div className="header-emblem">✅</div>
+        <div className="header-emblem">🪚🌲</div>
         <div className="header-titles">
           <span className="header-org">CBMAP</span>
           <span className="header-title">Visto de Prova / Ciência do Resultado</span>

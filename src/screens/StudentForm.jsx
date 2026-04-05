@@ -99,13 +99,16 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
   return (
     <div className="screen-container">
       <header className="header">
-        <div className="header-emblem">🔥</div>
+        <div className="header-emblem">🪚🌲</div>
         <div className="header-titles">
           <span className="header-org">CBMAP – Corpo de Bombeiros Militar do Amapá</span>
           <span className="header-title">Operações de Corte de Árvore com Motosserra</span>
           <span className="header-subtitle">Ficha de Avaliação Prática – CFSD 2026</span>
         </div>
         <div className="header-spacer" />
+        <button className="btn btn-secondary" onClick={() => goTo('advanced-reports')}>
+          📊 Relatórios Avançados
+        </button>
         <div className="header-badge">CFSD 2026</div>
       </header>
 

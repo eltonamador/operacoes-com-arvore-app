@@ -111,22 +111,20 @@ export async function generateVistoProvaReport(pelotao, data, avaliador) {
           align-items: center;
           gap: 16px;
           padding-bottom: 10px;
-          border-bottom: 3px solid #CC0000;
+          border-bottom: 3px solid #1a1a1a;
           margin-bottom: 14px;
         }
 
         .header-shield {
-          width: 56px;
-          height: 56px;
-          background: #CC0000;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 26px;
-          font-weight: 900;
+          width: 70px;
+          height: 70px;
           flex-shrink: 0;
+        }
+
+        .header-shield img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
         }
 
         .header-text {
@@ -136,7 +134,7 @@ export async function generateVistoProvaReport(pelotao, data, avaliador) {
         .header-text h1 {
           font-size: 15px;
           font-weight: 800;
-          color: #CC0000;
+          color: #1a1a1a;
           letter-spacing: 1px;
           text-transform: uppercase;
         }
@@ -239,7 +237,7 @@ export async function generateVistoProvaReport(pelotao, data, avaliador) {
         }
 
         thead th {
-          background: #CC0000;
+          background: #1a1a1a;
           color: white;
           padding: 7px 8px;
           text-align: left;
@@ -328,7 +326,7 @@ export async function generateVistoProvaReport(pelotao, data, avaliador) {
         .footer {
           margin-top: 16px;
           padding-top: 10px;
-          border-top: 2px solid #CC0000;
+          border-top: 2px solid #1a1a1a;
           display: flex;
           justify-content: space-between;
           align-items: flex-end;
@@ -373,7 +371,9 @@ export async function generateVistoProvaReport(pelotao, data, avaliador) {
     <body>
       <div class="page">
         <div class="header">
-          <div class="header-shield">CB</div>
+          <div class="header-shield">
+            <img src="${window.location.origin}/loboApp.png" alt="Salvamento Terrestre"/>
+          </div>
           <div class="header-text">
             <h1>Corpo de Bombeiros Militar do Amapá</h1>
             <p>Operações de Corte de Árvore com Motosserra — CFSD 2026</p>

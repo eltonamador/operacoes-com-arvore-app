@@ -21,7 +21,7 @@ export default function Evaluation({ state, toggleItem, setCriticalErrors, setOb
     <div className="screen-container">
       {/* Header */}
       <header className="header">
-        <div className="header-emblem">🔥</div>
+        <div className="header-emblem">🪚🌲</div>
         <div className="header-titles">
           <span className="header-org">CBMAP</span>
           <span className="header-title">Avaliação Prática – Motosserra</span>

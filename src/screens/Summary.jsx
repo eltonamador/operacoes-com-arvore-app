@@ -69,7 +69,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
   return (
     <div className="screen-container">
       <header className="header no-print">
-        <div className="header-emblem">🔥</div>
+        <div className="header-emblem">🪚🌲</div>
         <div className="header-titles">
           <span className="header-org">CBMAP</span>
           <span className="header-title">Resultado da Avaliação</span>

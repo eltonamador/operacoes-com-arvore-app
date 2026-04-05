@@ -79,7 +79,7 @@ export function generateCollectiveSignatureSheet(evaluations) {
     /* ─── Cabeçalho ─── */
     .header {
       text-align: center;
-      border-bottom: 3px solid #CC0000;
+      border-bottom: 3px solid #1a1a1a;
       padding-bottom: 10mm;
       margin-bottom: 8mm;
     }
@@ -89,7 +89,7 @@ export function generateCollectiveSignatureSheet(evaluations) {
       font-weight: 700;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #CC0000;
+      color: #1a1a1a;
     }
 
     .header-title {
@@ -241,7 +241,7 @@ export function generateCollectiveSignatureSheet(evaluations) {
   <div class="page">
     <div class="header">
       <div class="header-org">
-        🔥 Corpo de Bombeiros Militar do Amapá – CBMAP
+        🪚🌲 Corpo de Bombeiros Militar do Amapá – CBMAP
       </div>
       <div class="header-title">
         Ficha Coletiva de Visto de Avaliação
