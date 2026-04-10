@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 
 export default function AdvancedReports({ savedEvaluations, goTo }) {
   const [selectedPelotao, setSelectedPelotao] = useState(null)
+  const [ordemSort, setOrdemSort] = useState(null) // null = padrão (nota), 'asc' = Nº crescente, 'desc' = Nº decrescente
 
   // Extrair pelotões únicos
   const pelotoes = useMemo(() => {
@@ -23,6 +24,20 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
       position: idx + 1,
     }))
   }, [filteredEvaluations])
+
+  // Ordenação adicional por "Nº" (sobre o ranking já calculado)
+  const displayRanking = useMemo(() => {
+    if (!ordemSort) return ranking
+    return [...ranking].sort((a, b) => {
+      const aOrdem = Number(a.studentData?.ordem) || 0
+      const bOrdem = Number(b.studentData?.ordem) || 0
+      return ordemSort === 'asc' ? aOrdem - bOrdem : bOrdem - aOrdem
+    })
+  }, [ranking, ordemSort])
+
+  const cycleOrdemSort = () => {
+    setOrdemSort(prev => (prev === null ? 'asc' : prev === 'asc' ? 'desc' : null))
+  }
 
   // Dashboard de desempenho
   const stats = useMemo(() => {
@@ -154,14 +169,23 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
                   <tr style={{ background: '#121212', position: 'sticky', top: 0, zIndex: 1 }}>
                     <th style={{ ...thStyle, width: 50, textAlign: 'center' }}>#</th>
                     <th style={thStyle}>Aluno</th>
-                    <th style={thStyle}>Nº</th>
+                    <th
+                      style={{ ...thStyle, cursor: 'pointer', userSelect: 'none', whiteSpace: 'nowrap' }}
+                      onClick={cycleOrdemSort}
+                      title="Ordenar por Nº"
+                    >
+                      Nº{' '}
+                      <span style={{ opacity: ordemSort ? 1 : 0.35, color: ordemSort ? 'var(--gold)' : 'inherit' }}>
+                        {ordemSort === 'asc' ? '↑' : ordemSort === 'desc' ? '↓' : '↕'}
+                      </span>
+                    </th>
                     <th style={thStyle}>Pelotão</th>
                     <th style={{ ...thStyle, textAlign: 'right' }}>Nota</th>
                     <th style={thStyle}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {ranking.map(item => (
+                  {displayRanking.map(item => (
                     <tr key={item.id} style={{ borderTop: '1px solid var(--border)' }}>
                       <td
                         style={{
