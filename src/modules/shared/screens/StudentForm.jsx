@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react'
 import studentsData from '../data/students.json'
 import instructorsData from '../data/instructors.json'
 
-export default function StudentForm({ state, updateStudentData, goTo }) {
+export default function StudentForm({ state, updateStudentData, goTo, moduleName = 'Prova', moduleEmoji = '' }) {
   // Pré-preencher com data atual se não houver data
   const todaySP = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' })
 
@@ -99,10 +99,10 @@ export default function StudentForm({ state, updateStudentData, goTo }) {
   return (
     <div className="screen-container">
       <header className="header">
-        <div className="header-emblem">🪚🌲</div>
+        <div className="header-emblem">{moduleEmoji}</div>
         <div className="header-titles">
           <span className="header-org">CBMAP – Corpo de Bombeiros Militar do Amapá</span>
-          <span className="header-title">Operações de Corte de Árvore com Motosserra</span>
+          <span className="header-title">{moduleName}</span>
           <span className="header-subtitle">Ficha de Avaliação Prática – CFSD 2026</span>
         </div>
         <div className="header-spacer" />

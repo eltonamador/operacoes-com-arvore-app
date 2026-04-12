@@ -8,7 +8,8 @@
       "Bash(find . -name *CFSD* -o -name *PLANO*)",
       "Bash(npx vite:*)",
       "Read(//c/Users/elton/Downloads/**)",
-      "Bash(/dev/null -name *.png -o -name *.jpg)"
+      "Bash(/dev/null -name *.png -o -name *.jpg)",
+      "Bash(grep -E \"\\\\.\\(json|md|env|html|js|jsx|ts|tsx\\)$|^d\")"
     ]
   }
 }

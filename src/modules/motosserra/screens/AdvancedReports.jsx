@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
+import * as XLSX from 'xlsx'
 
 export default function AdvancedReports({ savedEvaluations, goTo }) {
   const [selectedPelotao, setSelectedPelotao] = useState(null)
   const [ordemSort, setOrdemSort] = useState(null) // null = padrão (nota), 'asc' = Nº crescente, 'desc' = Nº decrescente
+  const [exportCols, setExportCols] = useState(new Set(['posicao', 'aluno', 'ordem', 'pelotao', 'nota', 'status']))
 
   // Extrair pelotões únicos
   const pelotoes = useMemo(() => {
@@ -37,6 +39,51 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
 
   const cycleOrdemSort = () => {
     setOrdemSort(prev => (prev === null ? 'asc' : prev === 'asc' ? 'desc' : null))
+  }
+
+  const toggleExportCol = (key) => {
+    setExportCols(prev => {
+      const next = new Set(prev)
+      next.has(key) ? next.delete(key) : next.add(key)
+      return next
+    })
+  }
+
+  const buildRows = () =>
+    displayRanking.map(item =>
+      Object.fromEntries(
+        EXPORT_COLUMNS.filter(c => exportCols.has(c.key)).map(c => [c.label, getFieldValue(item, c.key)])
+      )
+    )
+
+  const exportCSV = () => {
+    if (exportCols.size === 0) return
+    const cols = EXPORT_COLUMNS.filter(c => exportCols.has(c.key))
+    const header = cols.map(c => c.label).join(',')
+    const rows = displayRanking.map(item =>
+      cols.map(c => {
+        const val = String(getFieldValue(item, c.key))
+        return val.includes(',') || val.includes('"') ? `"${val.replace(/"/g, '""')}"` : val
+      }).join(',')
+    )
+    const bom = '\uFEFF'
+    const csv = bom + [header, ...rows].join('\r\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'ranking-desempenho.csv'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const exportXLSX = () => {
+    if (exportCols.size === 0) return
+    const rows = buildRows()
+    const ws = XLSX.utils.json_to_sheet(rows)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Ranking')
+    XLSX.writeFile(wb, 'ranking-desempenho.xlsx')
   }
 
   // Dashboard de desempenho
@@ -158,8 +205,52 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
             }}
           >
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 14 }}>
                 🏆 Ranking de Desempenho
+              </div>
+
+              {/* Exportação */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 16 }}>
+                {/* Checkboxes de colunas */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px', flex: 1 }}>
+                  {EXPORT_COLUMNS.map(col => (
+                    <label key={col.key} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, color: 'var(--text-primary)', userSelect: 'none' }}>
+                      <input
+                        type="checkbox"
+                        checked={exportCols.has(col.key)}
+                        onChange={() => toggleExportCol(col.key)}
+                        style={{ accentColor: 'var(--gold)', width: 15, height: 15 }}
+                      />
+                      {col.label}
+                    </label>
+                  ))}
+                </div>
+
+                {/* Botões */}
+                <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                  <button
+                    onClick={exportCSV}
+                    disabled={exportCols.size === 0}
+                    style={{
+                      padding: '8px 14px', fontSize: 13, fontWeight: 700, borderRadius: 6, cursor: exportCols.size === 0 ? 'not-allowed' : 'pointer',
+                      background: exportCols.size === 0 ? '#333' : '#1a5c2a', color: exportCols.size === 0 ? '#666' : '#8ddf63',
+                      border: '1px solid', borderColor: exportCols.size === 0 ? '#444' : '#2d8a3e',
+                    }}
+                  >
+                    ↓ CSV
+                  </button>
+                  <button
+                    onClick={exportXLSX}
+                    disabled={exportCols.size === 0}
+                    style={{
+                      padding: '8px 14px', fontSize: 13, fontWeight: 700, borderRadius: 6, cursor: exportCols.size === 0 ? 'not-allowed' : 'pointer',
+                      background: exportCols.size === 0 ? '#333' : '#1a3a5c', color: exportCols.size === 0 ? '#666' : '#63b3df',
+                      border: '1px solid', borderColor: exportCols.size === 0 ? '#444' : '#2a6496',
+                    }}
+                  >
+                    ↓ XLSX
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -240,6 +331,27 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
       </div>
     </div>
   )
+}
+
+const EXPORT_COLUMNS = [
+  { key: 'posicao', label: '#' },
+  { key: 'aluno', label: 'Aluno' },
+  { key: 'ordem', label: 'Nº' },
+  { key: 'pelotao', label: 'Pelotão' },
+  { key: 'nota', label: 'Nota' },
+  { key: 'status', label: 'Status' },
+]
+
+function getFieldValue(item, key) {
+  switch (key) {
+    case 'posicao': return item.position
+    case 'aluno': return item.studentData?.nome || ''
+    case 'ordem': return item.studentData?.ordem || ''
+    case 'pelotao': return item.studentData?.pelotao || ''
+    case 'nota': return item.finalScore.toFixed(2).replace('.', ',')
+    case 'status': return item.isPassing ? 'APROVADO' : 'REPROVADO'
+    default: return ''
+  }
 }
 
 const thStyle = {

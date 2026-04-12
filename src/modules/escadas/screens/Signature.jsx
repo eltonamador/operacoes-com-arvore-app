@@ -1,6 +1,6 @@
 import { calcScore, SECTIONS } from '../data/penalties'
 import { useMemo, useState } from 'react'
-import studentsData from '../data/students.json'
+import studentsData from '../../shared/data/students.json'
 
 export default function Signature({ state, goTo, setVistoData }) {
   const [pinDigitado, setPinDigitado] = useState('')
@@ -9,10 +9,10 @@ export default function Signature({ state, goTo, setVistoData }) {
   const [tentativas, setTentativas] = useState(0)
   const [bloqueadoAte, setBloqueadoAte] = useState(null)
 
-  const { studentData, checkedItems, criticalErrors, observations, customError } = state
+  const { studentData, checkedItems, observations, customError } = state
   const customDiscount = parseFloat(customError?.discount) || 0
   const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
-  const isPassing = finalScore >= 7.0 && !criticalErrors
+  const isPassing = finalScore >= 7.0
 
   const students = studentsData?.students || []
 
@@ -89,7 +89,7 @@ export default function Signature({ state, goTo, setVistoData }) {
   return (
     <div className="screen-container">
       <header className="header">
-        <div className="header-emblem">🪚🌲</div>
+        <div className="header-emblem">🪜</div>
         <div className="header-titles">
           <span className="header-org">CBMAP</span>
           <span className="header-title">Visto de Prova / Ciência do Resultado</span>
@@ -146,11 +146,6 @@ export default function Signature({ state, goTo, setVistoData }) {
               <div style={{ marginTop: 10, color: 'var(--text-secondary)' }}>
                 Total de descontos: {totalDiscount.toFixed(2).replace('.', ',')}
               </div>
-              {criticalErrors && (
-                <div style={{ marginTop: 10, color: '#ff6b6b', fontSize: 13 }}>
-                  Há erros críticos registrados.
-                </div>
-              )}
             </div>
           </div>
 

@@ -1,42 +1,9 @@
-import { supabase } from '../lib/supabase'
-
-// Busca avaliações diretamente do Supabase filtradas por data
-async function fetchEvaluationsFromDb(data) {
-  const query = supabase
-    .from('avaliacoes')
-    .select('*')
-    .order('numero_ordem', { ascending: true })
-
-  if (data) {
-    query.eq('data_avaliacao', data)
-  }
-
-  const { data: rows, error } = await query
-
-  if (error) {
-    console.error('Erro ao buscar avaliações do banco:', error)
-    throw error
-  }
-
-  return (rows || []).map(row => ({
-    studentData: {
-      nome: row.nome_aluno || '',
-      ordem: row.numero_ordem || '',
-      data: row.data_avaliacao || '',
-      pelotao: row.pelotao || '',
-      avaliador: row.avaliador || '',
-    },
-    finalScore: Number(row.nota_final || 0),
-    isPassing: row.itens_avaliados?.resultado === 'APROVADO',
-    vistoConfirmado: row.itens_avaliados?.visto_confirmado || false,
-    vistoDataHora: row.itens_avaliados?.visto_data_hora || null,
-  }))
-}
+import { fetchAvaliacoesByData } from '../services/avaliacoesService'
 
 export async function generateVistoProvaReport(pelotao, data, avaliador) {
   let evaluations
   try {
-    evaluations = await fetchEvaluationsFromDb(data)
+    evaluations = await fetchAvaliacoesByData(data)
   } catch {
     alert('Erro ao buscar dados do banco de dados.')
     return
