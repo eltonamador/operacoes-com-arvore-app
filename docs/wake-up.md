@@ -363,13 +363,109 @@ Implementação das telas restantes do módulo escadas, fechando o fluxo complet
 
 ---
 
+## Sprint 12 — preparação técnica em 2026-04-12
+
+### O que foi feito
+
+Análise completa da persistência multi-oficina e documentação da decisão arquitetural.
+
+**Documentação criada:**
+- `docs/decisions/2026-04-12-modelagem-avaliacoes-multi-oficina.md` — decisão formal sobre como persistir avaliações de múltiplas oficinas.
+
+**Análise realizada:**
+
+Motosserra e escadas compartilham a mesma tabela `avaliacoes` do Supabase **sem nenhum campo que identifique a qual oficina pertence cada avaliação**. Isso é um risco crítico porque:
+
+1. Relatórios de escadas recebem dados de motosserra misturados
+2. Relatórios de motosserra recebem dados de escadas misturados
+3. Impossível consolidar notas por oficina (bloqueio para Fase 4 da SPEC)
+4. Impossível calcular médias e aptidão final por aluno considerando múltiplas oficinas
+5. Adicionar poços, circuito, árvores sem identificação tornará a base impossível de gerenciar
+
+**Decisão assumida:**
+
+Tabela única `avaliacoes` com novo campo `module_id` (VARCHAR):
+- `module_id = 'motosserra'` (já existentes)
+- `module_id = 'escadas'` (já existentes)
+- `module_id = 'pocos'`, `'circuito'`, `'arvores'` (futuro)
+
+Migration: `ALTER TABLE avaliacoes ADD COLUMN module_id VARCHAR(50) NOT NULL DEFAULT 'motosserra'`
+
+**O que permaneceu igual:**
+
+- Nenhum código foi alterado
+- Nenhuma migration foi executada
+- Comportamento do sistema existente continua idêntico
+
+### Por que essa decisão
+
+- Alinha-se ao spec.md ("base única de dados de avaliações")
+- Mudança estrutural mínima (uma coluna)
+- Compatível com dados existentes (default 'motosserra')
+- Prepara para consolidação automática (Fase 4)
+- Escala naturalmente para novas oficinas
+- Rejeita alternativas (tabelas separadas fragmentariam dados; overcomplexidade seria ineficiente)
+
+---
+
 ## Próximos passos recomendados
 
-### Próximo passo imediato
-O fluxo básico do módulo escadas está completo. Próximas frentes possíveis:
-- Separar o banco de dados por módulo (atualmente motosserra e escadas compartilham a mesma tabela Supabase)
-- Implementar AdvancedReports para escadas
-- Avançar para Fase 2 da SPEC (autenticação, perfis, portal)
+### Sprint 13 — concluída em 2026-04-12
+
+#### O que foi feito
+
+Implementação mínima do suporte a `module_id` no código (persistência multi-oficina). Nenhum banco foi alterado nesta sprint.
+
+**`src/services/avaliacoesService.js`**
+- `mapDbToUi`: adicionado campo `moduleId: row.module_id || null` no objeto de retorno
+- Adicionada `fetchAvaliacoesByModulo(module_id)` — busca filtrada por módulo
+- Adicionada `fetchAvaliacoesByDataAndModulo(data, module_id)` — busca filtrada por data e módulo
+
+**`src/modules/motosserra/MotosserraApp.jsx`**
+- `loadEvaluations()`: agora usa `fetchAvaliacoesByModulo('motosserra')` em vez de `fetchAvaliacoes()`
+- `saveEvaluation()`: injeta `module_id: 'motosserra'` no payload antes de salvar
+
+**`src/modules/escadas/EscadasApp.jsx`**
+- `loadEvaluations()`: agora usa `fetchAvaliacoesByModulo('escadas')` em vez de `fetchAvaliacoes()`
+- `saveEvaluation()`: injeta `module_id: 'escadas'` no payload antes de salvar
+
+**`src/utils/vistoProvaReport.js`**
+- Passou a usar `fetchAvaliacoesByDataAndModulo(data, 'motosserra')` — relatório isolado de motosserra
+
+#### O que NÃO foi alterado
+
+- Regras de cálculo — intocadas
+- Telas de todos os módulos — intocadas
+- `fetchAvaliacoes()` e `fetchAvaliacoesByData()` — mantidas sem alteração (compatibilidade)
+- `deleteAvaliacao`, `clearAllAvaliacoes` — intocadas (operam por ID)
+- Banco de dados — nenhuma migration executada
+
+#### ⚠️ Dependência crítica pendente — migration obrigatória
+
+**O código está pronto, mas o banco ainda não tem a coluna `module_id`.**
+
+Migration necessária (a ser executada no Supabase):
+```sql
+ALTER TABLE avaliacoes ADD COLUMN module_id VARCHAR(50) NOT NULL DEFAULT 'motosserra';
+```
+
+**Enquanto essa migration não for executada:**
+- `fetchAvaliacoesByModulo()` retornará zero resultados (coluna inexistente no filtro)
+- `saveAvaliacao()` pode falhar ou ignorar o campo, dependendo da política do Supabase
+- O sistema atual funcionará normalmente enquanto `fetchAvaliacoes()` for chamado (código legado ainda presente em outros utilitários não alterados)
+
+### Próximo passo imediato (Sprint 14+)
+Próximas frentes ordenadas por prioridade:
+
+1. **Executar migration no Supabase** ← bloqueador atual
+   ```sql
+   ALTER TABLE avaliacoes ADD COLUMN module_id VARCHAR(50) NOT NULL DEFAULT 'motosserra';
+   ```
+   Depois: testar integralmente (relatórios, filtros, salvamento por módulo)
+
+2. **Implementar AdvancedReports para escadas** (feature, não arquitetura)
+
+3. **Avançar para Fase 2 da SPEC** (autenticação, perfis, portal)
 
 ### Próximos passos de médio prazo (Fase 2 da SPEC)
 - introduzir autenticação (Supabase Auth);

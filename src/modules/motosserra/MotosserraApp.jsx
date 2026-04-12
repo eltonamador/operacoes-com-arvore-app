@@ -6,7 +6,7 @@ import Summary from './screens/Summary'
 import Reports from './screens/Reports'
 import AdvancedReports from './screens/AdvancedReports'
 import {
-  fetchAvaliacoes,
+  fetchAvaliacoesByModulo,
   saveAvaliacao,
   deleteAvaliacao,
   clearAllAvaliacoes,
@@ -27,7 +27,7 @@ export default function MotosserraApp() {
   async function loadEvaluations() {
     try {
       setReportsLoading(true)
-      const evaluations = await fetchAvaliacoes()
+      const evaluations = await fetchAvaliacoesByModulo('motosserra')
       setSavedEvaluations(evaluations)
     } catch (error) {
       console.error('Erro ao carregar avaliações:', error)
@@ -37,7 +37,7 @@ export default function MotosserraApp() {
   }
 
   async function saveEvaluation(dadosAvaliacao) {
-    const saved = await saveAvaliacao(dadosAvaliacao)
+    const saved = await saveAvaliacao({ ...dadosAvaliacao, module_id: 'motosserra' })
     setSavedEvaluations(prev => [saved, ...prev])
     goTo('reports')
     return saved

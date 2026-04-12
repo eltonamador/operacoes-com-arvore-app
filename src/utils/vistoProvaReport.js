@@ -1,9 +1,9 @@
-import { fetchAvaliacoesByData } from '../services/avaliacoesService'
+import { fetchAvaliacoesByDataAndModulo } from '../services/avaliacoesService'
 
 export async function generateVistoProvaReport(pelotao, data, avaliador) {
   let evaluations
   try {
-    evaluations = await fetchAvaliacoesByData(data)
+    evaluations = await fetchAvaliacoesByDataAndModulo(data, 'motosserra')
   } catch {
     alert('Erro ao buscar dados do banco de dados.')
     return

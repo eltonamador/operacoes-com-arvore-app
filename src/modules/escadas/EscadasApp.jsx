@@ -5,7 +5,7 @@ import Signature from './screens/Signature'
 import Summary from './screens/Summary'
 import Reports from './screens/Reports'
 import {
-  fetchAvaliacoes,
+  fetchAvaliacoesByModulo,
   saveAvaliacao,
   deleteAvaliacao,
   clearAllAvaliacoes,
@@ -26,7 +26,7 @@ export default function EscadasApp() {
   async function loadEvaluations() {
     try {
       setReportsLoading(true)
-      const evaluations = await fetchAvaliacoes()
+      const evaluations = await fetchAvaliacoesByModulo('escadas')
       setSavedEvaluations(evaluations)
     } catch (error) {
       console.error('Erro ao carregar avaliações:', error)
@@ -36,7 +36,7 @@ export default function EscadasApp() {
   }
 
   async function saveEvaluation(dadosAvaliacao) {
-    const saved = await saveAvaliacao(dadosAvaliacao)
+    const saved = await saveAvaliacao({ ...dadosAvaliacao, module_id: 'escadas' })
     setSavedEvaluations(prev => [saved, ...prev])
     goTo('reports')
     return saved

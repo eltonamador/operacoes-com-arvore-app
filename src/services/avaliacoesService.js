@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase'
 export function mapDbToUi(row) {
   return {
     id: row.id,
+    moduleId: row.module_id || null,
     savedAt: row.created_at,
     studentData: {
       nome: row.nome_aluno || '',
@@ -59,6 +60,44 @@ export async function fetchAvaliacoesByData(data) {
   let query = supabase
     .from('avaliacoes')
     .select('*')
+    .order('numero_ordem', { ascending: true })
+
+  if (data) {
+    query = query.eq('data_avaliacao', data)
+  }
+
+  const { data: rows, error } = await query
+
+  if (error) throw error
+
+  return (rows || []).map(mapDbToUi)
+}
+
+/**
+ * Busca avaliações de um módulo específico, ordenadas por data de criação.
+ * Retorna array de objetos no formato UI.
+ */
+export async function fetchAvaliacoesByModulo(module_id) {
+  const { data, error } = await supabase
+    .from('avaliacoes')
+    .select('*')
+    .eq('module_id', module_id)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+
+  return (data || []).map(mapDbToUi)
+}
+
+/**
+ * Busca avaliações de um módulo específico, filtradas por data, ordenadas por número de ordem.
+ * Retorna array de objetos no formato UI.
+ */
+export async function fetchAvaliacoesByDataAndModulo(data, module_id) {
+  let query = supabase
+    .from('avaliacoes')
+    .select('*')
+    .eq('module_id', module_id)
     .order('numero_ordem', { ascending: true })
 
   if (data) {
