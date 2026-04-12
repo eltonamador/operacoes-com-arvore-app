@@ -4,6 +4,7 @@ import Evaluation from './screens/Evaluation'
 import Signature from './screens/Signature'
 import Summary from './screens/Summary'
 import Reports from './screens/Reports'
+import AdvancedReports from './screens/AdvancedReports'
 import {
   fetchAvaliacoesByModulo,
   saveAvaliacao,
@@ -85,6 +86,7 @@ export default function EscadasApp() {
       {state.screen === 'signature' && <Signature {...props} />}
       {state.screen === 'summary' && <Summary {...props} />}
       {state.screen === 'reports' && <Reports {...props} />}
+      {state.screen === 'advanced-reports' && <AdvancedReports {...props} />}
     </div>
   )
 }

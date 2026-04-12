@@ -463,15 +463,131 @@ Próximas frentes ordenadas por prioridade:
    ```
    Depois: testar integralmente (relatórios, filtros, salvamento por módulo)
 
-2. **Implementar AdvancedReports para escadas** (feature, não arquitetura)
+2. ~~Implementar AdvancedReports para escadas~~ — **concluído na Sprint 14**
 
 3. **Avançar para Fase 2 da SPEC** (autenticação, perfis, portal)
 
+### Sprint 14 — concluída em 2026-04-12
+
+#### O que foi feito
+
+Implantação do relatório avançado no módulo escadas (feature parity com motosserra).
+
+**`src/modules/escadas/screens/AdvancedReports.jsx`** — criado
+- Componente idêntico ao de motosserra em estrutura e lógica
+- Subtitle adaptado: "Dashboard de Desempenho – Escadas – CFSD 2026"
+- Exportação CSV/XLSX com filename `ranking-desempenho-escadas.*`
+- Filtra por pelotão, calcula ranking, exibe stats
+
+**`src/modules/escadas/screens/Reports.jsx`** — modificado
+- Adicionado botão "📊 Relatórios Avançados" que navega para `'advanced-reports'`
+- Botão desabilitado quando não há avaliações (mesmo padrão de motosserra)
+
+**`src/modules/escadas/EscadasApp.jsx`** — modificado
+- Import de `AdvancedReports` adicionado
+- Render condicional `state.screen === 'advanced-reports'` adicionado
+
+#### O que NÃO foi alterado
+- Módulo motosserra — intocado
+- Regras de cálculo — intocadas
+- Dados filtrados corretamente via `module_id = 'escadas'` (herda do `fetchAvaliacoesByModulo` já implementado)
+
 ### Próximos passos de médio prazo (Fase 2 da SPEC)
-- introduzir autenticação (Supabase Auth);
-- separar perfis de acesso (avaliador, coordenação);
-- criar tela de portal inicial;
+- ~~introduzir autenticação (Supabase Auth)~~ — **concluído na Sprint 16**
+- ~~separar perfis de acesso (avaliador, coordenação)~~ — **concluído na Sprint 16**
+- ~~criar tela de portal inicial~~ — já existia
 - preparar estrutura `src/modules/motosserra/` como base para novas oficinas.
+
+---
+
+## Sprint 16 — concluída em 2026-04-12
+
+### O que foi feito
+
+Implementação da camada de autenticação frontend (Fase 2 Parte 2 da SPEC).
+
+**Arquivos criados:**
+- `src/contexts/AuthContext.jsx` — provedor de sessão Supabase Auth. Recupera sessão no mount, escuta mudanças via `onAuthStateChange`, busca perfil na tabela `profiles` a cada login, expõe: `session`, `profile`, `role`, `displayName`, `loading`, `signIn`, `signOut`. Hook `useAuth()` exportado para consumo em qualquer componente.
+- `src/pages/Login.jsx` — tela de login com email/password. Após autenticação bem-sucedida, consulta `profiles` para obter role e redireciona para a rota-padrão do perfil (`/avaliador`, `/coordenacao`, `/aluno`, ou `/` para admin).
+- `src/components/ProtectedRoute.jsx` — guarda de rota. Exibe "Carregando..." enquanto `loading = true` (evita flash de redirect). Redireciona para `/login` se não autenticado. Redireciona para `/` se role não permitida. Role `admin` tem acesso irrestrito a qualquer rota protegida.
+
+**Arquivo modificado:**
+- `src/app/Router.jsx` — envolvido com `<AuthProvider>`. Adicionada rota pública `/login`. Todas as demais rotas envolvidas por `<ProtectedRoute>` com roles específicas:
+  - `/` — qualquer role autenticada
+  - `/avaliador`, `/avaliador/motosserra`, `/avaliador/escadas` — roles: `['avaliador']`
+  - `/coordenacao` — roles: `['coordenacao']`
+  - `/aluno` — roles: `['aluno']`
+  - `admin` tem acesso a tudo (verificado em ProtectedRoute: `role !== 'admin'` sempre bypassa restrição de role)
+
+### O que NÃO foi alterado
+
+- Nenhuma lógica de cálculo de nota — intocada.
+- Nenhum módulo (motosserra, escadas) — intocado.
+- `src/services/avaliacoesService.js` — intocado.
+- Nenhuma migration executada.
+- RLS em `avaliacoes` — ainda desabilitada (intencional).
+
+### Dependência de banco (Parte 1 — já executada conforme contexto)
+
+A Sprint 16 pressupõe que a Parte 1 da Fase 2 já foi executada no Supabase:
+- tabela `profiles` existe com colunas `id`, `role`, `display_name`
+- função `get_my_role()` existe
+- RLS ativa em `profiles`
+- usuários de teste criados
+
+### O que ainda falta para habilitar RLS em `avaliacoes` com segurança
+
+1. Validar que login + redirect funciona para cada role (avaliador, coordenacao, aluno, admin)
+2. Validar que rotas protegidas redirecionam corretamente quando não autenticado
+3. Confirmar que `signOut` limpa sessão e redireciona para `/login`
+4. Redigir e validar policies RLS para `avaliacoes`:
+   - `avaliador`: INSERT + SELECT nas próprias avaliações (ou por module_id autorizado)
+   - `coordenacao`: SELECT em todas as avaliações
+   - `admin`: acesso total
+5. Somente após policies testadas em ambiente de desenvolvimento: `ALTER TABLE avaliacoes ENABLE ROW LEVEL SECURITY`
+
+### Risco identificado
+
+Enquanto RLS em `avaliacoes` não for habilitado, qualquer usuário autenticado com anon key pode ler e gravar avaliações diretamente via API Supabase — a proteção hoje é apenas frontend. Isso é aceitável nesta fase desde que o ambiente não seja público.
+
+---
+
+## Sprint 15 — decisão arquitetural registrada em 2026-04-12
+
+### O que foi feito
+
+Análise arquitetural da Fase 2 e registro formal da decisão de autenticação e perfis.
+
+**Documento criado:**
+- `docs/decisions/2026-04-12-autenticacao-e-perfis-fase2.md` — decisão formal sobre autenticação (Supabase Auth), modelo de perfis e estratégia de RLS.
+
+**Decisão assumida:** adotar **Supabase Auth** com tabela `profiles` e RLS na tabela `avaliacoes`.
+
+**Perfis definidos:** `avaliador`, `coordenacao`, `aluno`, `admin`.
+
+### Nenhum código foi alterado
+
+- Sistema continua funcionando normalmente.
+- Nenhuma migration foi executada.
+
+### Bloqueador atual
+
+A implementação da Fase 2 depende de dois passos sequenciais:
+
+1. **Parte 1 — Setup no Supabase** (sem tocar no código):
+   - Criar tabela `profiles`
+   - Habilitar email provider no Supabase Auth
+   - Criar políticas RLS na tabela `avaliacoes`
+   - Habilitar RLS **somente após** policies prontas
+   - Criar usuários de teste
+
+2. **Parte 2 — Frontend** (após Parte 1 validada):
+   - `src/contexts/AuthContext.jsx`
+   - Componente `ProtectedRoute`
+   - Tela de login (`src/pages/Login.jsx`)
+   - Proteção de rotas em `Router.jsx`
+
+⚠️ Habilitar RLS sem policies prontas derruba o app imediatamente.
 
 ---
 

@@ -73,6 +73,15 @@ export default function Reports({
           </button>
 
           <button
+            className="btn btn-secondary"
+            style={{ fontSize: 13, padding: '10px 18px', minHeight: 44, borderColor: 'var(--gold)', color: 'var(--gold)' }}
+            onClick={() => goTo('advanced-reports')}
+            disabled={savedEvaluations.length === 0}
+          >
+            📊 Relatórios Avançados
+          </button>
+
+          <button
             className="btn btn-danger"
             style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
             onClick={clearAllEvaluations}
