@@ -83,7 +83,7 @@ Criar um portal centralizado de avaliações práticas de Salvamento Terrestre, 
 
 Neste momento, não fazem parte do escopo inicial:
 
-- reescrita completa imediata de todo o sistema do zero;
+
 - criação de aplicativo mobile nativo;
 - integração com sistemas externos corporativos não essenciais;
 - analytics avançado ou BI completo;

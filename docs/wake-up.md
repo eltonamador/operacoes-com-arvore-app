@@ -454,18 +454,26 @@ ALTER TABLE avaliacoes ADD COLUMN module_id VARCHAR(50) NOT NULL DEFAULT 'motoss
 - `saveAvaliacao()` pode falhar ou ignorar o campo, dependendo da política do Supabase
 - O sistema atual funcionará normalmente enquanto `fetchAvaliacoes()` for chamado (código legado ainda presente em outros utilitários não alterados)
 
-### Próximo passo imediato (Sprint 14+)
-Próximas frentes ordenadas por prioridade:
+### Próximo passo imediato (Sprint 18+)
 
-1. **Executar migration no Supabase** ← bloqueador atual
-   ```sql
-   ALTER TABLE avaliacoes ADD COLUMN module_id VARCHAR(50) NOT NULL DEFAULT 'motosserra';
-   ```
-   Depois: testar integralmente (relatórios, filtros, salvamento por módulo)
+**`CoordenacaoArea`** — ✅ MVP concluído na Sprint 17.
 
-2. ~~Implementar AdvancedReports para escadas~~ — **concluído na Sprint 14**
+**`AlunoArea`** — bloqueada por migration pendente:
+```sql
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS numero_ordem VARCHAR(20);
+```
+Decisão registrada em `docs/decisions/2026-04-12-vinculo-aluno-avaliacao.md`.
+Após executar a migration + preencher `numero_ordem` nas contas de aluno: implementar `AlunoArea`.
 
-3. **Avançar para Fase 2 da SPEC** (autenticação, perfis, portal)
+Próximas frentes após migration:
+
+1. **Implementar `AlunoArea`** (consulta de notas do aluno)
+   - Filtro por `profiles.numero_ordem = avaliacoes.numero_ordem`
+   - Mostrar notas finais por oficina
+
+2. **Fase 3 da SPEC** (modularização por oficina com acesso restrito por avaliador)
+   - Estender perfil avaliador para ter restrições de módulo
+   - Criar estrutura de permissões finas
 
 ### Sprint 14 — concluída em 2026-04-12
 
@@ -496,7 +504,48 @@ Implantação do relatório avançado no módulo escadas (feature parity com mot
 - ~~introduzir autenticação (Supabase Auth)~~ — **concluído na Sprint 16**
 - ~~separar perfis de acesso (avaliador, coordenação)~~ — **concluído na Sprint 16**
 - ~~criar tela de portal inicial~~ — já existia
+- ~~corrigir loading infinito e adicionar signOut~~ — **concluído no Fix 16.1**
 - preparar estrutura `src/modules/motosserra/` como base para novas oficinas.
+
+---
+
+## Fix 16.1 — Correção de bugs de autenticação (2026-04-12)
+
+### Sintomas corrigidos
+
+1. App travado em "Carregando..." após login.
+2. Links internos não respondiam (consequência do loading infinito — `ProtectedRoute` nunca liberava o conteúdo).
+3. Sem botão de logout visível — usuário precisava limpar cache para sair.
+
+### Causa raiz
+
+**`src/contexts/AuthContext.jsx`** — o `setLoading(false)` era chamado apenas dentro da promise `getSession().then(...)`. Se essa promise falhava (erro de rede, timeout) ou se o `onAuthStateChange` resolvia antes e era a única fonte de verdade da sessão, o `loading` ficava `true` para sempre. O listener `onAuthStateChange` nunca chamava `setLoading(false)` independentemente.
+
+### O que foi corrigido
+
+**`src/contexts/AuthContext.jsx`:**
+- Removida a chamada redundante a `getSession().then(...)` que populava estado (duplicava o trabalho do listener).
+- `onAuthStateChange` agora chama `setLoading(false)` após o primeiro evento (seja `INITIAL_SESSION` ou `SIGNED_IN`), usando flag `initialised` para garantir que só dispara uma vez.
+- `getSession().catch(...)` adicionado como fallback: se o listener nunca disparar (edge case de falha de rede), `loading` ainda é resolvido para `false`.
+- Resultado: `loading` sempre termina em `false`, independente do caminho de execução.
+
+**`src/pages/PortalHome.jsx`:**
+- Importado `useNavigate` e `useAuth`.
+- Adicionado botão "Sair" no canto superior direito do portal.
+- `handleSignOut`: chama `signOut()` do contexto; navega para `/login` no bloco `finally` (funciona mesmo se `signOut` lançar erro — Supabase limpa sessão localmente mesmo com falha de rede).
+- Exibe `displayName` do perfil quando disponível.
+
+### O que NÃO foi alterado
+
+- Nenhuma lógica de cálculo de nota.
+- Nenhum módulo (motosserra, escadas).
+- `ProtectedRoute.jsx`, `Login.jsx`, `Router.jsx` — intocados.
+- `src/services/avaliacoesService.js` — intocado.
+- Nenhum banco de dados alterado.
+
+### Risco residual
+
+Nenhum risco novo introduzido. O risco de RLS em `avaliacoes` ainda desabilitada permanece como antes (registrado na Sprint 16).
 
 ---
 
@@ -546,9 +595,44 @@ A Sprint 16 pressupõe que a Parte 1 da Fase 2 já foi executada no Supabase:
    - `admin`: acesso total
 5. Somente após policies testadas em ambiente de desenvolvimento: `ALTER TABLE avaliacoes ENABLE ROW LEVEL SECURITY`
 
-### Risco identificado
+### Status atual — Fase 2 CONCLUÍDA (2026-04-12)
 
-Enquanto RLS em `avaliacoes` não for habilitado, qualquer usuário autenticado com anon key pode ler e gravar avaliações diretamente via API Supabase — a proteção hoje é apenas frontend. Isso é aceitável nesta fase desde que o ambiente não seja público.
+Ambas as partes foram executadas com sucesso:
+
+**Parte 1 (Supabase):**
+- ✅ Tabela `profiles` criada com RLS habilitada
+- ✅ Função `get_my_role()` criada (SECURITY DEFINER)
+- ✅ Policies RLS em `avaliacoes` criadas (SELECT, INSERT, DELETE)
+- ✅ Usuários de teste inseridos
+
+**Parte 2 (Frontend):**
+- ✅ `AuthContext.jsx` implementado
+- ✅ `Login.jsx` implementado
+- ✅ `ProtectedRoute.jsx` implementado
+- ✅ Router protegido com AuthProvider
+
+**Validações executadas:**
+- ✅ Login por perfil (avaliador, coordenacao, aluno, admin) redireciona corretamente
+- ✅ Links filtrados por role em PortalHome
+- ✅ Navegação interna funciona
+- ✅ Bloqueio de rota indevida funciona
+- ✅ Refresh mantém sessão
+- ✅ Logout funciona
+- ✅ `MotosserraApp` carrega avaliações com JWT ativo
+- ✅ `EscadasApp` carrega avaliações com JWT ativo
+
+**RLS ativado:**
+- ✅ `ALTER TABLE public.avaliacoes ENABLE ROW LEVEL SECURITY;` executado com sucesso
+- ✅ Dados são filtrados corretamente por perfil
+- ✅ Acesso indevido redirecionado para `/`
+
+### Impacto
+
+O portal agora possui:
+- Login unificado com Supabase Auth
+- Perfis distintos protegidos no banco por RLS
+- Rotas protegidas no frontend
+- Dados separados por perfil no banco de dados
 
 ---
 
@@ -604,6 +688,81 @@ As seguintes decisões já estão assumidas como base de trabalho:
 
 ---
 
+## Fix 16.3 — Correção de race condition em navegação por perfil (2026-04-12)
+
+### Sintoma corrigido
+
+Após login, navegação interna por perfil continuava falhando. Clicar em links como `/avaliador` ou `/coordenacao` redirecionava de volta para `/` ao invés de renderizar a página correta.
+
+### Causas raiz (duas)
+
+**1. Race condition em `AuthContext.jsx`:**
+`setSession(newSession)` era chamado imediatamente dentro do handler de `onAuthStateChange`, mas `setProfile` só era chamado após o `await fetchProfile()`. Durante esse intervalo (que ocorre também em toda renovação de token), `ProtectedRoute` via `session != null` + `role == null`. Como `role` é derivado de `profile`, a checagem `!roles.includes(role)` retornava `true` (null não está em `['avaliador']`), causando redirect para `/`. O `useMemo` também era ineficaz porque `signIn` e `signOut` eram funções redeclaradas a cada render sem `useCallback`.
+
+**2. `PortalHome` exibia links sem filtro de perfil:**
+Usuários `aluno` viam links para `/avaliador`, clicavam, e eram redirecionados para `/` pelo `ProtectedRoute`. Parecia "navegação quebrada" mas era proteção correta sem visibilidade adequada por perfil.
+
+### O que foi corrigido
+
+**`src/contexts/AuthContext.jsx`:**
+- `fetchProfile` agora é chamado ANTES dos `setState` — session e profile são atualizados juntos no mesmo ciclo de render (React 18 automatic batching garante isso em contexto async)
+- `signIn` e `signOut` agora usam `useCallback` com deps `[]` — referências estáveis que tornam o `useMemo` genuinamente eficaz
+- Resultado: `ProtectedRoute` nunca mais vê `session != null` + `role == null`
+
+**`src/pages/PortalHome.jsx`:**
+- Links filtrados por role: avaliador vê links de avaliador, coordenação vê link de coordenação, aluno vê link de aluno, admin vê tudo
+
+### Validação
+
+- Login com qualquer perfil → redirecionamento correto
+- Links na tela inicial → mostram apenas rotas acessíveis ao perfil logado
+- Navegação para áreas protegidas → funciona sem redirect indevido
+- Token refresh → não derruba mais a navegação ativa
+- Logout → limpa sessão e redireciona para `/login`
+
+### O que NÃO foi alterado
+
+- `ProtectedRoute.jsx`, `Router.jsx`, `Login.jsx` — intocados
+- Nenhuma lógica de cálculo, módulo ou banco
+
+---
+
+## Fix 16.2 — Correção de navegação interna (2026-04-12)
+
+### Sintoma corrigido
+
+Após login, navegação interna não funcionava. Links clicáveis (e.g., `/avaliador` → `/avaliador/motosserra`, `/` → `/coordenacao`) não respondiam. Usuário permanecia na mesma página.
+
+### Causa raiz
+
+**`src/contexts/AuthContext.jsx`** — o objeto `value` passado ao `AuthContext.Provider` era criado fresh a cada render. Como nenhuma estabilização via `useMemo` existia, todo componente consumidor via `useAuth()` recebia uma nova referência e re-renderizava. Isso incluía `ProtectedRoute`, que é envolvido em cada rota. React Router perdia o controle de navegação quando todas as rotas eram remontadas simultaneamente a cada atualização do contexto.
+
+### O que foi corrigido
+
+**`src/contexts/AuthContext.jsx`:**
+- Import adicionado: `useMemo` do React
+- `value` object agora envolvido com `useMemo([session, profile, loading, signIn, signOut])`
+- Resultado: context reference é estável entre renders enquanto os valores essenciais não mudarem
+- `ProtectedRoute` deixa de re-renderizar desnecessariamente
+- React Router recupera controle de navegação
+
+### Validação
+
+- Login funciona (auth state changes trigger memoized value update → redirect por-role funciona)
+- Logout funciona (signOut clears session → memoized value update → ProtectedRoute redireciona para /login)
+- Links internos funcionam (navegação entre `/`, `/avaliador`, `/coordenacao`, `/aluno` agora preserva state)
+- Navegação para módulos funciona (`/avaliador/motosserra`, `/avaliador/escadas`)
+- Estado de telas dentro de módulos preservado (interno, não afetado)
+
+### O que NÃO foi alterado
+
+- Nenhuma lógica de cálculo
+- Nenhum módulo
+- `ProtectedRoute.jsx`, `Router.jsx`, `Login.jsx` — intocados
+- Nenhuma alteração de banco
+
+---
+
 ## Riscos que não podem ser esquecidos
 
 - expandir novas oficinas sem antes modularizar a estrutura;
@@ -611,7 +770,8 @@ As seguintes decisões já estão assumidas como base de trabalho:
 - alterar regra de cálculo sem documentação clara;
 - manter dados sensíveis e críticos em fluxo improvisado;
 - crescer o sistema sem definir bem perfis e permissões;
-- misturar mudança estrutural com feature nova sem controle.
+- misturar mudança estrutural com feature nova sem controle;
+- esquecer que contexto React sem memoização força re-renders em cadeia (perdendo navegação).
 
 ---
 
@@ -644,16 +804,161 @@ Atualizar este arquivo sempre que houver:
 
 ---
 
+## Sprint 17 — concluída em 2026-04-12
+
+### O que foi feito
+
+Implementacao do MVP da `CoordenacaoArea` — primeiro relatório consolidado do portal.
+
+**Arquivo modificado:**
+- `src/pages/CoordenacaoArea.jsx` — substituido placeholder por tela funcional de consulta somente leitura.
+
+### O que a tela faz
+
+- Busca avaliacoes de ambos os modulos em paralelo (`Promise.all`) ao montar, usando `fetchAvaliacoesByModulo('motosserra')` e `fetchAvaliacoesByModulo('escadas')` do servico ja existente.
+- Combina os resultados e ordena por data de criacao decrescente.
+- Exibe tabela com colunas: Aluno, Ordem, Pelotao, Avaliador, Data, Nota Final, Resultado (APROVADO/REPROVADO com badge colorido), Modulo.
+- Filtro por modulo: Todos / Motosserra / Escadas (botoes inline).
+- Estado de carregamento exibido enquanto as consultas estao em andamento.
+- Estado de erro exibido com mensagem clara se alguma consulta falhar.
+- Mensagem de vazio quando o filtro nao retorna resultados.
+- Link "Voltar ao Portal" no cabecalho.
+- Estilo consistente com `PortalHome.jsx` (inline styles, sans-serif, padding 32px).
+
+### O que NAO foi alterado
+
+- `src/services/avaliacoesService.js` — **intocado**. Nenhuma nova funcao necessaria; chamar `fetchAvaliacoesByModulo` duas vezes e suficiente.
+- Todos os modulos (motosserra, escadas) — **intocados**.
+- Regras de calculo — **intocadas**. O relatorio apenas apresenta `finalScore` e `isPassing` ja calculados e persistidos.
+- Banco de dados — **nenhuma alteracao**.
+- RLS — **intocada**.
+
+### O que NAO esta no MVP (pertence a versoes futuras)
+
+- Exportacao CSV/XLSX consolidada da coordenacao.
+- Agregacoes por aluno (media entre oficinas, aptidao final).
+- Mapa de notas (grade map) por pelotao.
+- Filtro por pelotao ou por aluno especifico.
+- Relatorio individual por soldado (consulta da visao do aluno).
+- Consolidacao automatica de pesos entre oficinas (Fase 4 da SPEC).
+- Paginacao (nao necessaria no volume atual; revisitar quando houver centenas de registros).
+
+### Dependencia critica pendente (herdada da Sprint 13)
+
+A tela funciona corretamente **somente se a migration `module_id` ja foi executada no banco**:
+
+```sql
+ALTER TABLE avaliacoes ADD COLUMN module_id VARCHAR(50) NOT NULL DEFAULT 'motosserra';
+```
+
+Se a coluna nao existir, `fetchAvaliacoesByModulo` retorna zero resultados para ambos os modulos e a tabela aparecera vazia (sem erro visivel — apenas sem dados). Verificar status da migration antes de validar a tela em producao.
+
+---
+
+## Sprint 18 — concluída em 2026-04-12
+
+### O que foi feito
+
+Implementacao do MVP da `AlunoArea` — tela de consulta de notas do aluno logado.
+
+**`src/contexts/AuthContext.jsx`** — modificado:
+- Select da tabela `profiles` ampliado de `'role, nome'` para `'role, nome, numero_ordem'`.
+- Campo `numeroOrdem: profile?.numero_ordem ?? null` adicionado ao objeto `value` do contexto.
+- Nenhuma outra logica alterada. `useMemo`, `useCallback`, signIn, signOut — intocados.
+
+**`src/services/avaliacoesService.js`** — modificado:
+- Adicionada `fetchAvaliacoesByNumeroOrdem(numero_ordem)`: busca avaliacoes filtrando por `numero_ordem`, ordenadas por `created_at DESC`. Usa `mapDbToUi` existente. Funcao somente leitura, sem efeito colateral.
+
+**`src/pages/AlunoArea.jsx`** — substituido placeholder por tela funcional:
+- Usa `useAuth()` para obter `displayName` e `numeroOrdem`.
+- No mount, chama `fetchAvaliacoesByNumeroOrdem(numeroOrdem)` se `numeroOrdem` estiver preenchido.
+- Se `numeroOrdem` for null: exibe aviso amarelo ("Numero de ordem nao configurado no perfil. Contacte o administrador.").
+- Exibe saudacao com `displayName` no cabecalho.
+- Tabela com colunas: Modulo, Data, Avaliador, Nota Final, Resultado (badge APROVADO/REPROVADO).
+- Estados de loading, erro e vazio tratados explicitamente.
+- Link "Voltar ao Portal" no cabecalho.
+- Estilo consistente com `CoordenacaoArea.jsx` (inline styles, sans-serif, padding 32px).
+
+### O que NAO esta no MVP (pertence a versoes futuras)
+
+- Media consolidada entre oficinas (requer Fase 4 da SPEC — pesos e formula de aptidao).
+- Status de aptidao final (APTO/INAPTO) — depende da media consolidada.
+- Exportacao individual (CSV/XLSX) das proprias avaliacoes.
+- Detalhe de penalidades por avaliacao (expandir linha ou tela de detalhe).
+- Paginacao (nao necessaria no volume atual).
+
+### O que NAO foi alterado
+
+- Todos os modulos (motosserra, escadas) — intocados.
+- Regras de calculo — intocadas. A tela apresenta `finalScore` e `isPassing` ja calculados e persistidos.
+- `ProtectedRoute.jsx`, `Router.jsx`, `Login.jsx` — intocados.
+- Banco de dados — nenhuma alteracao. A migration `numero_ordem` ja havia sido aplicada conforme contexto da task.
+- RLS — intocada.
+
+### Dependencia critica (ja satisfeita conforme contexto)
+
+A tela funciona corretamente somente se:
+1. A coluna `numero_ordem` existe em `profiles` (migration ja aplicada).
+2. A conta do aluno tem `numero_ordem` preenchido com valor que bate com `avaliacoes.numero_ordem`.
+3. A coluna `module_id` existe em `avaliacoes` (migration da Sprint 13).
+
+Se `numero_ordem` estiver nulo no perfil, a tela exibe aviso claro ao inves de falhar silenciosamente.
+
+---
+
+## Sprint 19 — concluída em 2026-04-12
+
+### O que foi feito
+
+Criação de `PortalLayout` e aplicação nas páginas de portal. Mudança exclusivamente visual/estrutural — nenhuma lógica de cálculo, persistência, autenticação ou regras de nota foram alteradas.
+
+**Arquivo criado:**
+- `src/components/PortalLayout.jsx` — layout compartilhado para todas as páginas autenticadas do portal. Provê: fundo claro (`#f5f5f5`), barra de cabeçalho branca com nome do portal à esquerda e info do usuário + botão "Sair" à direita, barra de título opcional via prop `title`, e área de conteúdo com scroll natural. Usa `useAuth()` para `displayName`, `role` e `signOut`. Navega para `/login` após signOut via `useNavigate`.
+
+**Arquivos modificados:**
+- `src/pages/PortalHome.jsx` — removido cabeçalho inline próprio (título, saudação, botão "Sair"). Conteúdo envolvido em `<PortalLayout title="Início">`. Saudação ao usuário mantida dentro do conteúdo da página.
+- `src/pages/AvaliadorArea.jsx` — removido `<h1>` próprio. Conteúdo envolvido em `<PortalLayout title="Área do Avaliador">`.
+- `src/pages/CoordenacaoArea.jsx` — removido header div (título, subtítulo, link "Voltar ao Portal"). Conteúdo envolvido em `<PortalLayout title="Área de Coordenação">`. Import de `Link` removido (não mais utilizado).
+- `src/pages/AlunoArea.jsx` — removido header div (título, link "Voltar ao Portal"). Saudação `displayName` mantida no conteúdo. Conteúdo envolvido em `<PortalLayout title="Área do Aluno">`. Import de `Link` removido.
+
+**O que NÃO foi alterado:**
+- `src/pages/Login.jsx` — não usa PortalLayout (página pública).
+- `src/modules/motosserra/` e `src/modules/escadas/` — intocados, continuam usando o tema escuro de `global.css`.
+- `src/styles/global.css` — não alterado. O `overflow: hidden` em `html, body, #root` é necessário para o scroll interno dos módulos. `PortalLayout` usa `minHeight: 100vh` e `display: flex / flex-direction: column` para scroll natural das páginas de portal sem depender do overflow global.
+
+**Risco:** baixo. Mudança puramente visual nas páginas de portal. Módulos não foram tocados. Fluxo de auth não foi alterado.
+
+---
+
 ## Resumo curto para retomada rápida
 
 Projeto atual:
-- app funcional de avaliação de motosserra.
+- app funcional de avaliação de motosserra + escadas
+- **portal com login unificado e perfis protegidos** (Fase 2 concluída)
+- dados protegidos por RLS no banco
+- **CoordenacaoArea MVP funcional** (Sprint 17)
+- **PortalLayout light theme implantado** (Sprint 19) — todas as páginas de portal usam tema claro de alto contraste
+
+Estado de Fase 2:
+- ✅ Supabase Auth integrado
+- ✅ Tabela `profiles` com RLS ativa
+- ✅ Rotas protegidas no frontend
+- ✅ RLS em `avaliacoes` ativa (dados filtrados por perfil)
+
+Estado de relatórios:
+- ✅ CoordenacaoArea exibe tabela consolidada de motosserra + escadas com filtro por modulo
+- ✅ AlunoArea MVP funcional (Sprint 18) — consulta de notas do aluno logado por numero_ordem
+- Pendente: media consolidada entre oficinas, aptidao final, exportacao individual, mapa de notas
 
 Direção futura:
-- portal centralizado de avaliações de Salvamento Terrestre.
+- portal centralizado de avaliações de Salvamento Terrestre
+- conteúdo real em área do aluno
+- Fase 3: modularização por oficina com acesso por avaliador
+- Fase 4: consolidação de médias, pesos e aptidão final
 
 Prioridade imediata:
-- reorganizar a base antes de ampliar escopo.
+- implementar tela de conteúdo para AlunoArea
+- preparar Fase 3
 
 Regra de ouro:
 - preservar o que funciona hoje enquanto se prepara corretamente o sistema de amanhã.

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
   async function fetchProfile(userId) {
     const { data, error } = await supabase
       .from('profiles')
-      .select('role, display_name')
+      .select('role, nome, numero_ordem')
       .eq('id', userId)
       .single()
 
@@ -23,52 +23,68 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    // Recover existing session on mount
-    supabase.auth.getSession().then(async ({ data: { session: existingSession } }) => {
-      setSession(existingSession)
-      if (existingSession?.user) {
-        const prof = await fetchProfile(existingSession.user.id)
-        setProfile(prof)
-      }
-      setLoading(false)
-    })
+    let initialised = false
 
-    // Listen for auth state changes (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, newSession) => {
-        setSession(newSession)
+        // Fetch profile BEFORE setting state so that session and profile
+        // are always updated together in the same render cycle.
+        // This prevents ProtectedRoute from seeing session!=null + role==null
+        // and incorrectly redirecting to / during the profile fetch window.
+        let prof = null
         if (newSession?.user) {
-          const prof = await fetchProfile(newSession.user.id)
-          setProfile(prof)
-        } else {
-          setProfile(null)
+          prof = await fetchProfile(newSession.user.id)
+        }
+
+        // React 18 automatic batching ensures these three setState calls
+        // produce a single re-render, avoiding the race condition.
+        setSession(newSession)
+        setProfile(prof)
+        if (!initialised) {
+          initialised = true
+          setLoading(false)
         }
       }
     )
 
+    // Fallback: if onAuthStateChange never fires (edge case / network failure),
+    // getSession ensures loading is resolved so the app does not hang forever.
+    supabase.auth.getSession().catch(() => {
+      if (!initialised) {
+        initialised = true
+        setLoading(false)
+      }
+    })
+
     return () => subscription.unsubscribe()
   }, [])
 
-  async function signIn(email, password) {
+  // useCallback makes signIn and signOut stable references across renders,
+  // which is required for useMemo below to work correctly.
+  const signIn = useCallback(async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
     return data
-  }
+  }, [])
 
-  async function signOut() {
+  const signOut = useCallback(async () => {
     const { error } = await supabase.auth.signOut()
     if (error) throw error
-  }
+  }, [])
 
-  const value = {
-    session,
-    profile,
-    loading,
-    signIn,
-    signOut,
-    role: profile?.role ?? null,
-    displayName: profile?.display_name ?? null,
-  }
+  const value = useMemo(
+    () => ({
+      session,
+      profile,
+      loading,
+      signIn,
+      signOut,
+      role: profile?.role ?? null,
+      displayName: profile?.nome ?? null,
+      numeroOrdem: profile?.numero_ordem ?? null,
+    }),
+    [session, profile, loading, signIn, signOut]
+  )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

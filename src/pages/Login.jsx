@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -10,7 +10,7 @@ const ROLE_DEFAULT_ROUTE = {
 }
 
 export default function Login() {
-  const { signIn } = useAuth()
+  const { signIn, role, loading } = useAuth()
   const navigate = useNavigate()
 
   const [email, setEmail] = useState('')
@@ -18,26 +18,24 @@ export default function Login() {
   const [error, setError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
 
+  // Redireciona quando AuthContext terminar de carregar sessão + perfil.
+  // Cobre dois casos: login bem-sucedido E usuário já autenticado visitando /login.
+  useEffect(() => {
+    if (!loading && role) {
+      navigate(ROLE_DEFAULT_ROUTE[role] ?? '/', { replace: true })
+    }
+  }, [role, loading, navigate])
+
   async function handleSubmit(e) {
     e.preventDefault()
     setError(null)
     setSubmitting(true)
 
     try {
-      const { user } = await signIn(email, password)
-
-      // Fetch role from profiles to decide where to redirect
-      // AuthContext will update profile async; we read from supabase directly here
-      // to avoid race condition between navigation and context update.
-      const { supabase } = await import('../lib/supabase')
-      const { data: prof } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-      const destination = ROLE_DEFAULT_ROUTE[prof?.role] ?? '/'
-      navigate(destination, { replace: true })
+      await signIn(email, password)
+      // Não navegar aqui. O useEffect acima dispara quando AuthContext
+      // terminar fetchProfile e setar role — garantindo que session e
+      // profile já estão prontos quando ProtectedRoute verificar.
     } catch (err) {
       setError('E-mail ou senha inválidos.')
     } finally {

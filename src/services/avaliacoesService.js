@@ -112,6 +112,22 @@ export async function fetchAvaliacoesByDataAndModulo(data, module_id) {
 }
 
 /**
+ * Busca avaliações de um aluno pelo número de ordem, ordenadas por data de criação (mais recentes primeiro).
+ * Retorna array de objetos no formato UI.
+ */
+export async function fetchAvaliacoesByNumeroOrdem(numero_ordem) {
+  const { data, error } = await supabase
+    .from('avaliacoes')
+    .select('*')
+    .eq('numero_ordem', numero_ordem)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+
+  return (data || []).map(mapDbToUi)
+}
+
+/**
  * Insere uma nova avaliação no banco.
  * Retorna o objeto salvo no formato UI.
  */
