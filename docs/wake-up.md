@@ -763,6 +763,80 @@ Após login, navegação interna não funcionava. Links clicáveis (e.g., `/aval
 
 ---
 
+## Sprint 17 — Padronização visual do portal (2026-04-12)
+
+### O que foi feito
+
+Unificação visual de todo o portal para tema dark, alinhando o portal ao mesmo padrão visual das telas de módulo (motosserra e escadas). Zero impacto em lógica de negócio, auth ou persistência.
+
+**`src/styles/global.css`** — adicionada seção `PORTAL PAGES` com:
+- `.portal-page` / `.portal-content` — wrapper e área scrollável para todas as páginas do portal
+- `.portal-nav-card` / `.portal-nav-grid` — cards de navegação com hover dourado
+- `.portal-back-link` — link de retorno padronizado
+- `.status-info` / `.status-error` / `.status-muted` — mensagens de estado com tema dark
+- `.portal-table` / `.portal-table-wrapper` / `.portal-table th,td` — tabela dark com cabeçalho dourado
+- `.badge-pass` / `.badge-fail` — badges de resultado (verde/vermelho com opacidade)
+- `.header-user-info` / `.header-user-name` / `.header-role-tag` — área de usuário no header
+- `.btn-sm` — variante compacta do botão existente
+- `.login-page` / `.login-card` — container dark para tela de login
+
+**`src/components/PortalLayout.jsx`** — reescrito:
+- Usa `.portal-page` e `.portal-content` (dark, scroll controlado)
+- Header usa classes `.header`, `.header-emblem`, `.header-titles`, `.header-org`, `.header-title`, `.header-subtitle` — mesmo padrão dos módulos
+- Exibe `displayName`, role tag dourada e botão "Sair" com `.btn btn-danger btn-sm`
+- Removida prop `title` (cada página gerencia seu próprio cabeçalho)
+- Removidos todos os inline styles
+
+**`src/pages/Login.jsx`** — reescrito:
+- Usa `.login-page` e `.login-card` (dark)
+- Branding institucional: emblema + org `CBMAP — CFSD-26` + título gold
+- Inputs com `.form-input`, labels com `.form-label`, botão com `.btn btn-primary`
+- Lógica de auth preservada integralmente
+
+**`src/pages/PortalHome.jsx`** — reescrito:
+- Usa `PortalLayout` (sem `title` prop)
+- Links convertidos para `.portal-nav-card` com títulos e descrições
+
+**`src/pages/AvaliadorArea.jsx`** — reescrito:
+- Cards de módulo como `.portal-nav-card` com hover gold
+- Link de retorno com `.portal-back-link`
+- Removido state de hover manual (substituído por CSS hover)
+
+**`src/pages/AlunoArea.jsx`** — reescrito:
+- Tabela com `.portal-table` e cabeçalho dark gold
+- Badges de resultado com `.badge-pass` / `.badge-fail`
+- Mensagens de estado com `.status-info`, `.status-error`, `.status-muted`
+
+**`src/pages/CoordenacaoArea.jsx`** — reescrito:
+- Filtros usando `.filter-btn` / `.filter-btn--active` (já existiam no global.css)
+- Tabela com `.portal-table`
+- Badges e mensagens de estado alinhados
+
+### O que NÃO foi alterado
+
+- Todos os módulos (motosserra, escadas) — **intocados**
+- `src/services/`, `src/lib/`, `src/data/` — **intocados**
+- `src/contexts/AuthContext.jsx`, `src/components/ProtectedRoute.jsx`, `src/app/Router.jsx` — **intocados**
+- Regras de cálculo, persistência, auth — **intocadas**
+- Lógica de fetch de dados em AlunoArea e CoordenacaoArea — **idêntica**
+
+### Resultado visual
+
+| Tela | Antes | Depois |
+|---|---|---|
+| Login | Fundo cinza claro, card branco | Dark card com branding institucional |
+| Portal Home | Links simples sobre fundo cinza | Cards dark com hover gold |
+| Área do Avaliador | Cards claros com hover manual (JS) | Cards dark com CSS hover |
+| Área do Aluno | Tabela branca com badges coloridos claros | Tabela dark gold com badges translúcidos |
+| Área de Coordenação | Idem Aluno + filtros brancos | Tabela dark + filtros reutilizando `.filter-btn` |
+| Header do portal | Header branco com navbar simples | Header dark com emblema, branding e user info |
+
+### Risco
+
+Baixo. Mudanças puramente visuais/estruturais. Nenhum comportamento funcional foi alterado.
+
+---
+
 ## Riscos que não podem ser esquecidos
 
 - expandir novas oficinas sem antes modularizar a estrutura;

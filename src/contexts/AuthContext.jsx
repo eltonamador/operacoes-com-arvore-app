@@ -23,44 +23,66 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    // Flag: garante que o estado inicial só é resolvido uma vez,
+    // seja pelo onAuthStateChange ou pelo getSession (o que vier primeiro).
     let initialised = false
 
+    async function resolveInitialState(s) {
+      if (initialised) return
+      let prof = null
+      if (s?.user) {
+        try {
+          prof = await fetchProfile(s.user.id)
+        } catch {
+          prof = null
+        }
+      }
+      // Verifica de novo após o await — o outro caminho pode ter chegado primeiro
+      if (!initialised) {
+        initialised = true
+        setSession(s)
+        setProfile(prof)
+        setLoading(false)
+      }
+    }
+
+    // Caminho 1: onAuthStateChange — dispara com INITIAL_SESSION na inicialização
+    // e com SIGNED_IN / SIGNED_OUT / TOKEN_REFRESHED nas trocas subsequentes.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, newSession) => {
-        // Fetch profile BEFORE setting state so that session and profile
-        // are always updated together in the same render cycle.
-        // This prevents ProtectedRoute from seeing session!=null + role==null
-        // and incorrectly redirecting to / during the profile fetch window.
-        let prof = null
-        if (newSession?.user) {
-          prof = await fetchProfile(newSession.user.id)
-        }
-
-        // React 18 automatic batching ensures these three setState calls
-        // produce a single re-render, avoiding the race condition.
-        setSession(newSession)
-        setProfile(prof)
         if (!initialised) {
-          initialised = true
-          setLoading(false)
+          // Primeira resolução: delegar para resolveInitialState
+          await resolveInitialState(newSession)
+        } else {
+          // Mudanças subsequentes: login, logout, refresh de token
+          let prof = null
+          if (newSession?.user) {
+            try {
+              prof = await fetchProfile(newSession.user.id)
+            } catch {
+              prof = null
+            }
+          }
+          setSession(newSession)
+          setProfile(prof)
         }
       }
     )
 
-    // Fallback: if onAuthStateChange never fires (edge case / network failure),
-    // getSession ensures loading is resolved so the app does not hang forever.
-    supabase.auth.getSession().catch(() => {
-      if (!initialised) {
-        initialised = true
-        setLoading(false)
-      }
-    })
+    // Caminho 2: getSession — fallback caso onAuthStateChange demore ou
+    // fetchProfile trave. Também resolve em .then() (não só em .catch()).
+    supabase.auth.getSession()
+      .then(({ data: { session: s } }) => resolveInitialState(s))
+      .catch(() => {
+        if (!initialised) {
+          initialised = true
+          setLoading(false)
+        }
+      })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  // useCallback makes signIn and signOut stable references across renders,
-  // which is required for useMemo below to work correctly.
   const signIn = useCallback(async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error

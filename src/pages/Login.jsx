@@ -9,6 +9,8 @@ const ROLE_DEFAULT_ROUTE = {
   admin: '/',
 }
 
+const EMBLEMA = '/Gemini_Generated_Image_3yvf043yvf043yvf.png'
+
 export default function Login() {
   const { signIn, role, loading } = useAuth()
   const navigate = useNavigate()
@@ -18,8 +20,6 @@ export default function Login() {
   const [error, setError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
 
-  // Redireciona quando AuthContext terminar de carregar sessão + perfil.
-  // Cobre dois casos: login bem-sucedido E usuário já autenticado visitando /login.
   useEffect(() => {
     if (!loading && role) {
       navigate(ROLE_DEFAULT_ROUTE[role] ?? '/', { replace: true })
@@ -30,13 +30,9 @@ export default function Login() {
     e.preventDefault()
     setError(null)
     setSubmitting(true)
-
     try {
       await signIn(email, password)
-      // Não navegar aqui. O useEffect acima dispara quando AuthContext
-      // terminar fetchProfile e setar role — garantindo que session e
-      // profile já estão prontos quando ProtectedRoute verificar.
-    } catch (err) {
+    } catch {
       setError('E-mail ou senha inválidos.')
     } finally {
       setSubmitting(false)
@@ -44,107 +40,215 @@ export default function Login() {
   }
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>Portal de Avaliações</h1>
-        <p style={styles.subtitle}>CBMAP — Salvamento Terrestre</p>
+    <div className="login-page-root" style={s.page}>
+      {/* Painel esquerdo — identidade */}
+      <div className="login-brand-panel" style={s.brand}>
+        <div style={s.emblemaWrap}>
+          <img
+            src={EMBLEMA}
+            alt="Emblema Salvamento Terrestre"
+            className="login-emblem"
+            style={s.emblema}
+          />
+          {/* Anel decorativo */}
+          <div className="login-emblem-ring" style={s.emblemaRing} />
+        </div>
 
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <label style={styles.label}>
-            E-mail
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              style={styles.input}
-            />
-          </label>
+        <div style={s.brandTexts}>
+          <span style={s.brandOrg}>CBMAP — CFSD-26</span>
+          <h1 style={s.brandTitle}>Portal de Avaliações</h1>
+          <p style={s.brandMotto}>"Seja forte e corajoso"</p>
+        </div>
+      </div>
 
-          <label style={styles.label}>
-            Senha
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-              style={styles.input}
-            />
-          </label>
+      {/* Divisor vertical */}
+      <div className="login-divider" style={s.divider} />
 
-          {error && <p style={styles.error}>{error}</p>}
+      {/* Painel direito — formulário */}
+      <div className="login-form-panel" style={s.formPanel}>
+        <div style={s.formCard}>
+          <div style={s.formHeader}>
+            <span style={s.formOrg}>Salvamento Terrestre</span>
+            <h2 style={s.formTitle}>Acesso ao sistema</h2>
+          </div>
 
-          <button type="submit" disabled={submitting} style={styles.button}>
-            {submitting ? 'Entrando...' : 'Entrar'}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} style={s.form}>
+            <div className="form-group">
+              <label className="form-label">E-mail</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                className="form-input"
+                placeholder="seu@email.com"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Senha</label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+                className="form-input"
+                placeholder="••••••••"
+              />
+            </div>
+
+            {error && (
+              <p className="status-error" style={{ margin: 0 }}>{error}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="btn btn-primary btn-lg"
+              style={{ marginTop: '8px', width: '100%' }}
+            >
+              {submitting ? 'Entrando...' : 'Entrar'}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   )
 }
 
-const styles = {
+/* ===== ESTILOS ===== */
+const s = {
   page: {
     minHeight: '100vh',
     display: 'flex',
+    alignItems: 'stretch',
+    background: 'radial-gradient(ellipse at 30% 50%, #1a0505 0%, #0d0d0d 55%, #050510 100%)',
+    fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
+  },
+
+  /* ── Painel de identidade ── */
+  brand: {
+    flex: '0 0 52%',
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f0f2f5',
-    fontFamily: 'sans-serif',
+    gap: '32px',
+    padding: '48px 40px',
   },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: '8px',
-    boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
-    padding: '40px 36px',
-    width: '100%',
-    maxWidth: '380px',
+
+  emblemaWrap: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  title: {
-    margin: '0 0 4px',
-    fontSize: '22px',
-    color: '#1a1a2e',
+
+  emblema: {
+    width: '300px',
+    height: '300px',
+    objectFit: 'contain',
+    borderRadius: '50%',
+    /* reflexo sutil para realçar o acabamento metálico */
+    filter: 'drop-shadow(0 0 40px rgba(200,200,200,0.18)) drop-shadow(0 8px 24px rgba(0,0,0,0.7))',
+    position: 'relative',
+    zIndex: 1,
   },
-  subtitle: {
-    margin: '0 0 28px',
+
+  emblemaRing: {
+    position: 'absolute',
+    width: '320px',
+    height: '320px',
+    borderRadius: '50%',
+    border: '1.5px solid rgba(255,215,0,0.18)',
+    boxShadow: '0 0 48px rgba(204,0,0,0.12), inset 0 0 48px rgba(204,0,0,0.06)',
+    zIndex: 0,
+  },
+
+  brandTexts: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '6px',
+    textAlign: 'center',
+  },
+
+  brandOrg: {
+    fontSize: '11px',
+    fontWeight: 800,
+    letterSpacing: '3px',
+    color: 'var(--gold)',
+    textTransform: 'uppercase',
+  },
+
+  brandTitle: {
+    margin: 0,
+    fontSize: '26px',
+    fontWeight: 800,
+    color: '#ffffff',
+    letterSpacing: '-0.5px',
+  },
+
+  brandMotto: {
+    margin: 0,
     fontSize: '13px',
-    color: '#888',
+    color: 'rgba(255,255,255,0.38)',
+    fontStyle: 'italic',
+    letterSpacing: '0.5px',
   },
+
+  /* ── Divisor ── */
+  divider: {
+    width: '1px',
+    background: 'linear-gradient(to bottom, transparent 0%, rgba(255,215,0,0.25) 30%, rgba(204,0,0,0.3) 70%, transparent 100%)',
+    alignSelf: 'stretch',
+    margin: '48px 0',
+    flexShrink: 0,
+  },
+
+  /* ── Painel do formulário ── */
+  formPanel: {
+    flex: '1',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '48px 40px',
+  },
+
+  formCard: {
+    width: '100%',
+    maxWidth: '360px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+  },
+
+  formHeader: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  },
+
+  formOrg: {
+    fontSize: '11px',
+    fontWeight: 700,
+    letterSpacing: '2px',
+    color: 'var(--gold)',
+    textTransform: 'uppercase',
+  },
+
+  formTitle: {
+    margin: 0,
+    fontSize: '22px',
+    fontWeight: 700,
+    color: '#ffffff',
+  },
+
   form: {
     display: 'flex',
     flexDirection: 'column',
     gap: '16px',
-  },
-  label: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-    fontSize: '14px',
-    color: '#333',
-  },
-  input: {
-    padding: '10px 12px',
-    fontSize: '15px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-    outline: 'none',
-  },
-  error: {
-    margin: '0',
-    fontSize: '13px',
-    color: '#c0392b',
-  },
-  button: {
-    marginTop: '4px',
-    padding: '12px',
-    fontSize: '15px',
-    fontWeight: '600',
-    backgroundColor: '#1a1a2e',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer',
   },
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import ThemeToggle from '../../components/ThemeToggle'
 import StudentForm from '../shared/screens/StudentForm'
 import Evaluation from './screens/Evaluation'
 import Signature from './screens/Signature'
@@ -81,6 +82,7 @@ export default function MotosserraApp() {
 
   return (
     <div className="app-root">
+      <ThemeToggle floating />
       {state.screen === 'form' && <StudentForm {...props} moduleName="Operações de Corte de Árvore com Motosserra" moduleEmoji="🪚🌲" />}
       {state.screen === 'evaluation' && <Evaluation {...props} />}
       {state.screen === 'signature' && <Signature {...props} />}

@@ -10,7 +10,7 @@ import { useAuth } from '../contexts/AuthContext'
  *                omitir ou passar [] para exigir apenas autenticação, sem restrição de role
  *
  * Comportamento:
- *   - carregando sessão    → exibe indicador mínimo (evita flash de redirect)
+ *   - carregando sessão    → exibe tela de carregamento (evita flash de redirect)
  *   - não autenticado      → redireciona para /login
  *   - role não permitida   → redireciona para / (acesso negado)
  *   - autorizado           → renderiza children
@@ -20,7 +20,17 @@ export default function ProtectedRoute({ children, roles = [] }) {
 
   if (loading) {
     return (
-      <div style={{ padding: '32px', fontFamily: 'sans-serif', color: '#888' }}>
+      <div style={{
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#0f0f0f',
+        color: '#aaaaaa',
+        fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
+        fontSize: '15px',
+        letterSpacing: '0.5px',
+      }}>
         Carregando...
       </div>
     )
