@@ -12,6 +12,7 @@ const initialEval = {
   vistoDataHora: null,
   declaracaoCiencia: false,
   vistoTipo: '',
+  theoricaScore: null,
   screen: 'form',
 }
 
@@ -67,6 +68,10 @@ export function useEvaluationState() {
     setState(s => ({ ...s, ...data }))
   }
 
+  function setTheoricaScore(val) {
+    setState(s => ({ ...s, theoricaScore: val }))
+  }
+
   function goTo(screen) {
     setState(s => ({ ...s, screen }))
   }
@@ -87,6 +92,7 @@ export function useEvaluationState() {
     setDeclaracaoCiencia,
     confirmarVisto,
     setVistoData,
+    setTheoricaScore,
     goTo,
     reset,
   }

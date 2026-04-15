@@ -42,13 +42,15 @@ export default function PortalLayout({ children }) {
             )}
           </div>
         )}
-        <button onClick={handleSignOut} className="btn btn-danger btn-sm">
+        <button onClick={handleSignOut} className="btn btn-danger-on-header btn-sm">
           Sair
         </button>
       </header>
 
       <main className="portal-content">
-        {children}
+        <div className="portal-content-inner">
+          {children}
+        </div>
       </main>
     </div>
   )

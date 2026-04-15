@@ -63,18 +63,17 @@ Não cobre ainda:
 
 ## 4. Estado de origem
 
-O sistema atual possui as seguintes características:
+O sistema partiu de uma SPA React com Vite focada na avaliação de motosserra. Hoje já evoluiu para um portal com:
 
-- SPA React com Vite;
-- Supabase como persistência;
-- fluxo funcional completo para uma avaliação específica;
-- lógica de penalidades e nota em tempo real;
-- relatórios e exportações;
-- dados locais em arquivos estáticos;
-- ausência de autenticação formal por perfil;
-- centralização excessiva em `App.jsx`.
+- autenticação via Supabase Auth com 4 perfis (avaliador, coordenacao, aluno, admin);
+- roteamento protegido via `react-router-dom` e `ProtectedRoute`;
+- 4 módulos funcionais: motosserra, escadas, poços e circuito;
+- camada de serviço centralizada (`avaliacoesService.js`);
+- persistência multi-módulo com `module_id` na tabela `avaliacoes`;
+- `shared/` com componentes e hooks reutilizáveis entre módulos;
+- CoordenacaoArea com visão consolidada dos 4 módulos.
 
-Esse estado de origem deve ser tratado como base funcional, mas insuficiente para a visão futura do portal. O principal problema técnico não é o fluxo atual, e sim a falta de estrutura para expansão segura.
+O principal desafio técnico restante não é mais a falta de estrutura — é finalizar os módulos pendentes (Prova Teórica) e implementar a consolidação acadêmico-operacional (Fase 4).
 
 ---
 
@@ -96,50 +95,44 @@ O sistema deverá evoluir para um portal com estas capacidades estruturais:
 
 ## 6. Estratégia de evolução por fases
 
-## Fase 1 — Organização da base atual
+## Fase 1 — Organização da base atual ✅ concluída
 Objetivo: reduzir acoplamento sem alterar profundamente a experiência do usuário.
 
 Entregas principais:
-- separar responsabilidades hoje concentradas em `App.jsx`;
-- criar camada de serviços para Supabase;
-- criar estrutura de domínio para avaliações;
+- separar responsabilidades concentradas em `App.jsx`;
+- criar camada de serviços para Supabase (`avaliacoesService.js`);
 - isolar regras de cálculo e persistência;
 - preparar organização por módulos.
 
-Resultado esperado:
-- sistema atual continua funcionando;
-- código fica mais legível;
-- expansão futura passa a ter base mais segura.
+Resultado: sistema continua funcionando; acesso ao Supabase centralizado no serviço; base mais segura para expansão.
 
 ---
 
-## Fase 2 — Estruturação do portal
+## Fase 2 — Estruturação do portal ✅ concluída
 Objetivo: introduzir identidade de portal e múltiplos acessos.
 
 Entregas principais:
-- autenticação;
-- perfis de usuário;
-- tela inicial de portal;
+- autenticação via Supabase Auth;
+- perfis de usuário (avaliador, coordenacao, aluno, admin);
+- tela inicial de portal (`PortalHome`);
 - separação entre área do avaliador, aluno e coordenação;
-- estrutura de navegação por módulos.
+- roteamento por módulos com `react-router-dom` e `ProtectedRoute`.
 
-Resultado esperado:
-- o sistema deixa de ser uma tela única de avaliação e passa a ter arquitetura de portal.
+Resultado: o sistema tem arquitetura de portal com autenticação e controle de acesso por perfil.
 
 ---
 
-## Fase 3 — Modularização por oficina
+## Fase 3 — Modularização por oficina 🔄 em andamento
 Objetivo: permitir que várias disciplinas compartilhem a mesma base estrutural.
 
-Entregas principais:
-- módulo Escadas;
-- módulo Poços;
-- módulo Circuito;
-- módulo Árvores;
-- parametrização de regras, pesos e critérios por oficina.
+Entregas:
+- ✅ Módulo Motosserra (Operações com Árvore / Corte com Motosserra) — `module_id: 'motosserra'`
+- ✅ Módulo Escadas — `module_id: 'escadas'`
+- ✅ Módulo Poços — `module_id: 'pocos'`
+- ✅ Módulo Circuito — `module_id: 'circuito'`
+- ✅ Prova Teórica — `module_id: 'teorica'` (implementada — lança nota direta 0–10, sem checklist)
 
-Resultado esperado:
-- cada oficina possui seu fluxo técnico próprio, mas usa a mesma infraestrutura de usuários, dados e relatórios.
+Resultado esperado: cada oficina possui seu fluxo técnico próprio, mas usa a mesma infraestrutura de usuários, dados e relatórios.
 
 ---
 
@@ -203,16 +196,31 @@ A estrutura atual deve evoluir para algo mais modular.
 ```text
 src/
   app/
+    Router.jsx
+  pages/
+    Login.jsx
+    PortalHome.jsx
+    AvaliadorArea.jsx
+    CoordenacaoArea.jsx
+    AlunoArea.jsx
+  contexts/
+    AuthContext.jsx
+    ThemeContext.jsx
+  components/
+    PortalLayout.jsx
+    ProtectedRoute.jsx
+    ThemeToggle.jsx
+  services/
+    avaliacoesService.js
   modules/
     motosserra/
     escadas/
     pocos/
     circuito/
-    arvores/
-  components/
-  services/
+    shared/
+      screens/
+      hooks/
+      data/
   lib/
-  hooks/
   utils/
   styles/
-  data/

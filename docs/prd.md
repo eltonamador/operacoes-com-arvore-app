@@ -162,20 +162,21 @@ Perfil responsável por configuração estrutural do portal.
 
 ## 9. Módulos iniciais pretendidos
 
-O portal deve nascer com foco nas oficinas e componentes mais relevantes já identificados, incluindo:
+O portal cobre as seguintes oficinas e componentes de avaliação:
 
-- Escadas
-- Poços
-- Circuito
-- Árvores
+- **Árvores (Operações com Árvore / Corte com Motosserra)** — já implementado como módulo `motosserra`
+- **Escadas** — já implementado como módulo `escadas`
+- **Poços** — já implementado como módulo `pocos`
+- **Circuito** — já implementado como módulo `circuito`
+- **Prova Teórica (VC3)** — decidida em `docs/decisions/2026-04-13-consolidacao-academico-operacional.md`; será módulo `teorica`; pendente de implementação
 
-O módulo atual de avaliação de motosserra deve ser tratado como referência funcional e possível embrião de uma dessas frentes, especialmente no que diz respeito a:
+O módulo de motosserra foi o núcleo funcional inicial e serviu de referência para os demais em:
 
 - checklists técnicos;
 - lançamento de penalidades;
 - cálculo automático de nota;
 - relatórios;
-- persistência estruturada.
+- persistência estruturada com `module_id`.
 
 ---
 

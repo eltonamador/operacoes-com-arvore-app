@@ -9,6 +9,9 @@ import CoordenacaoArea from '../pages/CoordenacaoArea'
 import AlunoArea from '../pages/AlunoArea'
 import MotosserraApp from '../modules/motosserra/MotosserraApp'
 import EscadasApp from '../modules/escadas/EscadasApp'
+import PocoApp from '../modules/pocos/PocoApp'
+import CircuitoApp from '../modules/circuito/CircuitoApp'
+import TeoricaApp from '../modules/teorica/TeoricaApp'
 
 export default function Router() {
   return (
@@ -51,6 +54,33 @@ export default function Router() {
             element={
               <ProtectedRoute roles={['avaliador']}>
                 <EscadasApp />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/avaliador/pocos"
+            element={
+              <ProtectedRoute roles={['avaliador']}>
+                <PocoApp />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/avaliador/circuito"
+            element={
+              <ProtectedRoute roles={['avaliador']}>
+                <CircuitoApp />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/avaliador/teorica"
+            element={
+              <ProtectedRoute roles={['avaliador']}>
+                <TeoricaApp />
               </ProtectedRoute>
             }
           />

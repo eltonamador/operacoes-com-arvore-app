@@ -1,17 +1,147 @@
 # wake-up.md
 
+## Sprint 2026-04-14 — Padronização visual e UX do portal
+
+### O que foi feito
+
+Revisão completa de consistência visual e UX do portal (procedimento padrão frontend-design).
+
+**Arquivos criados/alterados:**
+
+- `src/styles/global.css` — adicionadas classes `.page-section-label`, `.page-section-title`, `.page-section-desc` para padronização de cabeçalhos de página; adicionado `.btn-danger-on-header` para o botão de logout no header vermelho; corrigidos `.header-title` e `.header-subtitle` (eram texto escuro sobre fundo vermelho — contraste inaceitável em campo); melhorado `.portal-nav-card` com accent border lateral; adicionada responsividade da `.page-section-title` para mobile; adicionado padding do `.portal-content` para tablet.
+- `src/components/PortalLayout.jsx` — adicionado wrapper `.portal-content-inner` no main (max-width 1100px, centralizado); "Sair" alterado para `.btn-danger-on-header` (legível no header vermelho).
+- `src/pages/PortalHome.jsx` — cabeçalho refatorado usando `.page-section-label/title/desc`.
+- `src/pages/AvaliadorArea.jsx` — cabeçalho refatorado; cards de módulo agora exibem badge VC1/VC2/VC3.
+- `src/pages/CoordenacaoArea.jsx` — cabeçalho refatorado.
+- `src/pages/AlunoArea.jsx` — cabeçalho refatorado; input de busca usa `.form-input`; cards de consolidação usam `.stat-card/stat-label/stat-value`.
+- `src/modules/teorica/screens/Evaluation.jsx` — refatorado para usar `.form-input`, `.card`, `.card-label`, `.card-title`, `var(--success-bg)`, `var(--danger-bg)`, `var(--success)`, `var(--danger)`; `window.location.href` substituído por `useNavigate`.
+- `src/modules/teorica/screens/Signature.jsx` — mesmo padrão; `window.location.href` corrigido.
+- `src/modules/teorica/screens/Summary.jsx` — usa `.summary-data-item`, `.status-info`, `.result-banner`; `window.location.href` corrigido.
+- `src/modules/teorica/screens/Reports.jsx` — usa `.stat-card/stat-label/stat-value`, `.filter-bar/.filter-btn`, `.portal-table`; `window.location.href` corrigido; filtro de data migrado de select para filter-btn pills.
+- `src/modules/shared/screens/StudentForm.jsx` — `window.location.href` substituído por `useNavigate`.
+
+### Problemas corrigidos
+
+- `.header-title` / `.header-subtitle` usavam `var(--text-primary)` / `var(--text-secondary)` (cores escuras) sobre fundo vermelho degradê — contraste inaceitável para uso em campo. Corrigido para branco.
+- `portal-content-inner` (max-width 1100px) estava definido no CSS mas nunca usado — PortalLayout agora envolve children com ele.
+- `window.location.href = '/avaliador'` em 5 arquivos causava hard reload (perde contexto React/Auth). Substituído por `useNavigate()`.
+- Módulo `teorica` usava inline styles extensivos com valores hardcoded (rgba hex) ignorando o sistema de design tokens do CSS.
+- `var(--bg-input, var(--bg))` referenciava `--bg` inexistente — corrigido para `var(--input-bg)` via classe `.form-input`.
+
+### O que permanece pendente
+
+- Motosserra, escadas, poços e circuito não foram tocados (já seguem o padrão CSS estabelecido).
+- `AdvancedReports` de poços e circuito: não têm versão avançada (só basica) — baixa prioridade.
+- Login.jsx: usa inline styles extensivos (aceitável por ser tela isolada com estilo intencional dark).
+
+### Validação
+
+- Manual/limitada (sem testes automatizados).
+- Nenhuma lógica de negócio alterada.
+- Nenhuma persistência alterada.
+- Nenhuma regra de cálculo alterada.
+- Fluxo de autenticação preservado.
+
+---
+
+## Sprint 2026-04-13 — Módulo teorica (Prova Teórica) implementado
+
+### O que foi feito
+
+Implementação do módulo `teorica` (Prova Teórica — VC3) como MVP funcional. Diferencia-se dos módulos práticos por não ter checklist de penalidades — o avaliador lança a nota diretamente (0 a 10).
+
+**Arquivos criados:**
+- `src/modules/teorica/TeoricaApp.jsx` — orquestrador do módulo; segue padrão dos demais módulos
+- `src/modules/teorica/screens/Evaluation.jsx` — entrada de nota direta (0–10) com validação e indicador APROVADO/REPROVADO
+- `src/modules/teorica/screens/Signature.jsx` — ciência do aluno via PIN (reutiliza lógica dos demais módulos)
+- `src/modules/teorica/screens/Summary.jsx` — resumo e persistência em `avaliacoes` com `module_id = 'teorica'`
+- `src/modules/teorica/screens/Reports.jsx` — listagem de avaliações teóricas com filtro por data e estatísticas
+
+**Arquivos modificados:**
+- `src/modules/shared/hooks/useEvaluationState.js` — adicionado `theoricaScore` (null) no estado inicial e `setTheoricaScore` no retorno
+- `src/app/Router.jsx` — import TeoricaApp + rota `/avaliador/teorica` com ProtectedRoute
+- `src/pages/AvaliadorArea.jsx` — módulo teorica adicionado à lista de módulos (5 módulos agora)
+- `src/pages/CoordenacaoArea.jsx` — teorica adicionado a MODULE_LABELS, FILTER_OPTIONS e Promise.all
+
+**Reaproveitado de shared/:**
+- `StudentForm.jsx` — formulário de seleção de aluno
+- `useEvaluationState.js` — hook de estado (estendido com theoricaScore)
+- `avaliacoesService.js` — persistência (saveAvaliacao, fetchAvaliacoesByModulo, deleteAvaliacao)
+
+### Fluxo funcional
+form → evaluation (nota direta) → signature (PIN) → summary → save → reports
+
+### Persistência
+- `module_id = 'teorica'` na tabela `avaliacoes`
+- `itens_avaliados` inclui `tipo_prova: 'teorica'` e `nota_teorica`
+- `penalidades = 0` (não se aplica)
+- Preparado para consolidação VC3 (decisão 2026-04-13)
+
+### O que permanece pendente para teorica
+- AdvancedReports (não é prioridade — apenas motosserra e escadas têm)
+- Exportação CSV/XLSX específica (Reports básico já funciona)
+
+### Validação
+- Manual/limitada (sem testes automatizados)
+- Nenhum erro de compilação detectado
+- Nenhum módulo existente foi alterado funcionalmente
+
+---
+
+## Sprint 2026-04-13 — Atualização de documentação de design
+
+### O que foi feito
+
+Reescrita e atualização completa da documentação de design do sistema para refletir o estado real do portal (4 módulos funcionais, autenticação, perfis, consolidação decidida).
+
+**Arquivos alterados:**
+- `CLAUDE.md` — reescrito para ~90 linhas; removidas seções redundantes; referências adicionadas para `decision-rules.md` e `session-policies.md`
+- `docs/current-state.md` — reescrito completamente; reflete portal com 4 módulos, auth, perfis, arquitetura modular real; removidas referências obsoletas a `App.jsx` centralizado e ausência de autenticação
+- `docs/spec.md` — §4 atualizado (estado de origem); §6 com marcações de fase (✅/🔄/🔜); §8 com estrutura real de diretórios
+- `docs/prd.md` — §9 atualizado para refletir módulos já implementados e Prova Teórica como VC3
+
+**Arquivos criados:**
+- `docs/decision-rules.md` — regras de decisão e tabela de roteamento por tipo de tarefa (movido de CLAUDE.md)
+- `docs/session-policies.md` — política de economia de contexto (movido de CLAUDE.md)
+
+### Risco associado
+
+Nenhuma alteração de código — apenas documentação. Validação manual confirmada.
+
+---
+
+## Sprint 2026-04-13 — Módulo circuito fechado
+
+### O que foi feito
+
+Fechamento completo do módulo `circuito`. Todas as telas implementadas seguindo o padrão do módulo `pocos`.
+
+**Arquivos criados:**
+- `src/modules/circuito/screens/Signature.jsx` — confirmação por PIN; emoji 🔄; importa SECTIONS e calcScore de penalties.js
+- `src/modules/circuito/screens/Summary.jsx` — resumo da avaliação com botão Salvar; banner APROVADO/REPROVADO
+- `src/modules/circuito/screens/Reports.jsx` — lista de avaliações do módulo circuito; filtro por data; grid de estatísticas
+
+**Arquivos modificados:**
+- `src/modules/circuito/CircuitoApp.jsx` — imports e renders de Signature, Summary e Reports adicionados; placeholder removido
+- `src/app/Router.jsx` — rota `/avaliador/circuito` adicionada com ProtectedRoute roles avaliador; import CircuitoApp
+- `src/pages/CoordenacaoArea.jsx` — circuito adicionado a MODULE_LABELS, FILTER_OPTIONS e Promise.all
+
+### Fluxo funcional
+form → evaluation → signature → summary → save → reports (completo)
+
+### CoordenacaoArea cobre agora
+motosserra, escadas, pocos, circuito
+
+### O que permanece pendente
+AdvancedReports para circuito (não existe em nenhum módulo exceto motosserra — não é prioridade atual)
+
+---
+
 ## Estado atual do projeto
 
-O projeto possui hoje um sistema funcional de avaliação prática de motosserra, desenvolvido em React com Supabase, já capaz de:
+O projeto possui hoje um portal funcional de avaliações de Salvamento Terrestre, com 4 módulos (motosserra, escadas, poços, circuito), autenticação por perfil via Supabase Auth, persistência multi-módulo com `module_id`, e visão consolidada para coordenação.
 
-- selecionar aluno, avaliador e data;
-- aplicar penalidades em checklist;
-- calcular nota em tempo real;
-- colher ciência do avaliado por PIN;
-- salvar avaliações no banco;
-- gerar relatórios e exportações.
-
-Esse sistema está operacionalmente coerente e deve ser tratado como o núcleo funcional inicial do projeto.
+Próximos passos: implementar Prova Teórica (`teorica`) e consolidação acadêmico-operacional (Fase 4 da spec.md).
 
 ---
 
@@ -40,22 +170,71 @@ Em `src/services/avaliacoesService.js → fetchAvaliacoesByData`, o filtro por d
 
 ---
 
+## Sprint — módulo pocos fechado em 2026-04-13
+
+### O que foi feito
+
+Fechamento do módulo `pocos` com tela de relatórios e integração à CoordenacaoArea.
+
+**Arquivo criado:**
+- `src/modules/pocos/screens/Reports.jsx` — relatório do módulo pocos; segue padrão do módulo escadas; exibe lista de avaliações com filtro por data, estatísticas (total, aprovados, reprovados, média), botão de exclusão por linha e botão de limpar tudo. Usa `finalScore` e `isPassing` já persistidos — não recalcula nota.
+
+**Arquivos modificados:**
+- `src/modules/pocos/PocoApp.jsx` — adicionado import de `Reports` e render condicional `{state.screen === 'reports' && <Reports {...props} />}`. O fluxo completo form → evaluation → signature → summary → reports agora está operacional.
+- `src/pages/CoordenacaoArea.jsx` — adicionado `pocos` em `MODULE_LABELS`, `FILTER_OPTIONS` e no `Promise.all` de carregamento. A CoordenacaoArea agora cobre motosserra, escadas e pocos.
+
+### O que permaneceu igual
+
+- Módulos motosserra e escadas — intocados.
+- Regras de cálculo de nota, penalidades, pesos — intocados.
+- Banco de dados, autenticação, persistência — intocados.
+
+### Estado atual do módulo pocos
+
+Feature parity com escadas: **sim**, com exceção do botão "Relatórios Avançados" presente no escadas. O módulo pocos não expõe essa navegação por ora (a tela `advanced-reports` não foi criada para pocos). Isso é intencional e pode ser adicionado em sprint futura.
+
+---
+
+## Sprint — núcleo do módulo circuito criado em 2026-04-13
+
+### O que foi feito
+
+Criação do núcleo funcional do módulo `circuito` (Circuito Operacional — VC-3 2ª parte).
+
+**Arquivos criados:**
+- `src/modules/circuito/CircuitoApp.jsx` — orquestrador do módulo; segue padrão de `PocoApp.jsx`; usa `useEvaluationState` de `shared/hooks`; carrega avaliações com `fetchAvaliacoesByModulo('circuito')`; persiste com `module_id: 'circuito'`.
+- `src/modules/circuito/screens/Evaluation.jsx` — tela de avaliação; checklist completo das 7 seções (1.0 a 7.0); seções 2.0–7.0 (estações operacionais) com cabeçalho dourado destacado; cálculo em tempo real via `calcScore` de `penalties.js`; campo de erro não previsto; status APROVADO/REPROVADO (nota >= 7,0); botão "Avançar para Assinatura" presente (screen `signature` ainda não implementada).
+
+**Reutilizados de `shared/`:**
+- `shared/screens/StudentForm.jsx` — sem modificação
+- `shared/hooks/useEvaluationState.js` — sem modificação
+
+### O que permaneceu igual
+
+- Módulos motosserra, escadas e pocos — intocados.
+- Router, banco, auth, serviços — intocados.
+
+### Estado atual do módulo circuito
+
+Funcional até a tela de avaliação. Pendente para completar o módulo:
+- `screens/Signature.jsx`
+- `screens/Summary.jsx`
+- `screens/Reports.jsx`
+- Conexão ao portal (Router.jsx) e à CoordenacaoArea
+
+---
+
 ## Leitura correta do sistema
 
-O sistema atual **não deve ser tratado como produto final**.
+O sistema é um portal funcional de avaliações de Salvamento Terrestre, mas ainda não está completo. Faltam: Prova Teórica, consolidação automática (VC1/VC2/VC3), RLS e AlunoArea funcional.
 
-Ele deve ser entendido como:
-- um módulo funcional já validado;
-- uma base de conhecimento operacional importante;
-- o embrião de um portal maior de avaliações de Salvamento Terrestre.
-
-A visão futura do projeto é um portal centralizado com:
-- login unificado;
-- perfis distintos de acesso;
-- módulos por oficina;
-- consolidação automática de médias e pesos;
-- cálculo de aptidão final;
-- relatórios individuais e mapas de notas integrados para coordenação.
+A visão de produto final é um portal com:
+- login unificado ✅;
+- perfis distintos de acesso ✅;
+- módulos por oficina (4 de 5 concluídos);
+- consolidação automática de médias e pesos (decidida, não implementada);
+- cálculo de aptidão final (decidido, não implementado);
+- relatórios individuais e mapas de notas integrados para coordenação (parcial).
 
 ---
 
@@ -63,16 +242,12 @@ A visão futura do projeto é um portal centralizado com:
 
 Os seguintes arquivos devem ser considerados leitura prioritária antes de mudanças estruturais:
 
-- `docs/current-state.md`
-- `docs/prd.md`
-- `docs/spec.md`
-- `CLAUDE.md`
-
-Esses documentos definem:
-- o que o sistema é hoje;
-- o que o produto deve se tornar;
-- como a transição deve acontecer;
-- como a IA deve operar no repositório.
+- `docs/current-state.md` — retrato do sistema atual
+- `docs/prd.md` — visão do produto
+- `docs/spec.md` — direção técnica e fases
+- `docs/decision-rules.md` — regras de decisão e roteamento por tipo de tarefa
+- `docs/session-policies.md` — políticas de economia de contexto
+- `CLAUDE.md` — orientação essencial para atuação no repositório
 
 ---
 
@@ -80,23 +255,91 @@ Esses documentos definem:
 
 Pontos relevantes do estado técnico atual:
 
-- `App.jsx` concentra estado global e navegação — acesso ao Supabase foi extraído para serviço;
-- `src/services/avaliacoesService.js` centraliza todas as operações de persistência de avaliações;
-- o sistema ainda é uma SPA enxuta e centralizada;
-- não existe autenticação formal por perfil;
-- dados críticos ainda dependem, em parte, de arquivos locais;
-- não há testes automatizados identificados;
-- o sistema atual é funcional, e agora tem base um pouco mais segura para crescer.
+- portal SPA com React 18 + Vite + react-router-dom;
+- autenticação via Supabase Auth com 4 perfis (avaliador, coordenacao, aluno, admin);
+- roteamento protegido por `ProtectedRoute` com validação de `role`;
+- `src/services/avaliacoesService.js` centraliza todas as operações de persistência;
+- 4 módulos funcionais: motosserra, escadas, pocos, circuito;
+- `src/modules/shared/` com componentes e hooks reutilizáveis;
+- CoordenacaoArea cobre os 4 módulos;
+- RLS desabilitada em `avaliacoes` — ponto de atenção de segurança;
+- AlunoArea bloqueada por migration pendente de `numero_ordem` em `profiles`;
+- dados de alunos/instrutores ainda em arquivos locais (`shared/data/`);
+- não há testes automatizados identificados.
 
 ---
 
 ## Prioridade técnica imediata
 
-Sprint 1 concluída, incluindo correção do bug do filtro por data e extração do estado de avaliação em curso para hook dedicado. A próxima frente é continuar a Fase 1 da SPEC:
+A frente de **consolidação acadêmico-operacional** (Fase 4 da spec.md) está pronta para começar.
 
-- extraído: `src/hooks/useEvaluationState.js` — estado da avaliação em curso e todos os seus handlers;
-- `App.jsx` agora tem ~90 linhas e responsabilidade clara: orquestração de persistência + composição de tela;
-- preparar estrutura de pastas `src/modules/` para quando a Fase 2 (portal, autenticação) começar.
+### O que foi decidido (2026-04-13)
+
+Arquivo criado: `docs/decisions/2026-04-13-consolidacao-academico-operacional.md`
+
+Fórmulas finalizadas e mapeadas:
+- VC1 = (escadas + poços) / 2
+- VC2 = (motosserra + circuito) / 2
+- VC3 = teorica
+- Média Final = (VC1 + VC2 + VC3) / 3
+
+Regras operacionais:
+- Agregação: usa a **última avaliação registrada** por oficina
+- Prova Teórica: persiste em `avaliacoes` com `module_id = 'teorica'`
+
+### Próximo passo imediato
+
+Poço e Circuito já estão implementados. A ordem agora é:
+
+1. ✅ Módulo **Poço** (`'pocos'`) — concluído
+2. ✅ Módulo **Circuito** (`'circuito'`) — concluído
+3. ⏳ Implementar **Prova Teórica** (`'teorica'`) — abre possibilidade de calcular VC3 completo
+4. ⏳ Criar `consolidacaoService.js` com as funções `calcularConsolidacao` e `fetchConsolidacaoPorAluno
+
+---
+
+## Sprint — circuito/data/penalties.js criado em 2026-04-13
+
+### O que foi feito
+
+Criação da camada de dados de penalidades do módulo `circuito`.
+
+**Arquivo criado:**
+- `src/modules/circuito/data/penalties.js` — define `SECTIONS` com 7 seções (tempo + 6 estações) e exporta `calcScore` idêntica ao padrão dos demais módulos.
+
+**Estrutura das seções:**
+- Seção 1.0: Tempo de execução (estações 1–5, máx 20 min, 8 faixas de 1 min, –0,20 cada)
+- Seção 2.0: Estação 1 — Nós e Amarração (5 nós, –0,20 cada, total 1,0 pt)
+- Seção 3.0: Estação 2 — Escada e Maca Cesto (4 itens, total 2,5 pts)
+- Seção 4.0: Estação 3 — Nós e Amarrações (4 nós, –0,20 cada, total modelado 0,80 pt)
+- Seção 5.0: Estação 4 — Sistema de Vantagem Mecânica Reduzido (2 itens, total modelado 1,50 pt)
+- Seção 6.0: Estação 5 — Sistema de Vantagem Mecânica Estendido no Tripé (2 itens, –1,00 cada, total 2,0 pts)
+- Seção 7.0: Estação 6 — Espaço Confinado / Galerias (2 itens, –0,50 cada, total 1,0 pt; tempo específico de 5 min é critério separado)
+
+**Adaptação do modelo:**
+A ficha original é de pontuação positiva. No portal o modelo é invertido: item marcado = critério não executado = desconto aplicado sobre base 10.
+
+**Discrepâncias da ficha registradas em comentário no código:**
+1. Estação 3: ficha declara 1,0 pt mas lista apenas 4 critérios de 0,20 (soma = 0,80). 0,20 pt não documentado. Modelados apenas os 4 critérios explícitos.
+2. Estação 4: ficha declara 2,5 pts mas documenta critérios que somam apenas 1,50. 1,00 pt não está descrito. Modelados apenas os critérios explícitos.
+
+### O que permaneceu igual
+
+- Todos os outros módulos (motosserra, escadas, pocos) — intocados.
+- Banco, autenticação, persistência — intocados.
+- `shared/` — intocado.
+
+### Estado atual do módulo circuito
+
+Apenas `penalties.js` existe. O módulo ainda não tem fluxo funcional.
+
+**Pendente para fluxo completo:**
+- `CircuitoApp.jsx` — orquestrador do módulo
+- `screens/Evaluation.jsx` — checklist baseado nas seções de `penalties.js`
+- `screens/Signature.jsx` — pode reuso `shared/`
+- `screens/Summary.jsx` — pode reuso `shared/`
+- `screens/Reports.jsx` — específico do módulo
+- Integração à rota do portal e à `CoordenacaoArea`
 
 ---
 
@@ -1004,6 +1247,25 @@ Criação de `PortalLayout` e aplicação nas páginas de portal. Mudança exclu
 
 ---
 
+## Sprint 20 — dados do módulo Poços criados em 2026-04-13
+
+### O que foi feito
+
+Criação de `src/modules/pocos/data/penalties.js` — arquivo de penalidades para o módulo de Salvamento em Espaço Confinado (Poço).
+
+**Arquivo criado:**
+- `src/modules/pocos/data/penalties.js` — exporta `SECTIONS` com 5 seções e `calcScore` idêntica ao padrão dos módulos existentes.
+
+**Fonte:** Ficha "AVALIAÇÃO PRÁTICA DE SALVAMENTO EM ESPAÇO CONFINADO — POÇO VC-2 / CFS 2022".
+
+**Adaptação aplicada:** o módulo compõe o VC1 no CFSD-26 (junto com Escadas), não o VC2 da ficha original. O conteúdo técnico e as penalidades foram preservados integralmente; apenas o enquadramento institucional muda.
+
+**O que NÃO foi alterado:** nenhum módulo existente, nenhuma rota, nenhuma persistência, nenhuma autenticação.
+
+**Pendente para este módulo:** `PocoApp.jsx`, `Evaluation.jsx`, `Signature.jsx`, `Summary.jsx`, rota no portal, integração com `avaliacoesService`.
+
+---
+
 ## Resumo curto para retomada rápida
 
 Projeto atual:
@@ -1034,5 +1296,79 @@ Prioridade imediata:
 - implementar tela de conteúdo para AlunoArea
 - preparar Fase 3
 
+---
+
+## Sprint 21 — núcleo funcional do módulo Poços criado em 2026-04-13
+
+### O que foi feito
+
+Implementação de `PocoApp.jsx` e `Evaluation.jsx` para o módulo de Salvamento em Espaço Confinado (Poço), fechando o fluxo mínimo de avaliação (form → evaluation).
+
+**Arquivos criados:**
+- `src/modules/pocos/PocoApp.jsx` — orquestrador do módulo. Importa `StudentForm` de shared, `Evaluation` de `./screens/Evaluation`, usa `useEvaluationState` de shared. Passa `moduleName="Salvamento em Espaço Confinado — Poço"` e `moduleEmoji="🕳️"`. Usa `module_id: 'pocos'` na persistência.
+- `src/modules/pocos/screens/Evaluation.jsx` — tela de avaliação funcional com checklist completo das 5 seções, cálculo de nota em tempo real, campo de erro não previsto e painel de pontuação com status APROVADO/REPROVADO. As 3 fases operacionais (seções 3.0, 4.0, 5.0) têm cabeçalho visual destacado com borda dourada e fundo gradiente.
+
+**Arquivo modificado:**
+- `src/app/Router.jsx` — adicionada rota `/avaliador/pocos` com `<PocoApp />` protegida por `ProtectedRoute roles={['avaliador']}`.
+
+### O que foi reutilizado de shared
+
+- `src/modules/shared/screens/StudentForm.jsx` — reutilizado sem alteração
+- `src/modules/shared/hooks/useEvaluationState.js` — reutilizado sem alteração
+
+### O que NÃO foi implementado ainda (pendente)
+
+- `Signature.jsx` — assinatura/visto do avaliado
+- `Summary.jsx` — resumo da avaliação com botões de salvar/imprimir
+- `Reports.jsx` — relatório de avaliações salvas
+- Botão de avançar para assinatura (a tela de Evaluation exibe placeholder para etapa futura)
+
+### O que permaneceu igual
+
+- Módulos motosserra e escadas — intocados
+- Shared layer — intocada (nenhum arquivo de shared foi modificado)
+- Regras de cálculo — preservadas integralmente da `penalties.js` existente
+- Persistência e autenticação — intocadas
+
 Regra de ouro:
 - preservar o que funciona hoje enquanto se prepara corretamente o sistema de amanhã.
+
+---
+
+## Sprint 22 — fluxo completo do módulo Poços (2026-04-13)
+
+### O que foi feito
+
+Fechamento do fluxo de avaliação do módulo Poços: form → evaluation → signature → summary → (save → reports).
+
+**Arquivos criados:**
+- `src/modules/pocos/screens/Signature.jsx` — tela de visto de prova com PIN de 4 dígitos (bloqueio após 3 tentativas, 30s), declaração de ciência por checkbox, listagem de erros/penalidades e exibição de nota com APROVADO/REPROVADO. Segue o padrão do módulo escadas; emojis e contexto ajustados para "🕳️ Poço".
+- `src/modules/pocos/screens/Summary.jsx` — resumo da avaliação com banner de resultado, listagem de itens penalizados, painel de visto de prova e pontuação detalhada. Botão "Salvar e Ver Relatório" chama `saveEvaluation` e navega para reports. Botão "Voltar" retorna à `signature`. Segue o padrão do módulo escadas.
+
+**Arquivos modificados:**
+- `src/modules/pocos/screens/Evaluation.jsx` — substituído o placeholder "Assinatura e relatórios serão implementados em etapa futura" por botão real "Avançar para Assinatura →" com `onClick={() => goTo('signature')}` e classe `btn btn-primary`.
+- `src/modules/pocos/PocoApp.jsx` — adicionados imports de `Signature` e `Summary`; adicionados renders condicionais `state.screen === 'signature'` e `state.screen === 'summary'`.
+
+### O que foi reutilizado
+
+- Padrão completo de `Signature.jsx` do módulo escadas (lógica de PIN, bloqueio, visto, layout de grid).
+- Padrão completo de `Summary.jsx` do módulo escadas (banner de resultado, listagem de penalidades, sidebar com visto e pontuação).
+- `calcScore` e `SECTIONS` de `src/modules/pocos/data/penalties.js` — sem alteração.
+- Nenhum arquivo de `shared/` foi modificado.
+
+### O que NÃO foi alterado
+
+- Módulos motosserra e escadas — intocados.
+- Shared layer — intocada.
+- Persistência, autenticação e RLS — intocados.
+- `module_id: 'pocos'` já estava em `PocoApp.jsx` — não duplicado.
+
+### O que ainda falta para o módulo estar 100% completo
+
+- `Reports.jsx` — tela de relatório de avaliações salvas para o módulo pocos (filtrando por `module_id = 'pocos'`).
+- `AdvancedReports.jsx` — opcional, feature parity com motosserra/escadas.
+- Integração de Poços na `CoordenacaoArea` (adicionar ao `Promise.all` que já busca motosserra e escadas).
+
+### Status atual do fluxo
+
+form → evaluation → signature → summary → save → (reports — stub ainda ausente) — **fluxo principal funcional**.

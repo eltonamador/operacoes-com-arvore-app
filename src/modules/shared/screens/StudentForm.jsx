@@ -1,8 +1,12 @@
 import { useState, useMemo, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import studentsData from '../data/students.json'
 import instructorsData from '../data/instructors.json'
+import { useTheme } from '../../../contexts/ThemeContext'
 
 export default function StudentForm({ state, updateStudentData, goTo, moduleName = 'Prova', moduleEmoji = '' }) {
+  const navigate = useNavigate()
+  const { theme } = useTheme()
   // Pré-preencher com data atual se não houver data
   const todaySP = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' })
 
@@ -106,9 +110,22 @@ export default function StudentForm({ state, updateStudentData, goTo, moduleName
           <span className="header-subtitle">Ficha de Avaliação Prática – CFSD 2026</span>
         </div>
         <div className="header-spacer" />
-        <button className="btn btn-secondary" onClick={() => goTo('advanced-reports')}>
-          📊 Relatórios Avançados
-        </button>
+        <div className="header-actions">
+          <button
+            className="btn btn-secondary"
+            style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
+            onClick={() => navigate('/avaliador')}
+          >
+            Voltar ao Portal
+          </button>
+          <button
+            className="btn btn-secondary"
+            style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
+            onClick={() => goTo('advanced-reports')}
+          >
+            📊 Relatórios
+          </button>
+        </div>
         <div className="header-badge">CFSD 2026</div>
       </header>
 
@@ -150,7 +167,7 @@ export default function StudentForm({ state, updateStudentData, goTo, moduleName
                 name="data"
                 value={form.data}
                 onChange={handleChange}
-                style={{ colorScheme: 'dark' }}
+                style={{ colorScheme: theme === 'dark' ? 'dark' : 'light' }}
               />
             </div>
 
@@ -185,13 +202,14 @@ export default function StudentForm({ state, updateStudentData, goTo, moduleName
                       top: '100%',
                       left: 0,
                       right: 0,
-                      background: '#1a1a1a',
-                      border: '1px solid #444',
+                      background: 'var(--dropdown-bg)',
+                      border: '1px solid var(--dropdown-border)',
                       borderTop: 'none',
                       borderRadius: '0 0 8px 8px',
                       maxHeight: 280,
                       overflowY: 'auto',
                       zIndex: 20,
+                      boxShadow: 'var(--shadow)',
                     }}
                   >
                     {filteredStudents.length === 0 ? (
@@ -218,15 +236,16 @@ export default function StudentForm({ state, updateStudentData, goTo, moduleName
                             padding: '12px 16px',
                             background: 'transparent',
                             border: 'none',
-                            borderBottom: '1px solid #2a2a2a',
+                            borderBottom: '1px solid var(--score-row-border)',
                             color: 'var(--text-primary)',
                             textAlign: 'left',
                             cursor: 'pointer',
                             fontSize: 14,
-                            transition: 'background 0.2s',
+                            transition: 'background 0.15s',
+                            minHeight: 44,
                           }}
                           onMouseEnter={e => {
-                            e.currentTarget.style.background = '#2a2a2a'
+                            e.currentTarget.style.background = 'var(--dropdown-item-hover)'
                           }}
                           onMouseLeave={e => {
                             e.currentTarget.style.background = 'transparent'
@@ -250,7 +269,7 @@ export default function StudentForm({ state, updateStudentData, goTo, moduleName
                 value={form.ordem}
                 readOnly
                 style={{
-                  background: '#161616',
+                  background: 'var(--input-readonly-bg)',
                   cursor: 'not-allowed',
                   color: 'var(--gold)',
                 }}
@@ -282,13 +301,14 @@ export default function StudentForm({ state, updateStudentData, goTo, moduleName
                       top: '100%',
                       left: 0,
                       right: 0,
-                      background: '#1a1a1a',
-                      border: '1px solid #444',
+                      background: 'var(--dropdown-bg)',
+                      border: '1px solid var(--dropdown-border)',
                       borderTop: 'none',
                       borderRadius: '0 0 8px 8px',
                       maxHeight: 240,
                       overflowY: 'auto',
                       zIndex: 20,
+                      boxShadow: 'var(--shadow)',
                     }}
                   >
                     {filteredInstructors.length === 0 ? (
@@ -315,15 +335,16 @@ export default function StudentForm({ state, updateStudentData, goTo, moduleName
                             padding: '12px 16px',
                             background: 'transparent',
                             border: 'none',
-                            borderBottom: '1px solid #2a2a2a',
+                            borderBottom: '1px solid var(--score-row-border)',
                             color: 'var(--text-primary)',
                             textAlign: 'left',
                             cursor: 'pointer',
                             fontSize: 14,
-                            transition: 'background 0.2s',
+                            transition: 'background 0.15s',
+                            minHeight: 44,
                           }}
                           onMouseEnter={e => {
-                            e.currentTarget.style.background = '#2a2a2a'
+                            e.currentTarget.style.background = 'var(--dropdown-item-hover)'
                           }}
                           onMouseLeave={e => {
                             e.currentTarget.style.background = 'transparent'

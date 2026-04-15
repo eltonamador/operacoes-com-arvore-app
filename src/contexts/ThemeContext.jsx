@@ -4,7 +4,7 @@ const ThemeContext = createContext(null)
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('cbmap-theme') || 'dark'
+    return localStorage.getItem('cbmap-theme') || 'light'
   })
 
   useEffect(() => {
