@@ -56,7 +56,7 @@ export default function Reports({
         <div className="header-titles">
           <span className="header-org">CBMAP</span>
           <span className="header-title">Relatório de Avaliações</span>
-          <span className="header-subtitle">Supabase • CFSD 2026</span>
+          <span className="header-subtitle">Motosserra • CFSD 2026</span>
         </div>
         <div className="header-spacer" />
         <div className="header-actions">

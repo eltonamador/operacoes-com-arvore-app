@@ -1,5 +1,61 @@
 # wake-up.md
 
+## Sprint 2026-04-15 — Correção de scroll nas páginas de Relatórios Avançados
+
+### O que foi feito
+
+Corrigida a rolagem vertical nas telas de **AdvancedReports** de todos os módulos (motosserra, escadas, pocos, circuito) — e por extensão, todos os screens que usam `.screen-container`.
+
+**Causa:** `.screen-container` usava `height: 100vh` mas é renderizado como flex-child de `.app-root` (também `height: 100vh; display: flex; flex-direction: column`). Em navegadores modernos, um `height: 100vh` explícito em um flex-child não constrange adequadamente a altura do filho da mesma forma que `flex: 1`, fazendo com que `.screen-content` (overflow-y: auto) não ativasse o scroll.
+
+**Arquivo alterado:**
+- `src/styles/global.css` — `.screen-container`: substituído `height: 100vh` por `flex: 1; min-height: 0`. A regra mobile override (height: auto / min-height: 100vh) permanece intacta.
+
+**O que não foi alterado:** lógica de negócio, banco, auth, relatórios, cálculos de nota, layout visual.
+
+---
+
+## Sprint 2026-04-15 — Notas VC-1.1 Escada importadas + correção de subtitle
+
+### O que foi feito
+
+Importação das notas definitivas VC-1.1 Escada (CFSD-26) via script Node.js direto no Supabase.
+
+**Script criado:**
+- `scripts/update-escadas-notas.js` — script com 177 notas hardcoded (Nº 1–180, ausentes 14, 124, 175). Suporta `--dry-run` (padrão) e `--execute`. Atualiza existentes, insere novos. `data_avaliacao = '2026-04-15'`.
+
+**Resultado da execução:**
+- 1 registro atualizado (existia no banco)
+- 176 registros inseridos
+- 0 erros
+- Todos os 177 alunos encontrados em `students.json`
+
+**Correção visual:**
+- `src/modules/motosserra/screens/Reports.jsx` — subtitle corrigido de `"Supabase • CFSD 2026"` para `"Motosserra • CFSD 2026"` (mantém paridade visual com escadas)
+
+**O que permanece pendente**
+- Fórmulas e consolidação acadêmica VC1/VC2/Média (Fase 4 da Spec) seguem intactas na fila.
+
+---
+
+## Sprint 2026-04-15 — Importação Retroativa Módulo Escadas (script original)
+
+### O que foi feito
+
+Realizada a importação em lote das notas históricas de Escadas dos alunos, usando os dados contidos em arquivo CSV. Isso foi inserido diretamente via comunicação NodeJS com Supabase (script avulso temporário) para poupar o app de código administrativo descartável. 
+
+**Características da Importação:**
+- Lida pontuação do CSV (`notas_de_escadas_CSV_correto.csv`).
+- Cruzado número de ordem e nome vindo da listagem central do sistema (`students.json`).
+- Respeitado o campo identificador com `module_id = 'escadas'`.
+- Fallback seguro inserido em `itens_avaliados` computando a chave de aprovação para suprir os relatórios gerenciais existentes (nota >= 7.0 resulta em `{ resultado: 'APROVADO' }` pra não quebrar componente `AdvancedReports.jsx`).
+- Adicionada idempotência no script: registros de alunos com avaliação prévia no módulo `escadas` não foram duplicados. Importados na base 176 registros de novos lançamentos limpos. 
+
+**O que permanece pendente**
+- Fórmulas e consolidação acadêmica VC1/VC2/Média (Fase 4 da Spec) seguem intactas na fila. A injeção apenas aquece a base de dados.
+
+---
+
 ## Sprint 2026-04-14 — Padronização visual e UX do portal
 
 ### O que foi feito

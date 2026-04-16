@@ -72,7 +72,7 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'ranking-desempenho-escadas.csv'
+    a.download = 'ranking-desempenho.csv'
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -83,7 +83,7 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
     const ws = XLSX.utils.json_to_sheet(rows)
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Ranking')
-    XLSX.writeFile(wb, 'ranking-desempenho-escadas.xlsx')
+    XLSX.writeFile(wb, 'ranking-desempenho.xlsx')
   }
 
   // Dashboard de desempenho
@@ -115,7 +115,7 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
         <div className="header-titles">
           <span className="header-org">CBMAP</span>
           <span className="header-title">Relatórios Avançados</span>
-          <span className="header-subtitle">Dashboard de Desempenho – Escadas – CFSD 2026</span>
+          <span className="header-subtitle">Dashboard de Desempenho – CFSD 2026</span>
         </div>
         <div className="header-spacer" />
         <button

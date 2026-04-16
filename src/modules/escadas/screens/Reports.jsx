@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { generateVistoProvaReport } from '../../../utils/vistoProvaReport'
 
 const TZ = 'America/Sao_Paulo'
 
@@ -27,8 +28,10 @@ export default function Reports({
   loadEvaluations,
   reportsLoading,
 }) {
+  const [selectedPelotaoForReport, setSelectedPelotaoForReport] = useState(null)
   const [selectedDate, setSelectedDate] = useState('')
 
+  // Filtrar avaliações por data se houver data selecionada
   const filteredByDate = selectedDate
     ? savedEvaluations.filter(item => item.studentData?.data === selectedDate)
     : savedEvaluations
@@ -43,6 +46,7 @@ export default function Reports({
         ).toFixed(2)
       : '0.00'
 
+  // Extrair datas únicas para sugestão
   const uniqueDates = [...new Set(savedEvaluations.map(e => e.studentData?.data).filter(Boolean))].sort().reverse()
 
   return (
@@ -66,19 +70,33 @@ export default function Reports({
 
           <button
             className="btn btn-secondary"
-            style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
-            onClick={loadEvaluations}
-          >
-            ⟳ Atualizar
-          </button>
-
-          <button
-            className="btn btn-secondary"
             style={{ fontSize: 13, padding: '10px 18px', minHeight: 44, borderColor: 'var(--gold)', color: 'var(--gold)' }}
             onClick={() => goTo('advanced-reports')}
             disabled={savedEvaluations.length === 0}
           >
             📊 Relatórios Avançados
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
+            onClick={() => {
+              const pelotao = selectedPelotaoForReport || (savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.pelotao : null)
+              const data = selectedDate || (savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.data : null)
+              const avaliador = savedEvaluations.length > 0 ? savedEvaluations[0].studentData?.avaliador : null
+              generateVistoProvaReport(pelotao, data, avaliador)
+            }}
+            disabled={savedEvaluations.length === 0}
+          >
+            📄 Visto de Prova
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            style={{ fontSize: 13, padding: '10px 18px', minHeight: 44 }}
+            onClick={loadEvaluations}
+          >
+            ⟳ Atualizar
           </button>
 
           <button

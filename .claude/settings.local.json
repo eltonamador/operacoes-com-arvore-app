@@ -12,7 +12,10 @@
       "Bash(grep -E \"\\\\.\\(json|md|env|html|js|jsx|ts|tsx\\)$|^d\")",
       "Bash(pandoc \"C:\\\\Users\\\\elton\\\\Desktop\\\\CBMAP - Cursos e Instrução\\\\CFSD-26\\\\Circuito_Operacional\\\\ProvadevCircuito.docx\" -t plain)",
       "Read(//c/Users/elton/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/cebd73f7-c013-4c2b-ba93-208cff86b6da/f852b36c-c417-4809-85f7-8ed038bf3058/skills/docx/**)",
-      "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\elton\\\\Desktop\\\\CBMAP - Cursos e Instrução\\\\CFSD-26\\\\Circuito_Operacional\\\\ProvadevCircuito.docx\" unpacked_circuito/)"
+      "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\elton\\\\Desktop\\\\CBMAP - Cursos e Instrução\\\\CFSD-26\\\\Circuito_Operacional\\\\ProvadevCircuito.docx\" unpacked_circuito/)",
+      "mcp__mcp-registry__search_mcp_registry",
+      "Bash(node scripts/update-escadas-notas.js)",
+      "Bash(node scripts/update-escadas-notas.js --execute)"
     ]
   }
 }

@@ -1819,7 +1819,8 @@ textarea.form-input {
 .screen-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
   background: var(--bg-primary);
 }
