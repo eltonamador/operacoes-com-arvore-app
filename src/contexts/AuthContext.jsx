@@ -9,17 +9,33 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   async function fetchProfile(userId) {
-    const { data, error } = await supabase
+    // Timeout de 5s: se a query ao Supabase demorar demais, retorna null
+    // em vez de travar o boot do app indefinidamente.
+    const PROFILE_TIMEOUT_MS = 5000
+
+    const profilePromise = supabase
       .from('profiles')
       .select('role, nome, numero_ordem')
       .eq('id', userId)
       .single()
 
-    if (error) {
-      console.error('AuthContext: erro ao buscar perfil', error.message)
+    try {
+      const result = await Promise.race([
+        profilePromise,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('fetchProfile timeout')), PROFILE_TIMEOUT_MS)
+        ),
+      ])
+
+      if (result.error) {
+        console.error('AuthContext: erro ao buscar perfil', result.error.message)
+        return null
+      }
+      return result.data
+    } catch (err) {
+      console.warn('AuthContext: fetchProfile falhou ou excedeu timeout', err.message)
       return null
     }
-    return data
   }
 
   useEffect(() => {
@@ -73,14 +89,49 @@ export function AuthProvider({ children }) {
     // fetchProfile trave. Também resolve em .then() (não só em .catch()).
     supabase.auth.getSession()
       .then(({ data: { session: s } }) => resolveInitialState(s))
-      .catch(() => {
+      .catch((err) => {
+        // Se getSession falhou, o token no localStorage provavelmente está
+        // corrompido ou expirado sem possibilidade de refresh. Limpar tokens
+        // para que o próximo carregamento comece limpo (sem necessidade de
+        // o usuário limpar cache manualmente).
+        console.warn('AuthContext: getSession falhou, limpando tokens corrompidos.', err?.message)
+        try {
+          const keysToRemove = []
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i)
+            if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
+              keysToRemove.push(key)
+            }
+          }
+          keysToRemove.forEach(k => localStorage.removeItem(k))
+        } catch {
+          // localStorage pode estar indisponível (modo privado, cheio, etc.)
+        }
+
         if (!initialised) {
           initialised = true
           setLoading(false)
         }
       })
 
-    return () => subscription.unsubscribe()
+    // Caminho 3 (safety net): se nenhum dos caminhos anteriores resolveu em 8s,
+    // forçar loading=false para desbloquear a UI. O usuário será redirecionado
+    // para /login (sem session) em vez de ficar preso na tela preta.
+    const SAFETY_TIMEOUT_MS = 8000
+    const safetyTimer = setTimeout(() => {
+      if (!initialised) {
+        initialised = true
+        console.warn('AuthContext: timeout de segurança atingido (' + SAFETY_TIMEOUT_MS + 'ms). Desbloqueando UI.')
+        setSession(null)
+        setProfile(null)
+        setLoading(false)
+      }
+    }, SAFETY_TIMEOUT_MS)
+
+    return () => {
+      subscription.unsubscribe()
+      clearTimeout(safetyTimer)
+    }
   }, [])
 
   const signIn = useCallback(async (email, password) => {

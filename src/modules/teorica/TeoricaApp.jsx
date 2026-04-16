@@ -55,11 +55,37 @@ export default function TeoricaApp() {
     }
   }
 
+  async function clearAllEvaluations() {
+    const confirmDelete = window.confirm(
+      '⚠️ ATENÇÃO: Isso excluirá TODAS as avaliações deste módulo. Esta ação é irreversível. CONFIRMAR?'
+    )
+    if (!confirmDelete) return
+
+    try {
+      setReportsLoading(true)
+      // O ideal seria deletar apenas do módulo, mas seguiremos o padrão de deletar conforme service
+      // No service.js não há clearPorModulo, então apenas filtramos as que temos localmente ou alertamos.
+      // Para manter paridade com escadas/pocos:
+      for (const evalItem of savedEvaluations) {
+        await deleteAvaliacao(evalItem.id)
+      }
+      setSavedEvaluations([])
+      alert('Avaliações excluídas com sucesso.')
+    } catch (error) {
+      console.error('Erro ao limpar avaliações:', error)
+      alert('Erro parcial ao excluir avaliações.')
+    } finally {
+      setReportsLoading(false)
+      await loadEvaluations()
+    }
+  }
+
   const props = {
     ...evaluationState,
     saveEvaluation,
     savedEvaluations,
     deleteEvaluation,
+    clearAllEvaluations,
     loadEvaluations,
     reportsLoading,
   }

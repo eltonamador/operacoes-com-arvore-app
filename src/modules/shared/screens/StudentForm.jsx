@@ -228,28 +228,9 @@ export default function StudentForm({ state, updateStudentData, goTo, moduleName
                         <button
                           type="button"
                           key={student.numero}
+                          className="dropdown-item"
                           onMouseDown={e => e.preventDefault()}
                           onClick={() => selectStudent(student)}
-                          style={{
-                            display: 'block',
-                            width: '100%',
-                            padding: '12px 16px',
-                            background: 'transparent',
-                            border: 'none',
-                            borderBottom: '1px solid var(--score-row-border)',
-                            color: 'var(--text-primary)',
-                            textAlign: 'left',
-                            cursor: 'pointer',
-                            fontSize: 14,
-                            transition: 'background 0.15s',
-                            minHeight: 44,
-                          }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.background = 'var(--dropdown-item-hover)'
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.background = 'transparent'
-                          }}
                         >
                           <strong>{student.numero}</strong> – {student.nome}
                         </button>
@@ -327,28 +308,9 @@ export default function StudentForm({ state, updateStudentData, goTo, moduleName
                         <button
                           type="button"
                           key={instructor}
+                          className="dropdown-item"
                           onMouseDown={e => e.preventDefault()}
                           onClick={() => selectInstructor(instructor)}
-                          style={{
-                            display: 'block',
-                            width: '100%',
-                            padding: '12px 16px',
-                            background: 'transparent',
-                            border: 'none',
-                            borderBottom: '1px solid var(--score-row-border)',
-                            color: 'var(--text-primary)',
-                            textAlign: 'left',
-                            cursor: 'pointer',
-                            fontSize: 14,
-                            transition: 'background 0.15s',
-                            minHeight: 44,
-                          }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.background = 'var(--dropdown-item-hover)'
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.background = 'transparent'
-                          }}
                         >
                           {instructor}
                         </button>

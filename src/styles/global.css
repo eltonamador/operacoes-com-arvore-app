@@ -2384,3 +2384,95 @@ textarea.form-input {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* --- DESKTOP (> 1024px) --- */
+@media (min-width: 1025px) {
+  /* Header: garantir layout horizontal sem wrap */
+  .header {
+    flex-wrap: nowrap;
+    padding: 12px 28px;
+    gap: 16px;
+  }
+
+  .header-actions {
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .header-actions .btn {
+    white-space: nowrap;
+  }
+
+  /* Portal: padding generoso */
+  .portal-content {
+    padding: 32px 40px;
+  }
+
+  /* Grids otimizados para tela larga */
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .portal-nav-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  /* Evaluation: painel lateral fixo, mais largo */
+  .eval-right {
+    width: 340px;
+  }
+
+  /* Tabela: linhas mais confortáveis */
+  .portal-table th,
+  .portal-table td {
+    padding: 12px 16px;
+  }
+
+  /* Coordenação: filtros em linha */
+  .coord-filter-row {
+    flex-wrap: nowrap;
+  }
+
+  /* Cards de formulário mais largos */
+  .card--form {
+    max-width: 780px;
+  }
+
+  .card--visto {
+    max-width: 900px;
+  }
+}
+
+/* ===== DROPDOWN ITEM (substitui inline onMouseEnter/Leave) ===== */
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--score-row-border);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  transition: background 0.15s;
+  min-height: 44px;
+}
+
+/* Hover: funciona em mouse (desktop). Ignorado em touch. */
+@media (hover: hover) {
+  .dropdown-item:hover {
+    background: var(--dropdown-item-hover);
+  }
+}
+
+/* Active: funciona em touch (tablet/mobile) e mouse. */
+.dropdown-item:active {
+  background: var(--dropdown-item-hover);
+}
+
