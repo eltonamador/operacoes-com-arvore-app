@@ -16,14 +16,14 @@ Se uma tarefa mexer no fluxo atual de avaliação, relatórios ou persistência,
 - preferir mudança mínima segura;
 - registrar no `docs/wake-up.md` o que mudou e o risco associado.
 
-### 2. Não confundir estado atual com produto-alvo
-O sistema atual não deve ser tratado como produto final.
-Também não deve ser desmontado sem necessidade.
+### 2. Distinguir producao de roadmap
+O sistema em producao nao deve ser desestabilizado sem justificativa.
+Evolucoes planejadas devem seguir o roadmap sem comprometer o que ja funciona.
 
-**Quando uma tarefa estiver ligada ao portal futuro, faça:**
-- preservar o comportamento atual sempre que possível;
-- criar base de transição ao invés de reescrita impulsiva;
-- documentar nova decisão estrutural em `docs/decisions/` quando aplicável.
+**Quando uma tarefa envolver evolucao do produto, faca:**
+- preservar o comportamento em producao;
+- evoluir incrementalmente ao inves de reescrever;
+- documentar nova decisao estrutural em `docs/decisions/` quando aplicavel.
 
 ### 3. Dados sensíveis e integridade
 O projeto possui dados operacionais relevantes e lógica crítica de avaliação.
@@ -96,6 +96,7 @@ Faça:
 Faça:
 - tratar como mudança estrutural;
 - considerar impacto em aluno, avaliador, coordenação e admin;
+- respeitar a premissa de **transparência total** entre avaliados no CFSD-26 (ver `docs/decisions/2026-04-16-transparencia-acesso-aluno.md`);
 - não implementar sem clareza mínima de permissão;
 - documentar a decisão.
 

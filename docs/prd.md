@@ -8,37 +8,37 @@
 
 ## 2. Visão do produto
 
-O produto tem como objetivo centralizar, padronizar e consolidar as avaliações das oficinas e disciplinas práticas de Salvamento Terrestre em um único portal institucional.
+O produto centraliza, padroniza e consolida as avaliacoes das oficinas e disciplinas praticas de Salvamento Terrestre em um unico portal institucional.
 
-A proposta é evoluir o sistema atual, hoje focado na avaliação de motosserra, para uma plataforma mais ampla, com login unificado, controle de acesso por perfil, lançamento técnico de notas por oficina, consolidação automática de médias e pesos, cálculo instantâneo de aptidão final e integração direta com a coordenação do curso.
+O sistema ja opera em producao com login unificado, controle de acesso por perfil, lancamento tecnico de notas por oficina em 5 modulos funcionais, visao consolidada para coordenacao, motor de calculo de medias, dashboads graficos avancados e mapas de notas integrados. O sistema atende plenamente ao ciclo de lancamento, consulta e gestao academica.
 
-O sistema deverá servir simultaneamente a três necessidades principais:
+O sistema serve simultaneamente a tres necessidades principais:
 
-- permitir que avaliadores lancem notas e critérios técnicos com rapidez e segurança;
-- permitir que alunos consultem apenas seu próprio desempenho;
-- permitir que a coordenação visualize, consolide e extraia dados globais do curso.
+- permitir que avaliadores lancem notas e criterios tecnicos com rapidez e seguranca;
+- permitir que alunos consultem apenas seu proprio desempenho;
+- permitir que a coordenacao visualize, consolide e extraia dados globais do curso.
 
 ---
 
 ## 3. Problema
 
-Atualmente, avaliações práticas de diferentes oficinas tendem a ficar dispersas em controles separados, planilhas, formulários distintos ou registros manuais, o que dificulta:
+Antes deste sistema, avaliacoes praticas de diferentes oficinas ficavam dispersas em controles separados, planilhas, formularios distintos ou registros manuais, o que dificultava:
 
-- padronização dos lançamentos;
-- consolidação rápida de notas;
-- aplicação uniforme de pesos e médias;
-- rastreabilidade da evolução individual dos militares;
-- visão central da coordenação;
-- emissão ágil de mapas de notas;
-- segurança e controle de acesso aos dados.
+- padronizacao dos lancamentos;
+- consolidacao rapida de notas;
+- aplicacao uniforme de pesos e medias;
+- rastreabilidade da evolucao individual dos militares;
+- visao central da coordenacao;
+- emissao agil de mapas de notas;
+- seguranca e controle de acesso aos dados.
 
-Mesmo quando já existe uma solução funcional para uma disciplina específica, ela ainda não resolve o problema mais amplo da gestão integrada das avaliações de Salvamento Terrestre como um todo.
+O portal resolve todos esses problemas com lancamento digital padronizado por oficina, persistencia centralizada, controle de acesso por perfil, motor de consolidacao, exportacao agil e visualizacao gerencial completa (Mapa de Notas).
 
 ---
 
 ## 4. Objetivo do produto
 
-Criar um portal centralizado de avaliações práticas de Salvamento Terrestre, no qual:
+Manter e evoluir o portal centralizado de avaliacoes de Salvamento Terrestre, no qual:
 
 - avaliadores registrem checklists técnicos, tempos, penalidades e notas por oficina;
 - alunos acessem apenas seus próprios resultados e relatórios;
@@ -79,9 +79,9 @@ Criar um portal centralizado de avaliações práticas de Salvamento Terrestre, 
 
 ---
 
-## 6. Fora de escopo inicial
+## 6. Fora de escopo
 
-Neste momento, não fazem parte do escopo inicial:
+Nao fazem parte do escopo atual:
 
 
 - criação de aplicativo mobile nativo;
@@ -92,7 +92,7 @@ Neste momento, não fazem parte do escopo inicial:
 - suporte offline completo;
 - gamificação ou funcionalidades sociais.
 
-Também não é objetivo inicial transformar o portal em um ERP institucional amplo. O foco é a gestão de avaliações práticas de Salvamento Terrestre.
+Tambem nao e objetivo transformar o portal em um ERP institucional amplo. O foco e a gestao de avaliacoes praticas e teoricas de Salvamento Terrestre.
 
 ---
 
@@ -160,23 +160,23 @@ Perfil responsável por configuração estrutural do portal.
 
 ---
 
-## 9. Módulos iniciais pretendidos
+## 9. Modulos em producao
 
-O portal cobre as seguintes oficinas e componentes de avaliação:
+O portal opera com os seguintes modulos de avaliacao:
 
-- **Árvores (Operações com Árvore / Corte com Motosserra)** — já implementado como módulo `motosserra`
-- **Escadas** — já implementado como módulo `escadas`
-- **Poços** — já implementado como módulo `pocos`
-- **Circuito** — já implementado como módulo `circuito`
-- **Prova Teórica (VC3)** — decidida em `docs/decisions/2026-04-13-consolidacao-academico-operacional.md`; será módulo `teorica`; pendente de implementação
+- **Arvores (Operacoes com Arvore / Corte com Motosserra)** — modulo `motosserra` — operacional
+- **Escadas** — modulo `escadas` — operacional, com AdvancedReports
+- **Pocos** — modulo `pocos` — operacional
+- **Circuito** — modulo `circuito` — operacional
+- **Prova Teorica (VC3)** — modulo `teorica` — operacional (lancamento direto de nota 0-10)
 
-O módulo de motosserra foi o núcleo funcional inicial e serviu de referência para os demais em:
+O modulo de motosserra foi o nucleo funcional inicial e serviu de referencia arquitetural para os demais em:
 
-- checklists técnicos;
-- lançamento de penalidades;
-- cálculo automático de nota;
-- relatórios;
-- persistência estruturada com `module_id`.
+- checklists tecnicos;
+- lancamento de penalidades;
+- calculo automatico de nota;
+- relatorios e exportacoes;
+- persistencia estruturada com `module_id`.
 
 ---
 
@@ -227,22 +227,23 @@ O módulo de motosserra foi o núcleo funcional inicial e serviu de referência 
 
 ---
 
-## 12. Restrições e contexto técnico
+## 12. Contexto tecnico
 
-O ponto de partida do produto não é um projeto totalmente novo. Já existe um sistema funcional focado na avaliação de motosserra, com:
+O produto e um sistema em producao com arquitetura modular consolidada:
 
-- frontend em React;
-- persistência em Supabase;
-- lógica de checklist e cálculo de nota;
-- relatórios e exportações;
-- fluxo operacional já validado em cenário real.
+- frontend em React 18 + Vite;
+- persistencia em Supabase (PostgreSQL) com RLS ativa;
+- autenticacao por perfil via Supabase Auth (avaliador, coordenacao, aluno, admin);
+- 5 modulos de avaliacao com fluxo completo;
+- logica de checklist, calculo de nota e relatorios por modulo;
+- camada de servico centralizada;
+- fluxo operacional validado em cenario real.
 
-Isso significa que a evolução do produto deve considerar:
+A evolucao do produto deve considerar:
 
-- reaproveitamento inteligente do que já funciona;
-- preservação do conhecimento operacional já incorporado;
-- redução de retrabalho;
-- transição gradual para uma arquitetura mais ampla e modular.
+- preservacao do que ja funciona e esta estabilizado;
+- evolucao incremental orientada pelo roadmap (Fase 4: consolidacao);
+- manutencao da consistencia entre modulos e camadas.
 
 ---
 
@@ -272,6 +273,6 @@ O produto será considerado bem-sucedido quando:
 
 ## 15. Resumo executivo
 
-O produto pretendido é um portal institucional de avaliações de Salvamento Terrestre, com login unificado, perfis distintos de acesso, lançamento técnico por oficina, consolidação automática de médias e pesos, cálculo de aptidão final e geração integrada de relatórios para coordenação e alunos.
+O produto e um portal institucional de avaliacoes de Salvamento Terrestre em producao, com login unificado, perfis distintos de acesso, lancamento tecnico por oficina em 5 modulos operacionais, e visao consolidada para coordenacao.
 
-O sistema atual de avaliação de motosserra deve ser entendido como o primeiro núcleo funcional dessa evolução, e não como o destino final do projeto. O objetivo estratégico é transformar uma solução operacional pontual em uma plataforma centralizada, escalável e rastreável de gestão de avaliações práticas.
+O proximo objetivo estrategico e integrar visualmente a consolidacao automatica de medias e pesos (VC1/VC2/VC3/Media Final), calculo de aptidao final e relatorios individuais avancados — utilizando os servicos ja implementados para evoluir o portal de lancamento e consulta para base central de gestao academica do curso.

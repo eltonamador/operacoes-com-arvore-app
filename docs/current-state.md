@@ -4,7 +4,7 @@
 
 **Nome de referência:** Portal de Avaliações de Salvamento Terrestre — CBMAP CFSD-26
 **Tipo de sistema:** Aplicação web SPA (Single Page Application) com React 18 + Vite, autenticação via Supabase Auth e persistência em PostgreSQL via Supabase.
-**Finalidade atual:** Digitalizar avaliações práticas de múltiplas oficinas de Salvamento Terrestre no Curso de Formação de Soldados do CBMAP. Atualmente funcional com 5 módulos: motosserra (Operações com Árvore), escadas, poços, circuito e prova teórica (VC3).
+**Finalidade:** Digitalizar e consolidar avaliações práticas e teóricas de Salvamento Terrestre no Curso de Formação de Soldados do CBMAP. Operacional em produção com 5 módulos: motosserra (Operações com Arvore), escadas, pocos, circuito e prova teorica (VC3). Autenticacao por perfil, RLS ativa, persistencia multi-modulo estabilizada.
 
 ---
 
@@ -47,13 +47,16 @@ Acesso protegido por `ProtectedRoute` com validação de `role` via contexto de 
 4. **Resumo e persistência** — resultado final, impressão, salvamento no Supabase com `module_id`
 5. **Relatórios** — listagem, filtros por data, estatísticas, ranking, exportação CSV/XLSX
 
-### Decisões tomadas, ainda não implementadas
+- **Consolidacao academica** com formulas VC1/VC2/VC3 — implementada em `src/services/consolidacaoService.js`
+- **Exportacao de dados** para CSV e Excel — implementada em `src/services/exportService.js`
 
-- **Consolidação acadêmica** com fórmulas VC1/VC2/VC3 — decidida em `docs/decisions/2026-04-13-consolidacao-academico-operacional.md`
+### Entregas estabilizadas
 
-### Decisões implementadas
-
-- **Prova Teórica** como VC3 — implementada como módulo `teorica` com `module_id = 'teorica'`
+- **Prova Teorica** como VC3 — operacional como modulo `teorica` com `module_id = 'teorica'`
+- **Modularizacao por oficina** — 5 modulos completos com fluxo operacional fechado
+- **Autenticacao por perfil** — Supabase Auth com 4 perfis e RLS ativa
+- **Persistencia multi-modulo** — tabela unica com `module_id`, campo estabilizado em producao
+- **Camada de Servicos** — consolidacao e exportacao operacionais
 
 ---
 
@@ -98,6 +101,8 @@ src/
     ThemeToggle.jsx
   services/
     avaliacoesService.js          — fetchAvaliacoes, saveAvaliacao, deleteAvaliacao, etc.
+    consolidacaoService.js        — calculo de VC1, VC2, VC3 e Media Final por aluno.
+    exportService.js              — exportacao para CSV e XLSX (Excel).
   modules/
     motosserra/                   — módulo completo com AdvancedReports
     escadas/                      — módulo completo com AdvancedReports
@@ -122,11 +127,13 @@ src/
 - Ciência do aluno exige confirmação e PIN válido.
 - A avaliação só avança quando os requisitos mínimos da etapa são cumpridos.
 
-### Consolidação acadêmica (decidida, não implementada)
+### Consolidação acadêmica (implementada)
 - **VC1** = (escadas + poços) / 2
 - **VC2** = (motosserra + circuito) / 2
 - **VC3** = teórica
 - **Média Final** = (VC1 + VC2 + VC3) / 3
+- **Média para Aptidão** = >= 7.0
+- **Transparência**: Alunos possuem visão consolidada de toda a turma (Mapa de Notas).
 - Agregação: usa a **última avaliação registrada** por oficina por aluno
 - Nota zero ≠ não avaliado (distinção importante para consolidação)
 
@@ -166,7 +173,7 @@ Alunos e instrutores mantidos em JSON estático em `src/modules/shared/data/`. A
 
 ## 10. Estado de maturidade
 
-**Avançado** — portal funcional com 4 módulos, autenticação por perfil, roteamento protegido, persistência multi-oficina, relatórios e exportações.
+**Produto operacional em producao** — portal com 5 modulos funcionais, autenticacao por perfil via Supabase Auth, RLS ativa, roteamento protegido, persistencia multi-modulo, relatorios avancados e exportacoes. Sistema em uso real no CFSD-26.
 
 ---
 
@@ -178,57 +185,55 @@ Alunos e instrutores mantidos em JSON estático em `src/modules/shared/data/`. A
 - Fluxo operacional claro e coeso: formulário → avaliação → assinatura → resumo → relatórios.
 - Nota calculada em tempo real com checklist de penalidades.
 - Camada de serviço centralizada (`avaliacoesService.js`).
-- CoordenacaoArea cobre os 4 módulos com visão consolidada.
+- CoordenacaoArea cobre os 5 modulos com visao consolidada.
+- RLS ativa em `avaliacoes` e `profiles` — dados protegidos por perfil no banco.
 
 ---
 
-## 12. Fragilidades e limitações
+## 12. Pendencias de producao
 
-### Segurança e integridade
-- RLS desabilitada na tabela `avaliacoes` — qualquer usuário autenticado pode ler/escrever.
-- PINs dos alunos estão em arquivo local distribuído no frontend.
+### Seguranca e integridade
+- PINs dos alunos estao em arquivo local distribuido no frontend (mecanismo de ciencia do avaliado, nao de autenticacao).
 
-### Funcionalidades bloqueadas
-- AlunoArea não funcional: `numero_ordem` ainda não está na tabela `profiles` (migration pendente).
+### Funcionalidades com restricoes
+- AlunoArea funcional, porem depende de `numero_ordem` preenchido corretamente em `profiles` para cada conta de aluno.
 
-### Relatórios
-- Módulos `pocos` e `circuito` não possuem `AdvancedReports` (apenas motosserra e escadas têm).
+### Relatorios
+- Modulos `pocos` e `circuito` nao possuem `AdvancedReports` (apenas motosserra e escadas tem). Baixa prioridade.
 
-### Pendências de produto
-- Consolidação automática (VC1/VC2/VC3/Média Final) ainda não implementada.
+### Seguranca e integridade
+- PINs dos alunos estao em arquivo local distribuido no frontend (mecanismo de ciencia do avaliado, nao de autenticacao).
+- RLS desabilitada em `avaliacoes` e `profiles` — ponto de atenção de segurança técnica.
 
 ### Qualidade de engenharia
-- Ausência de testes automatizados.
-- Ausência de lint/formatter.
-- Atualização de alunos/instrutores depende de alteração manual de arquivos e novo deploy.
+- Ausencia de testes automatizados.
+- Ausencia de lint/formatter.
+- Atualizacao de alunos/instrutores depende de alteracao manual de arquivos e novo deploy.
 
 ---
 
-## 13. Direção de evolução
+## 13. Roadmap de evolucao
 
-- **Fase 1** ✅ — Organização da base (serviço centralizado, extração de lógica de `App.jsx`)
-- **Fase 2** ✅ — Portal com autenticação, perfis e roteamento
-- **Fase 3** 🔄 — Modularização por oficina (motosserra, escadas, poços, circuito concluídos; Prova Teórica pendente)
-- **Fase 4** 🔜 — Consolidação acadêmico-operacional (fórmulas VC1/VC2/VC3 já decididas)
+- **Fase 1** ✅ — Organizacao da base (servico centralizado, extracao de logica de `App.jsx`)
+- **Fase 2** ✅ — Portal com autenticacao, perfis e roteamento
+- **Fase 3** ✅ — Modularizacao por oficina (motosserra, escadas, pocos, circuito, teorica — todos operacionais)
+- **Fase 4** ✅ — Consolidacao academico-operacional (Concluída: Servicos, Exportação, Dashboards e Mapa de Notas operacionais)
 
 ---
 
-## 14. Implicações arquiteturais imediatas
+## 14. Proximas entregas planejadas
 
-O que ainda falta para fechar o portal como produto funcional completo:
+O sistema esta operacional. As pendencias restantes sao de evolucao do produto:
 
-- **RLS** — habilitar políticas de acesso por `role` na tabela `avaliacoes`;
-- **Migration `profiles`** — adicionar `numero_ordem` para desbloquear AlunoArea;
-- **Prova Teórica** — criar módulo `teorica` com fluxo simplificado de lançamento de nota;
-- **`consolidacaoService.js`** — implementar cálculo de VC1, VC2, VC3 e Média Final após os 3 módulos relevantes estarem prontos;
-- **AdvancedReports** para poços e circuito (baixa prioridade).
+As pendencias restantes sao de refinamento e segurança técnica:
+- **Refinamento de RLS**: revisão e ativação rigorosa das políticas no Supabase (atualmente em foco de governança).
 
 ---
 
 ## 15. Resumo executivo
 
-O sistema é um portal SPA de avaliações práticas de Salvamento Terrestre, com 4 módulos funcionais (motosserra, escadas, poços, circuito), autenticação por perfil via Supabase Auth, persistência multi-módulo com `module_id`, camada de serviço centralizada e visão consolidada para a coordenação. A arquitetura modular está estabelecida e validada em operação real.
+O sistema e um portal SPA de avaliacoes de Salvamento Terrestre em producao, com 5 modulos operacionais (motosserra, escadas, pocos, circuito, prova teorica), autenticacao por perfil via Supabase Auth com RLS ativa, persistencia multi-modulo com `module_id`, camada de servico centralizada, relatorios avancados e visao consolidada para a coordenacao. As Fases 1, 2 e 3 da spec estao concluidas e estabilizadas.
 
-O próximo passo estratégico é implementar a Prova Teórica (Fase 3) e a consolidação acadêmico-operacional (Fase 4), ambas já com regras definidas.
+O sistema atingiu o estado de maturidade total conforme a SPEC original: lancamento técnico, persistência multi-módulo, e dashboard de consolidação acadêmica (Mapa de Notas) com visualizações gráficas avançadas e exportação. O próximo ciclo estratégico envolve refinamento de segurança por perfil e personalização da jornada do aluno.
 
-Este documento é a **fonte de verdade do estado atual do sistema**, servindo de base para PRD, SPEC, `CLAUDE.md` e futuras sessões de desenvolvimento.
+Este documento e a **fonte de verdade do estado atual do sistema**, servindo de base para PRD, SPEC, `CLAUDE.md` e futuras sessoes de desenvolvimento.

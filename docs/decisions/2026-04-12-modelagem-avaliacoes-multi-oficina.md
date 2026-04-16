@@ -7,7 +7,7 @@ Modelagem de persistência para avaliações multi-oficina: tabela única com id
 2026-04-12
 
 ## Status
-Proposta
+Implementada — `module_id` em producao, 5 modulos operacionais
 
 ## Contexto
 

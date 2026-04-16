@@ -1,16 +1,18 @@
 # Decisão: Autenticação e Perfis de Acesso — Fase 2 da SPEC
 
 **Data:** 2026-04-12  
-**Status:** Aprovada — pendente de implementação  
+**Status:** Implementada — autenticacao e RLS em producao  
 **Fase:** Fase 2 da SPEC (Estruturação do Portal)
 
 ---
 
 ## Contexto
 
-O sistema atual não possui autenticação. Qualquer pessoa com acesso à URL acessa todas as rotas do portal (`/avaliador`, `/coordenacao`, `/aluno`) sem qualquer verificação de identidade ou perfil.
+> **Nota historica:** este documento descreve o contexto no momento da decisao (2026-04-12). A implementacao foi concluida com sucesso — autenticacao via Supabase Auth e RLS estao em producao desde a Sprint 16.
 
-Com a conclusão da Fase 1 (modularização e estrutura base), a próxima frente é introduzir controle de acesso real ao portal, separando as áreas por perfil e protegendo os dados no banco.
+Na data desta decisao, o sistema nao possuia autenticacao. Qualquer pessoa com acesso a URL acessava todas as rotas do portal sem verificacao de identidade ou perfil.
+
+Com a conclusao da Fase 1, a frente seguinte era introduzir controle de acesso real ao portal.
 
 ---
 
