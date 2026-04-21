@@ -128,6 +128,21 @@ export async function fetchAvaliacoesByNumeroOrdem(numero_ordem) {
 }
 
 /**
+ * Insere múltiplas avaliações de uma vez (avaliação em grupo).
+ * Retorna array de objetos no formato UI.
+ */
+export async function saveAvaliacoesBatch(registros) {
+  const { data, error } = await supabase
+    .from('avaliacoes')
+    .insert(registros)
+    .select()
+
+  if (error) throw error
+
+  return (data || []).map(mapDbToUi)
+}
+
+/**
  * Insere uma nova avaliação no banco.
  * Retorna o objeto salvo no formato UI.
  */

@@ -15,7 +15,8 @@
       "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\elton\\\\Desktop\\\\CBMAP - Cursos e Instrução\\\\CFSD-26\\\\Circuito_Operacional\\\\ProvadevCircuito.docx\" unpacked_circuito/)",
       "mcp__mcp-registry__search_mcp_registry",
       "Bash(node scripts/update-escadas-notas.js)",
-      "Bash(node scripts/update-escadas-notas.js --execute)"
+      "Bash(node scripts/update-escadas-notas.js --execute)",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute"
     ]
   }
 }

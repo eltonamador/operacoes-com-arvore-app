@@ -94,7 +94,7 @@ export default function Evaluation({ state, toggleItem, setObservations, setCust
           <span className="header-org">CBMAP</span>
           <span className="header-title">Avaliação Prática – Espaço Confinado (Poço)</span>
           <span className="header-subtitle" style={{ color: 'var(--gold)', fontWeight: 600 }}>
-            {state.studentData.nome || '—'} &nbsp;|&nbsp; Ord. {state.studentData.ordem || '—'} &nbsp;|&nbsp; {state.studentData.pelotao || '—'}
+            {state.groupData?.pelotao || '—'} &nbsp;|&nbsp; Grupo {state.groupData?.grupoNum || '—'} &nbsp;|&nbsp; {state.groupData?.integrantes?.length ?? 0} integrantes
           </span>
         </div>
         <div className="header-spacer" />

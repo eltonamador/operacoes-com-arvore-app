@@ -2,88 +2,111 @@ import { calcScore, SECTIONS } from '../data/penalties'
 import { useMemo, useState } from 'react'
 import studentsData from '../../shared/data/students.json'
 
-export default function Signature({ state, goTo, setVistoData }) {
+/**
+ * Tela de assinatura — Prova Poço (avaliação em grupo).
+ *
+ * Fluxo: cada integrante assina individualmente por PIN, um de cada vez.
+ * O cursor (currentSignerIndex) avança a cada confirmação.
+ * Quando todos assinaram, confirmMemberSignature() navega automaticamente para 'summary'.
+ */
+export default function Signature({ state, goTo, confirmMemberSignature }) {
   const [pinDigitado, setPinDigitado] = useState('')
-  const [ciencia, setCiencia] = useState(state.declaracaoCiencia || false)
+  const [ciencia, setCiencia] = useState(false)
   const [erroPin, setErroPin] = useState('')
   const [tentativas, setTentativas] = useState(0)
   const [bloqueadoAte, setBloqueadoAte] = useState(null)
 
-  const { studentData, checkedItems, observations, customError } = state
+  const { groupData, checkedItems, observations, customError, currentSignerIndex } = state
+  const integrantes = groupData.integrantes || []
+
+  const currentMember = integrantes[currentSignerIndex] ?? null
+  const totalMembers = integrantes.length
+  const allSigned = currentSignerIndex >= totalMembers
+
   const customDiscount = parseFloat(customError?.discount) || 0
   const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
   const isPassing = finalScore >= 7.0
 
-  const students = studentsData?.students || []
+  // Resolve o PIN do membro atual:
+  // integrantes extras têm pin explícito; os demais buscam no students.json por id
+  const studentsById = useMemo(() => {
+    const map = {}
+    for (const s of studentsData?.students || []) map[s.numero] = s
+    return map
+  }, [])
 
-  const alunoAtual = students.find(
-    student => String(student.numero) === String(studentData.ordem)
-  )
-
-  const pinEsperado = alunoAtual
-    ? String(alunoAtual.pin || String(alunoAtual.numero).padStart(4, '0'))
-    : String(studentData.ordem || '').padStart(4, '0')
-
-  const bloqueado = bloqueadoAte && Date.now() < bloqueadoAte
+  const pinEsperado = useMemo(() => {
+    if (!currentMember) return null
+    if (currentMember.extra && currentMember.pin) return currentMember.pin
+    const student = studentsById[Number(currentMember.id)]
+    if (student?.pin) return String(student.pin)
+    return String(currentMember.id).padStart(4, '0')
+  }, [currentMember, studentsById])
 
   const penalizedItems = useMemo(() => {
     const result = []
     for (const section of SECTIONS) {
       for (const item of section.items) {
-        if (checkedItems.has(item.id)) {
-          result.push(item)
-        }
+        if (checkedItems.has(item.id)) result.push(item)
       }
     }
     if (customError?.description?.trim() && customDiscount > 0) {
-      result.push({
-        id: 'EXTRA',
-        description: customError.description,
-        discount: customDiscount,
-      })
+      result.push({ id: 'EXTRA', description: customError.description, discount: customDiscount })
     }
     return result
   }, [checkedItems, customError, customDiscount])
 
+  const bloqueado = bloqueadoAte && Date.now() < bloqueadoAte
   const canConfirm =
     ciencia &&
     pinDigitado.trim().length === 4 &&
     /^\d{4}$/.test(pinDigitado) &&
     !bloqueado
 
-  function confirmarVisto() {
-    if (bloqueado) {
-      setErroPin('Muitas tentativas inválidas. Aguarde 30 segundos.')
-      return
-    }
-
+  function handleConfirmar() {
+    if (bloqueado) { setErroPin('Muitas tentativas inválidas. Aguarde 30 segundos.'); return }
     if (!canConfirm) return
 
     if (pinDigitado !== pinEsperado) {
-      const novasTentativas = tentativas + 1
-      setTentativas(novasTentativas)
+      const novas = tentativas + 1
+      setTentativas(novas)
       setErroPin('PIN inválido.')
-
-      if (novasTentativas >= 3) {
+      if (novas >= 3) {
         setBloqueadoAte(Date.now() + 30000)
         setErroPin('Muitas tentativas inválidas. Aguarde 30 segundos.')
         setTentativas(0)
       }
-
       return
     }
 
+    // PIN correto: registra e avança (hook navega para 'summary' quando todos assinaram)
     setErroPin('')
+    confirmMemberSignature(currentSignerIndex)
 
-    setVistoData({
-      vistoConfirmado: true,
-      vistoPinConfirmado: true,
-      vistoDataHora: new Date().toISOString(),
-      declaracaoCiencia: true,
-      vistoTipo: 'pin',
-    })
+    // Reset do formulário de assinatura para o próximo membro
+    setPinDigitado('')
+    setCiencia(false)
+    setTentativas(0)
+    setBloqueadoAte(null)
+  }
 
-    goTo('summary')
+  // Segurança: se navegou aqui mas todos já assinaram
+  if (allSigned) {
+    return (
+      <div className="screen-container">
+        <div className="screen-content screen-content--centered">
+          <div className="card" style={{ textAlign: 'center', padding: 40 }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
+            <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>
+              Todos os integrantes assinaram
+            </div>
+            <button className="btn btn-gold" onClick={() => goTo('summary')}>
+              Ver Resultado →
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -94,7 +117,8 @@ export default function Signature({ state, goTo, setVistoData }) {
           <span className="header-org">CBMAP</span>
           <span className="header-title">Visto de Prova / Ciência do Resultado</span>
           <span className="header-subtitle">
-            {studentData.nome || 'Aluno não informado'} | Nº {studentData.ordem || '—'}
+            {groupData.pelotao} — Grupo {groupData.grupoNum} &nbsp;|&nbsp;
+            Assinatura {currentSignerIndex + 1} de {totalMembers}
           </span>
         </div>
         <div className="header-spacer" />
@@ -104,38 +128,44 @@ export default function Signature({ state, goTo, setVistoData }) {
       </header>
 
       <div className="screen-content">
-        <div className="visto-grid">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div
-              style={{
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                borderRadius: 14,
-                padding: 20,
-              }}
-            >
-              <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 12 }}>
-                Aluno
+        {/* Barra de progresso de assinaturas */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{
+            display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8,
+          }}>
+            {integrantes.map((m, i) => (
+              <div
+                key={`${m.id}-${i}`}
+                style={{
+                  flex: '1 1 auto', minWidth: 60, maxWidth: 120,
+                  padding: '6px 10px', borderRadius: 6, fontSize: 11, fontWeight: 700,
+                  textAlign: 'center',
+                  background: m.signed ? '#0d2e0d' : i === currentSignerIndex ? '#1a1200' : 'var(--bg-card)',
+                  border: m.signed
+                    ? '1px solid #22c55e'
+                    : i === currentSignerIndex
+                    ? '1px solid #cc8800'
+                    : '1px solid var(--border)',
+                  color: m.signed ? '#22c55e' : i === currentSignerIndex ? '#ffbb44' : 'var(--text-muted)',
+                }}
+              >
+                {m.signed ? '✓' : i === currentSignerIndex ? '→' : '○'} {String(m.id).padStart(3, '0')}
               </div>
-              <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>{studentData.nome || '—'}</div>
-              <div style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-                <div><strong>Nº:</strong> {studentData.ordem || '—'}</div>
-                <div><strong>Pelotão:</strong> {studentData.pelotao || '—'}</div>
-                <div><strong>Avaliador:</strong> {studentData.avaliador || '—'}</div>
-                <div><strong>Data:</strong> {studentData.data || '—'}</div>
-              </div>
-            </div>
+            ))}
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+            {integrantes.filter(m => m.signed).length} de {totalMembers} assinaturas confirmadas
+          </div>
+        </div>
 
-            <div
-              style={{
-                background: '#1a1200',
-                border: '1px solid #3a2a00',
-                borderRadius: 14,
-                padding: 20,
-              }}
-            >
+        <div className="visto-grid">
+          {/* Coluna esquerda: resultado + penalidades */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{
+              background: '#1a1200', border: '1px solid #3a2a00', borderRadius: 14, padding: 20,
+            }}>
               <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 12 }}>
-                Resultado
+                Resultado do Grupo
               </div>
               <div style={{ fontSize: 36, fontWeight: 900, color: isPassing ? '#8ddf63' : '#ff6b6b' }}>
                 {finalScore.toFixed(2).replace('.', ',')}
@@ -147,21 +177,13 @@ export default function Signature({ state, goTo, setVistoData }) {
                 Total de descontos: {totalDiscount.toFixed(2).replace('.', ',')}
               </div>
             </div>
-          </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div
-              style={{
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                borderRadius: 14,
-                padding: 20,
-              }}
-            >
+            <div style={{
+              background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: 20,
+            }}>
               <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 12 }}>
                 Erros / Penalidades
               </div>
-
               {penalizedItems.length === 0 ? (
                 <div style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
                   Nenhum erro registrado.
@@ -169,17 +191,10 @@ export default function Signature({ state, goTo, setVistoData }) {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {penalizedItems.map(item => (
-                    <div
-                      key={item.id}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        gap: 12,
-                        padding: '10px 12px',
-                        border: '1px solid #2a2a2a',
-                        borderRadius: 8,
-                      }}
-                    >
+                    <div key={item.id} style={{
+                      display: 'flex', justifyContent: 'space-between', gap: 12,
+                      padding: '10px 12px', border: '1px solid #2a2a2a', borderRadius: 8,
+                    }}>
                       <span style={{ color: 'var(--text-primary)' }}>
                         <strong>{item.id}</strong> — {item.description}
                       </span>
@@ -190,7 +205,6 @@ export default function Signature({ state, goTo, setVistoData }) {
                   ))}
                 </div>
               )}
-
               {observations?.trim() && (
                 <div style={{ marginTop: 16 }}>
                   <div style={{ fontWeight: 700, marginBottom: 6 }}>Observações</div>
@@ -200,20 +214,49 @@ export default function Signature({ state, goTo, setVistoData }) {
                 </div>
               )}
             </div>
+          </div>
 
-            <div
-              style={{
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                borderRadius: 14,
-                padding: 20,
-              }}
-            >
+          {/* Coluna direita: assinatura do membro atual */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Identificação do membro atual */}
+            <div style={{
+              background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: 20,
+            }}>
+              <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 12 }}>
+                Integrante — Confirmação de Ciência
+              </div>
+              <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>
+                {currentMember.nome}
+              </div>
+              <div style={{ color: 'var(--text-secondary)', lineHeight: 1.8 }}>
+                <div><strong>Nº:</strong> {currentMember.id}</div>
+                <div><strong>Pelotão:</strong> {groupData.pelotao}</div>
+                <div><strong>Grupo:</strong> {groupData.grupoNum}</div>
+                {currentMember.extra && (
+                  <div style={{ marginTop: 8 }}>
+                    <span style={{
+                      fontSize: 10, fontWeight: 700, color: '#ffbb44',
+                      background: '#2a1a00', border: '1px solid #cc8800',
+                      borderRadius: 4, padding: '2px 8px', letterSpacing: 1,
+                    }}>
+                      INTEGRANTE EXTRA
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Formulário de assinatura */}
+            <div style={{
+              background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: 20,
+            }}>
               <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 16 }}>
-                Confirmação de Ciência
+                Assinatura por PIN
               </div>
 
-              <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 18, cursor: 'pointer' }}>
+              <label style={{
+                display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 18, cursor: 'pointer',
+              }}>
                 <input
                   type="checkbox"
                   checked={ciencia}
@@ -221,12 +264,12 @@ export default function Signature({ state, goTo, setVistoData }) {
                   style={{ marginTop: 4 }}
                 />
                 <span style={{ color: 'var(--text-primary)', lineHeight: 1.5 }}>
-                  Declaro que conferi os erros registrados nesta avaliação e tomei ciência da nota atribuída.
+                  Declaro que conferi os erros registrados nesta avaliação e tomei ciência da nota atribuída ao grupo.
                 </span>
               </label>
 
               <div className="form-group" style={{ marginBottom: 18 }}>
-                <label className="form-label">Digite seu PIN de 4 dígitos</label>
+                <label className="form-label">PIN de 4 dígitos — <strong>{currentMember.nome}</strong></label>
                 <input
                   className="form-input"
                   type="password"
@@ -241,9 +284,7 @@ export default function Signature({ state, goTo, setVistoData }) {
                   placeholder="Digite seu PIN"
                 />
                 {erroPin && (
-                  <div style={{ marginTop: 8, fontSize: 12, color: '#ff6b6b' }}>
-                    {erroPin}
-                  </div>
+                  <div style={{ marginTop: 8, fontSize: 12, color: '#ff6b6b' }}>{erroPin}</div>
                 )}
                 {bloqueado && (
                   <div style={{ marginTop: 8, fontSize: 12, color: '#ffbb44' }}>
@@ -254,11 +295,13 @@ export default function Signature({ state, goTo, setVistoData }) {
 
               <button
                 className="btn btn-gold"
-                style={{ width: '100%', minHeight: 52, fontSize: 18, fontWeight: 800 }}
+                style={{ width: '100%', minHeight: 52, fontSize: 16, fontWeight: 800 }}
                 disabled={!canConfirm}
-                onClick={confirmarVisto}
+                onClick={handleConfirmar}
               >
-                Confirmar Visto ✓
+                {currentSignerIndex + 1 < totalMembers
+                  ? `Confirmar Visto ✓  (próximo: ${integrantes[currentSignerIndex + 1]?.nome})`
+                  : 'Confirmar Visto ✓  (último integrante)'}
               </button>
             </div>
           </div>
