@@ -1,7 +1,7 @@
 # Decisão: Vínculo entre Aluno Autenticado e Avaliações
 
 **Data:** 2026-04-12
-**Status:** Aprovada — migration pendente de execução
+**Status:** Implementada — migration executada, AlunoArea operacional
 **Fase:** Fase 2 / Transição para Fase 4 (Consolidação)
 
 ---

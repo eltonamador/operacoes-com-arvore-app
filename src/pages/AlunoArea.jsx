@@ -40,6 +40,16 @@ const STATUS_OPTIONS = [
   { value: 'progresso', label: 'Em Progresso' },
 ]
 
+const AVISOS_CONFIG = {
+  plavUrl: 'https://www.bombeiros.ap.gov.br/cfsd26', // Fake URL for demonstration
+  proximaProva: {
+    nome: 'Próxima Avaliação',
+    data: '27/04 a 01/05 - QTS 16',
+    local: 'ABM - Poço',
+  }
+}
+
+
 // ═══════════════════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════════════════
@@ -56,6 +66,72 @@ function avg(arr) {
   const valid = arr.filter((v) => v !== null && v !== undefined && !isNaN(v))
   if (valid.length === 0) return null
   return valid.reduce((a, b) => a + b, 0) / valid.length
+}
+
+// ═══════════════════════════════════════════════
+//  QUICK NOTICES COMPONENT
+// ═══════════════════════════════════════════════
+
+function QuickNotices() {
+  return (
+    <div className="notice-grid">
+      {/* PLAV Card */}
+      <div className="notice-card notice-card--gold">
+        <div className="notice-header">
+          <div className="notice-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+            </svg>
+          </div>
+          <h3 className="notice-title">Plano de Avaliação (PLAV)</h3>
+        </div>
+        <p className="notice-desc">Consulte as diretrizes oficiais, pesos de cada módulo e penalidades atualizadas.</p>
+        <div className="notice-actions">
+          <a href={AVISOS_CONFIG.plavUrl} target="_blank" rel="noreferrer" className="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            Abrir link
+          </a>
+          <button className="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download PDF
+          </button>
+        </div>
+      </div>
+
+      {/* Cronograma Card */}
+      <div className="notice-card notice-card--red">
+        <div className="notice-header">
+          <div className="notice-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </div>
+          <h3 className="notice-title">Próxima Avaliação</h3>
+        </div>
+        <p className="notice-desc" style={{ marginBottom: 4 }}>
+          {AVISOS_CONFIG.proximaProva.nome} — <strong>{AVISOS_CONFIG.proximaProva.data}</strong>
+        </p>
+        <p className="notice-desc" style={{ fontSize: '13px' }}>
+          Local: {AVISOS_CONFIG.proximaProva.local}
+        </p>
+        <div>
+          <span className="notice-highlight">Fique atento ao cronograma</span>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 // ═══════════════════════════════════════════════
@@ -799,7 +875,9 @@ export default function AlunoArea() {
       <div style={{ marginBottom: '24px' }}>
         <p className="page-section-label">Área do Aluno</p>
         <h1 className="page-section-title">Avaliações e Consolidação</h1>
-        <p className="page-section-desc">Consulta consolidada — somente leitura.</p>
+        <p className="page-section-desc" style={{ marginBottom: '16px' }}>Consulta consolidada — somente leitura.</p>
+        
+        <QuickNotices />
       </div>
 
       <div className="filter-bar" style={{ marginBottom: '24px' }}>

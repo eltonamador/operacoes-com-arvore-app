@@ -7,7 +7,7 @@ Consolidação acadêmico-operacional: fórmulas de cálculo, regras de agregaç
 2026-04-13
 
 ## Status
-Decidido
+Decidido — implementacao pendente (todos os modulos prerequisito ja estao em producao)
 
 ## Contexto
 

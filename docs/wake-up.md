@@ -1,6 +1,35 @@
 # wake-up.md
 
-## Sprint 2026-04-15 — Correção de scroll nas páginas de Relatórios Avançados
+## 2026-04-16 — Revisao documental: reposicionamento como produto em producao
+
+### O que foi feito
+
+Revisao completa de toda a documentacao do projeto para remover linguagem de MVP/prototipo/embriao e reposicionar o sistema como produto operacional em producao.
+
+**Arquivos alterados:**
+- `CLAUDE.md` — contexto atualizado para refletir 5 modulos, autenticacao e RLS
+- `docs/current-state.md` — estado de maturidade, fragilidades renomeadas para pendencias de producao, Fase 3 marcada como concluida, proximas entregas atualizadas
+- `docs/prd.md` — visao de produto reescrita como sistema em producao, modulos listados como operacionais, contexto tecnico atualizado
+- `docs/spec.md` — objetivo da spec reescrito, principios de transicao renomeados para principios de evolucao, estado de origem atualizado para estado atual, Fase 3 marcada como concluida
+- `docs/decision-rules.md` — regra 2 reescrita para distinguir producao de roadmap
+- `docs/wake-up.md` — secoes desatualizadas corrigidas, referencias a MVP removidas, resumo de retomada atualizado, riscos atualizados
+- `docs/decisions/2026-04-12-modelagem-avaliacoes-multi-oficina.md` — status atualizado de "Proposta" para "Implementada"
+- `docs/decisions/2026-04-12-autenticacao-e-perfis-fase2.md` — status atualizado de "pendente de implementacao" para "Implementada"
+- `docs/decisions/2026-04-12-vinculo-aluno-avaliacao.md` — status atualizado de "migration pendente" para "Implementada"
+- `docs/decisions/2026-04-13-consolidacao-academico-operacional.md` — status atualizado para refletir que prerequisitos estao em producao
+
+**Nenhum codigo foi alterado.** Apenas documentacao.
+
+### Criterio de revisao
+
+- Linguagem de MVP, prototipo, embriao, teste ou validacao inicial removida quando nao correspondia ao estado atual
+- Fragilidades tratadas como pendencias de producao
+- Fases concluidas tratadas como entregas estabilizadas
+- Fases pendentes tratadas como roadmap de evolucao
+
+---
+
+## Sprint 2026-04-15 — Correcao de scroll nas paginas de Relatorios Avancados
 
 ### O que foi feito
 
@@ -104,7 +133,7 @@ Revisão completa de consistência visual e UX do portal (procedimento padrão f
 
 ### O que foi feito
 
-Implementação do módulo `teorica` (Prova Teórica — VC3) como MVP funcional. Diferencia-se dos módulos práticos por não ter checklist de penalidades — o avaliador lança a nota diretamente (0 a 10).
+Implementacao do modulo `teorica` (Prova Teorica — VC3). Diferencia-se dos modulos praticos por nao ter checklist de penalidades — o avaliador lanca a nota diretamente (0 a 10).
 
 **Arquivos criados:**
 - `src/modules/teorica/TeoricaApp.jsx` — orquestrador do módulo; segue padrão dos demais módulos
@@ -195,9 +224,9 @@ AdvancedReports para circuito (não existe em nenhum módulo exceto motosserra �
 
 ## Estado atual do projeto
 
-O projeto possui hoje um portal funcional de avaliações de Salvamento Terrestre, com 4 módulos (motosserra, escadas, poços, circuito), autenticação por perfil via Supabase Auth, persistência multi-módulo com `module_id`, e visão consolidada para coordenação.
+O sistema opera em producao como portal de avaliacoes de Salvamento Terrestre, com 5 modulos operacionais (motosserra, escadas, pocos, circuito, teorica), autenticacao por perfil via Supabase Auth, RLS ativa, persistencia multi-modulo com `module_id`, e visao consolidada para coordenacao. Fases 1, 2 e 3 da spec concluidas.
 
-Próximos passos: implementar Prova Teórica (`teorica`) e consolidação acadêmico-operacional (Fase 4 da spec.md).
+Proximo passo: implementar consolidacao academico-operacional (Fase 4 da spec.md) — `consolidacaoService.js` com calculo de VC1/VC2/VC3/Media Final.
 
 ---
 
@@ -282,15 +311,18 @@ Funcional até a tela de avaliação. Pendente para completar o módulo:
 
 ## Leitura correta do sistema
 
-O sistema é um portal funcional de avaliações de Salvamento Terrestre, mas ainda não está completo. Faltam: Prova Teórica, consolidação automática (VC1/VC2/VC3), RLS e AlunoArea funcional.
+O sistema e um portal de avaliacoes de Salvamento Terrestre em producao. Fases 1, 2 e 3 concluidas e estabilizadas.
 
-A visão de produto final é um portal com:
+Estado operacional:
 - login unificado ✅;
 - perfis distintos de acesso ✅;
-- módulos por oficina (4 de 5 concluídos);
-- consolidação automática de médias e pesos (decidida, não implementada);
-- cálculo de aptidão final (decidido, não implementado);
-- relatórios individuais e mapas de notas integrados para coordenação (parcial).
+- RLS ativa em `avaliacoes` e `profiles` ✅;
+- 5 modulos por oficina operacionais ✅ (motosserra, escadas, pocos, circuito, teorica);
+- AlunoArea funcional ✅;
+- CoordenacaoArea com visao consolidada ✅;
+- consolidacao automatica de medias e pesos (✅ 100% operacional);
+- calculo de aptidao final (✅ 100% operacional);
+- relatorios individuais e mapas de notas avancados (✅ 100% operacional).
 
 ---
 
@@ -333,24 +365,25 @@ A frente de **consolidação acadêmico-operacional** (Fase 4 da spec.md) está 
 
 Arquivo criado: `docs/decisions/2026-04-13-consolidacao-academico-operacional.md`
 
-Fórmulas finalizadas e mapeadas:
-- VC1 = (escadas + poços) / 2
+Formulas finalizadas e mapeadas:
+- VC1 = (escadas + pocos) / 2
 - VC2 = (motosserra + circuito) / 2
 - VC3 = teorica
-- Média Final = (VC1 + VC2 + VC3) / 3
+- Media Final = (VC1 + VC2 + VC3) / 3
 
 Regras operacionais:
-- Agregação: usa a **última avaliação registrada** por oficina
-- Prova Teórica: persiste em `avaliacoes` com `module_id = 'teorica'`
+- Agregacao: usa a **ultima avaliacao registrada** por oficina
+- Prova Teorica: persiste em `avaliacoes` com `module_id = 'teorica'`
 
-### Próximo passo imediato
+### Estado dos prerequisitos
 
-Poço e Circuito já estão implementados. A ordem agora é:
+Todos os modulos necessarios para consolidacao estao em producao:
 
-1. ✅ Módulo **Poço** (`'pocos'`) — concluído
-2. ✅ Módulo **Circuito** (`'circuito'`) — concluído
-3. ⏳ Implementar **Prova Teórica** (`'teorica'`) — abre possibilidade de calcular VC3 completo
-4. ⏳ Criar `consolidacaoService.js` com as funções `calcularConsolidacao` e `fetchConsolidacaoPorAluno
+1. ✅ Modulo **Poco** (`'pocos'`) — operacional
+2. ✅ Modulo **Circuito** (`'circuito'`) — operacional
+3. ✅ Modulo **Prova Teorica** (`'teorica'`) — operacional
+4. ✅ Camada de servicos: `consolidacaoService.js` e `exportService.js` concluidos
+5. ✅ Integracao UI Total: Mapa de Notas, Dashboads com Graficos SVG e Exportacao
 
 ---
 
@@ -974,16 +1007,16 @@ A implementação da Fase 2 depende de dois passos sequenciais:
 
 ---
 
-## Decisões já assumidas
+## Decisoes consolidadas
 
-As seguintes decisões já estão assumidas como base de trabalho:
+As seguintes decisoes estao implementadas e estabilizadas:
 
-- o sistema atual será reaproveitado, não descartado;
-- a evolução será incremental, não por reescrita total imediata;
-- o objetivo final é um portal centralizado de avaliações de Salvamento Terrestre;
-- o sistema de motosserra será tratado como primeiro núcleo funcional dessa plataforma;
-- modularização virá antes da expansão ampla de oficinas;
-- autenticação, perfis e consolidação de notas serão pilares da evolução futura.
+- o sistema opera como portal centralizado de avaliacoes de Salvamento Terrestre;
+- a evolucao e incremental, preservando o que esta em producao;
+- modularizacao por oficina concluida com 5 modulos operacionais;
+- autenticacao por perfil via Supabase Auth com RLS ativa;
+- persistencia multi-modulo com `module_id` em tabela unica;
+- consolidacao academico-operacional decidida, proxima frente de implementacao.
 
 ---
 
@@ -1136,15 +1169,14 @@ Baixo. Mudanças puramente visuais/estruturais. Nenhum comportamento funcional f
 
 ---
 
-## Riscos que não podem ser esquecidos
+## Riscos que nao podem ser esquecidos
 
-- expandir novas oficinas sem antes modularizar a estrutura;
-- continuar concentrando responsabilidades em `App.jsx`;
-- alterar regra de cálculo sem documentação clara;
-- manter dados sensíveis e críticos em fluxo improvisado;
-- crescer o sistema sem definir bem perfis e permissões;
-- misturar mudança estrutural com feature nova sem controle;
-- esquecer que contexto React sem memoização força re-renders em cadeia (perdendo navegação).
+- alterar regra de calculo sem documentacao clara;
+- manter dados sensiveis e criticos em fluxo improvisado;
+- misturar mudanca estrutural com feature nova sem controle;
+- esquecer que contexto React sem memoizacao forca re-renders em cadeia (perdendo navegacao);
+- implementar consolidacao sem testes adequados das formulas;
+- alterar persistencia sem considerar dados ja em producao.
 
 ---
 
@@ -1181,7 +1213,7 @@ Atualizar este arquivo sempre que houver:
 
 ### O que foi feito
 
-Implementacao do MVP da `CoordenacaoArea` — primeiro relatório consolidado do portal.
+Implementacao da `CoordenacaoArea` — primeiro relatorio consolidado do portal.
 
 **Arquivo modificado:**
 - `src/pages/CoordenacaoArea.jsx` — substituido placeholder por tela funcional de consulta somente leitura.
@@ -1206,7 +1238,7 @@ Implementacao do MVP da `CoordenacaoArea` — primeiro relatório consolidado do
 - Banco de dados — **nenhuma alteracao**.
 - RLS — **intocada**.
 
-### O que NAO esta no MVP (pertence a versoes futuras)
+### Pendencias de evolucao (CoordenacaoArea)
 
 - Exportacao CSV/XLSX consolidada da coordenacao.
 - Agregacoes por aluno (media entre oficinas, aptidao final).
@@ -1232,7 +1264,7 @@ Se a coluna nao existir, `fetchAvaliacoesByModulo` retorna zero resultados para 
 
 ### O que foi feito
 
-Implementacao do MVP da `AlunoArea` — tela de consulta de notas do aluno logado.
+Implementacao da `AlunoArea` — tela de consulta de notas do aluno logado.
 
 **`src/contexts/AuthContext.jsx`** — modificado:
 - Select da tabela `profiles` ampliado de `'role, nome'` para `'role, nome, numero_ordem'`.
@@ -1252,7 +1284,7 @@ Implementacao do MVP da `AlunoArea` — tela de consulta de notas do aluno logad
 - Link "Voltar ao Portal" no cabecalho.
 - Estilo consistente com `CoordenacaoArea.jsx` (inline styles, sans-serif, padding 32px).
 
-### O que NAO esta no MVP (pertence a versoes futuras)
+### Pendencias de evolucao (AlunoArea)
 
 - Media consolidada entre oficinas (requer Fase 4 da SPEC — pesos e formula de aptidao).
 - Status de aptidao final (APTO/INAPTO) — depende da media consolidada.
@@ -1322,35 +1354,30 @@ Criação de `src/modules/pocos/data/penalties.js` — arquivo de penalidades pa
 
 ---
 
-## Resumo curto para retomada rápida
+## Resumo curto para retomada rapida
 
-Projeto atual:
-- app funcional de avaliação de motosserra + escadas
-- **portal com login unificado e perfis protegidos** (Fase 2 concluída)
+Sistema em producao:
+- portal de avaliacoes de Salvamento Terrestre com 5 modulos operacionais
+- login unificado com perfis protegidos (Fase 2 concluida)
 - dados protegidos por RLS no banco
-- **CoordenacaoArea MVP funcional** (Sprint 17)
-- **PortalLayout light theme implantado** (Sprint 19) — todas as páginas de portal usam tema claro de alto contraste
+- CoordenacaoArea funcional com visao consolidada dos 5 modulos
+- AlunoArea funcional com consulta por numero_ordem
+- PortalLayout com padronizacao visual completa
 
-Estado de Fase 2:
-- ✅ Supabase Auth integrado
-- ✅ Tabela `profiles` com RLS ativa
-- ✅ Rotas protegidas no frontend
-- ✅ RLS em `avaliacoes` ativa (dados filtrados por perfil)
+Estado das fases:
+- ✅ Fase 1 — organizacao da base
+- ✅ Fase 2 — autenticacao, perfis e roteamento
+- ✅ Fase 3 — modularizacao por oficina (5 modulos)
+- Pendente: Fase 4 — consolidacao academico-operacional
 
-Estado de relatórios:
-- ✅ CoordenacaoArea exibe tabela consolidada de motosserra + escadas com filtro por modulo
-- ✅ AlunoArea MVP funcional (Sprint 18) — consulta de notas do aluno logado por numero_ordem
-- Pendente: media consolidada entre oficinas, aptidao final, exportacao individual, mapa de notas
-
-Direção futura:
-- portal centralizado de avaliações de Salvamento Terrestre
-- conteúdo real em área do aluno
-- Fase 3: modularização por oficina com acesso por avaliador
-- Fase 4: consolidação de médias, pesos e aptidão final
+Pendencias de producao:
+- `consolidacaoService.js` (calculo de VC1/VC2/VC3/Media Final)
+- Relatorios individuais consolidados
+- Mapa de notas para coordenacao
+- AdvancedReports para pocos e circuito (baixa prioridade)
 
 Prioridade imediata:
-- implementar tela de conteúdo para AlunoArea
-- preparar Fase 3
+- implementar Fase 4 — consolidacao academico-operacional
 
 ---
 

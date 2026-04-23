@@ -4,7 +4,7 @@
 
 **Portal de Avaliações de Salvamento Terrestre — CBMAP CFSD-26.**
 
-Sistema web SPA com 4 módulos funcionais de avaliação prática: motosserra (Operações com Árvore), escadas, poços e circuito. Prova Teórica e consolidação acadêmica decididas, ainda não implementadas.
+Sistema web SPA em produção com 5 módulos funcionais de avaliação: motosserra (Operações com Árvore), escadas, poços, circuito e prova teórica (VC3). Autenticação por perfil via Supabase Auth, persistência multi-módulo com RLS, e visão consolidada para coordenação. Consolidação acadêmica (VC1/VC2/VC3/Média Final) decidida, pendente de implementação.
 
 - Estado atual do sistema: `docs/current-state.md`
 - Visão do produto: `docs/prd.md`
@@ -22,7 +22,7 @@ Para políticas de economia de contexto, consulte `docs/session-policies.md`.
 
 Antes de alterar código, pergunte:
 
-1. esta mudança atende o sistema atual ou o portal-alvo?
+1. esta mudança atende o sistema em produção ou o roadmap de evolução?
 2. esta mudança preserva o que já funciona?
 3. esta mudança aumenta ou reduz o acoplamento?
 4. esta mudança está alinhada com `docs/spec.md`?
