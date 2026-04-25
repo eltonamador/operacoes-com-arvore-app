@@ -4,6 +4,7 @@ import { fetchAvaliacoesByModulo } from '../services/avaliacoesService'
 import { fetchConsolidacaoTodos } from '../services/consolidacaoService'
 import { exportToCSV, exportToXLSX } from '../services/exportService'
 import PortalLayout from '../components/PortalLayout'
+import VcTooltip from '../components/VcTooltip'
 
 // ═══════════════════════════════════════════════
 //  CONSTANTS
@@ -840,14 +841,41 @@ function ConsolidacaoTab({ consolidacoes, loading, error }) {
                     const { vc1, vc2, vc3, mediaFinal, apto } = aluno.consolidacao
                     const badgeClass = apto === true ? 'badge-pass' : apto === false ? 'badge-fail' : 'badge-neutral'
                     const badgeText = apto === true ? 'APTO' : apto === false ? 'NÃO APTO' : 'EM PROGRESSO'
+
+                    const fmtMod = (modId, modName) => {
+                      const score = aluno.modulos?.[modId]?.finalScore
+                      return `${modName}: ${typeof score === 'number' ? score.toFixed(2).replace('.', ',') : 'Sem nota lançada'}`
+                    }
+
                     return (
                       <tr key={aluno.ordem}>
                         <td>{aluno.nome || '—'}</td>
                         <td>{aluno.ordem || '—'}</td>
                         <td>{aluno.pelotao || '—'}</td>
-                        <td className="center">{fmtNota(vc1)}</td>
-                        <td className="center">{fmtNota(vc2)}</td>
-                        <td className="center">{fmtNota(vc3)}</td>
+                        <td className="center">
+                          <VcTooltip
+                            label="VC1"
+                            lines={[fmtMod('escadas', 'Escadas'), fmtMod('pocos', 'Poços')]}
+                          >
+                            {fmtNota(vc1)}
+                          </VcTooltip>
+                        </td>
+                        <td className="center">
+                          <VcTooltip
+                            label="VC2"
+                            lines={[fmtMod('motosserra', 'Motosserra'), fmtMod('circuito', 'Circuito')]}
+                          >
+                            {fmtNota(vc2)}
+                          </VcTooltip>
+                        </td>
+                        <td className="center">
+                          <VcTooltip
+                            label="VC3"
+                            lines={[fmtMod('teorica', 'Prova Teórica')]}
+                          >
+                            {fmtNota(vc3)}
+                          </VcTooltip>
+                        </td>
                         <td className="center" style={{ fontWeight: 700 }}>{fmtNota(mediaFinal)}</td>
                         <td className="center"><span className={badgeClass}>{badgeText}</span></td>
                       </tr>
