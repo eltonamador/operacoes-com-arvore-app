@@ -1,309 +1,128 @@
 export const SECTIONS = [
   {
     id: '1.0',
-    title: 'TEMPO DE EXECUÇÃO',
+    title: 'EPI E APRESENTAÇÃO',
     items: [
-      { id: '1.1', description: 'Excede 20:00 — 1ª faixa (>20:01 até 21:00).', discount: 0.20 },
-      { id: '1.2', description: 'Excede 21:00 — 2ª faixa (>21:01 até 22:00).', discount: 0.20 },
-      { id: '1.3', description: 'Excede 22:00 — 3ª faixa (>22:01 até 23:00).', discount: 0.20 },
-      { id: '1.4', description: 'Excede 23:00 — 4ª faixa (>23:01 até 24:00).', discount: 0.20 },
-      { id: '1.5', description: 'Excede 24:00 — 5ª faixa (>24:01 até 25:00).', discount: 0.20 },
-      { id: '1.6', description: 'Excede 25:00 — 6ª faixa (>25:01 até 26:00).', discount: 0.20 },
-      { id: '1.7', description: 'Excede 26:00 — 7ª faixa (>26:01 até 27:00).', discount: 0.20 },
-      { id: '1.8', description: 'Excede 27:00 — 8ª faixa (>27:01 até 28:00 — limite máximo).', discount: 0.20 },
+      { id: '1.1', description: 'Deixar de usar ou ajustar incorretamente qualquer EPI exigido.', discount: 0.30 },
+      { id: '1.2', description: 'Deixar de usar luva de raspa nas manobras de tração em corda.', discount: 0.30 },
+      { id: '1.3', description: 'Retirar luvas, óculos ou capacete durante a execução da atividade.', discount: 0.30 },
     ],
   },
   {
     id: '2.0',
-    title: 'TÉCNICA INCORRETA POR FASE',
+    title: 'MONTAGEM INICIAL E PALCO DE MATERIAIS',
     items: [
-      {
-        id: '2.1',
-        description: 'Uso de técnica fora do discriminado para cada fase.',
-        discount: 1.00,
-      },
+      { id: '2.1', description: 'Deixar equipamentos fora do palco de materiais no início da prova, desorganizados ou fora do solo.', discount: 0.20 },
+      { id: '2.2', description: 'Deixar equipamentos fora do palco de materiais durante a execução, de forma desorganizada.', discount: 0.20 },
+      { id: '2.3', description: 'Deixar faltar material necessário para a execução da técnica.', discount: 0.20 },
+      { id: '2.4', description: 'Organizar inadequadamente cabos, ferragens e aduchamentos no palco.', discount: 0.20 },
+      { id: '2.5', description: 'Deixar o tripé cair durante a montagem.', discount: 0.50 },
     ],
   },
   {
     id: '3.0',
-    title: '1ª FASE — MONTAGEM DO SISTEMA',
+    title: 'FASE 1 – TRIPÉ, ANCORAGENS E SISTEMAS',
     items: [
-      {
-        id: '3.1',
-        description: 'Execução da técnica de maneira errada ou não estipulada (Fase 1).',
-        discount: 0.20,
-      },
-      {
-        id: '3.2',
-        description: 'Equipamentos fora do palco de materiais no início (desorganizados, fora do solo).',
-        discount: 0.20,
-      },
-      {
-        id: '3.3',
-        description: 'Equipamentos fora do palco de materiais durante a execução (desorganizados).',
-        discount: 0.20,
-      },
-      {
-        id: '3.4',
-        description: 'Falta de equipamentos para execução da técnica.',
-        discount: 0.20,
-      },
-      {
-        id: '3.5',
-        description: 'Falta de linha de vida ou linha de vida inadequada.',
-        discount: 0.30,
-      },
-      {
-        id: '3.6',
-        description: 'Aproximar-se do poço sem estar na linha da vida.',
-        discount: 0.30,
-      },
-      {
-        id: '3.7',
-        description: 'Membro da equipe sem algum EPI.',
-        discount: 0.30,
-      },
-      {
-        id: '3.8',
-        description: 'Deixar cair material no poço.',
-        discount: 0.30,
-      },
-      {
-        id: '3.9',
-        description: 'Deixar cair o tripé.',
-        discount: 0.20,
-      },
-      {
-        id: '3.10',
-        description: 'Fazer conexões na placa de ancoragem ou polia com o tripé no poço.',
-        discount: 0.50,
-      },
-      {
-        id: '3.11',
-        description: 'Passagem da fita ou dos mosquetões no cabeçote incorreto ou desalinhado.',
-        discount: 0.20,
-      },
-      {
-        id: '3.12',
-        description: 'Mosquetões dos sistemas desaqualizados na placa de ancoragem.',
-        discount: 0.20,
-      },
-      {
-        id: '3.13',
-        description: 'Nós não estipulados, incorretos ou "montados" (prusick, carioca).',
-        discount: 0.20,
-      },
-      {
-        id: '3.14',
-        description: 'Mosquetões abertos.',
-        discount: 0.20,
-      },
-      {
-        id: '3.15',
-        description: 'Arvorar tripé fora da altura estipulada (5º furo).',
-        discount: 0.20,
-      },
-      {
-        id: '3.16',
-        description: 'Tripé com pés desequalizados (não formam triângulo equilátero).',
-        discount: 0.20,
-      },
-      {
-        id: '3.17',
-        description: 'Sapatas em direção errada.',
-        discount: 0.20,
-      },
-      {
-        id: '3.18',
-        description: 'Amarração de ancoragem em perna inadequada em relação ao sentido da puxada no portal.',
-        discount: 0.20,
-      },
-      {
-        id: '3.19',
-        description: 'Corrente das sapatas inexistente ou folgada.',
-        discount: 0.20,
-      },
-      {
-        id: '3.20',
-        description: 'Passagem de fitas ou cabos em pontos bomba sem proteção de quinas.',
-        discount: 0.20,
-      },
-      {
-        id: '3.21',
-        description: 'Instalação do freio oito inadequada.',
-        discount: 0.20,
-      },
-      {
-        id: '3.22',
-        description: 'Passagem do cabo no freio oito inadequada (passagem simples).',
-        discount: 0.30,
-      },
+      { id: '3.1', description: 'Fazer conexões na placa de ancoragem ou em polia com o tripé já posicionado sobre o poço.', discount: 0.30 },
+      { id: '3.2', description: 'Montar incorretamente equipamentos ou sistemas.', discount: 0.30 },
+      { id: '3.3', description: 'Posicionar incorretamente mosquetões dos sistemas na placa de ancoragem, deixando-os desalinhados ou mal distribuídos.', discount: 0.20 },
+      { id: '3.4', description: 'Usar mosquetão automático.', discount: 0.30 },
+      { id: '3.5', description: 'Deixar mosquetão aberto ou sem fechamento adequado, por unidade.', discount: 0.30, perUnit: true },
+      { id: '3.6', description: 'Deixar de dar a meia-volta final no mosquetão de rosca, por unidade.', discount: 0.20, perUnit: true },
+      { id: '3.7', description: 'Executar nó não estipulado, incorreto ou mal montado, por unidade.', discount: 0.20, perUnit: true },
+      { id: '3.8', description: 'Deixar sistemas descentralizados na abertura do poço.', discount: 0.20 },
+      { id: '3.9', description: 'Posicionar mal os pés do tripé, sem geometria adequada de apoio.', discount: 0.20 },
+      { id: '3.10', description: 'Deixar a corrente das sapatas inexistente, frouxa ou inadequadamente ajustada.', discount: 0.20 },
+      { id: '3.11', description: 'Montar incorretamente o blocante estrutural.', discount: 0.40 },
+      { id: '3.12', description: 'Passar fita em ponto-bomba sem proteção de quinas.', discount: 0.20 },
+      { id: '3.13', description: 'Instalar inadequadamente o freio oito.', discount: 0.20 },
+      { id: '3.14', description: 'Executar incorretamente o nó direito de escape ou deixar de aplicar cote.', discount: 0.20 },
+      { id: '3.15', description: 'Deixar frouxa a amarração de ancoragem na perna do tripé.', discount: 0.20 },
+      { id: '3.16', description: 'Montar sistema torcido ou desalinhado.', discount: 0.30 },
+      { id: '3.17', description: 'Deixar de instalar SCP, ou instalá-lo inadequadamente, no sistema exigido.', discount: 0.50 },
     ],
   },
   {
     id: '4.0',
-    title: '2ª FASE — DESCIDA E RESGATE DA VÍTIMA 1',
+    title: 'FASE 2 – DESCIDA DO SOCORRISTA E SALVAMENTO DA VÍTIMA Nº 1',
     items: [
-      {
-        id: '4.1',
-        description: 'Execução da técnica de maneira errada ou não estipulada (Fase 2).',
-        discount: 0.20,
-      },
-      {
-        id: '4.2',
-        description: 'Clipar socorrista ao cabo sem bloquear o cabo no freio.',
-        discount: 0.30,
-      },
-      {
-        id: '4.3',
-        description: 'Nós não estipulados, incorretos ou "montados" (oito).',
-        discount: 0.20,
-      },
-      {
-        id: '4.4',
-        description: 'Não tirar folga do cabo para entrada do socorrista no poço.',
-        discount: 0.30,
-      },
-      {
-        id: '4.5',
-        description: 'Começar a descida sem ordem do comandante.',
-        discount: 0.20,
-      },
-      {
-        id: '4.6',
-        description: 'Socorrista desce sem material necessário (fita, triângulo, capacetes das vítimas, EPRA, HT).',
-        discount: 0.30,
-      },
-      {
-        id: '4.7',
-        description: 'Instalação do EPRA inadequada (distância, etc.).',
-        discount: 0.20,
-      },
-      {
-        id: '4.8',
-        description: 'Uso incorreto de equipamento (hope grip, etc.).',
-        discount: 0.20,
-      },
-      {
-        id: '4.9',
-        description: 'Descida do socorrista com velocidade excessiva.',
-        discount: 0.30,
-      },
-      {
-        id: '4.10',
-        description: 'Falta de comunicação Socorrista x Comandante (uso do HT).',
-        discount: 0.20,
-      },
-      {
-        id: '4.11',
-        description: 'Sistema independente inadequado (torcido, etc.).',
-        discount: 0.20,
-      },
-      {
-        id: '4.12',
-        description: 'Sistema independente pouco compacto.',
-        discount: 0.20,
-      },
-      {
-        id: '4.13',
-        description: 'Sistema independente sem SCP ou inadequado (volta, hope grip, etc.).',
-        discount: 0.30,
-      },
-      {
-        id: '4.14',
-        description: 'Retirada da vítima nº 1 de forma insegura (sem SCP atuando).',
-        discount: 0.30,
-      },
-      {
-        id: '4.15',
-        description: 'Mosquetões abertos.',
-        discount: 0.30,
-      },
-      {
-        id: '4.16',
-        description: 'Não encaminhar vítima à USB.',
-        discount: 0.20,
-      },
+      { id: '4.1', description: 'Executar incorretamente o nó oito, deixá-lo sem cote ou montá-lo de forma inadequada.', discount: 0.20 },
+      { id: '4.2', description: 'Deixar de retirar a folga do cabo para a entrada do socorrista no poço.', discount: 0.20 },
+      { id: '4.3', description: 'Iniciar a descida sem ordem do comandante.', discount: 0.20 },
+      { id: '4.4', description: 'Descer sem o material necessário, como cabo, capacetes das vítimas e EPRA.', discount: 0.20 },
+      { id: '4.5', description: 'Socorrista desce sem o sistema 4x1 conectado ao lado da cadeirinha.', discount: 0.20 },
+      { id: '4.6', description: 'Instalar inadequadamente o EPRA.', discount: 0.20 },
+      { id: '4.7', description: 'Conectar o conjunto EPRA ao sistema sem cautela ou sem o apoio de dois militares, expondo risco de queda sobre a vítima.', discount: 0.40 },
+      { id: '4.8', description: 'Instalar inadequadamente o SCP no sistema 4x1.', discount: 0.20 },
+      { id: '4.9', description: 'Sistema estendido 4x1 trava a descida do socorrista.', discount: 0.20 },
+      { id: '4.10', description: 'Descer o socorrista com velocidade excessiva.', discount: 0.20 },
+      { id: '4.11', description: 'Deixar de manter comunicação entre socorrista e comandante.', discount: 0.20 },
+      { id: '4.12', description: 'Deixar o sistema torcer durante a subida da vítima nº 1 ou deixar de corrigir torção evidente.', discount: 0.20 },
+      { id: '4.13', description: 'Executar incorretamente a cadeirinha rápida (Nilson) na vítima nº 1.', discount: 0.30 },
+      { id: '4.14', description: 'Conectar inadequadamente a vítima nº 1 ao sistema 4x1.', discount: 0.30 },
+      { id: '4.15', description: 'Retirar a vítima nº 1 de forma insegura, sem SCP atuando adequadamente.', discount: 0.50 },
+      { id: '4.16', description: 'Usar mosquetão mal fechado na conexão da vítima nº 1.', discount: 0.30 },
+      { id: '4.17', description: 'Desclipar a vítima nº 1 antes do ponto regulamentar.', discount: 0.30 },
     ],
   },
   {
     id: '5.0',
-    title: '3ª FASE — RESGATE DA VÍTIMA 2 / SISTEMA 5x1',
+    title: 'FASE 3 – SALVAMENTO DA VÍTIMA Nº 2',
     items: [
-      {
-        id: '5.1',
-        description: 'Execução da técnica de maneira errada ou não estipulada (Fase 3).',
-        discount: 0.20,
-      },
-      {
-        id: '5.2',
-        description: 'Falta de comunicação Socorrista x Comandante (uso do HT).',
-        discount: 0.20,
-      },
-      {
-        id: '5.3',
-        description: 'Falta de SCP para "segurar" o cabo (para instalação do Sistema 5x1).',
-        discount: 0.20,
-      },
-      {
-        id: '5.4',
-        description: 'Sistema 5x1 reduzido errado ou inadequado.',
-        discount: 0.20,
-      },
-      {
-        id: '5.5',
-        description: 'Uso incorreto de equipamento (hope grip, etc.).',
-        discount: 0.20,
-      },
-      {
-        id: '5.6',
-        description: 'Tracionamento ineficaz de cabo de ancoragem (comprovado nas puxadas).',
-        discount: 0.20,
-      },
-      {
-        id: '5.7',
-        description: 'Negligência de proteção Socorrista x Vítima.',
-        discount: 0.30,
-      },
-      {
-        id: '5.8',
-        description: 'Falta de uso de máscara ou capuz (socorrista, vítima).',
-        discount: 0.30,
-      },
-      {
-        id: '5.9',
-        description: 'Retirada da vítima nº 2 de forma insegura (sem SCP atuando).',
-        discount: 0.30,
-      },
-      {
-        id: '5.10',
-        description: 'Mosquetões abertos.',
-        discount: 0.30,
-      },
-      {
-        id: '5.11',
-        description: 'Não encaminhar vítima ao local correto.',
-        discount: 0.20,
-      },
-      {
-        id: '5.12',
-        description: 'Discussão exagerada entre membros da equipe.',
-        discount: 0.20,
-      },
-      {
-        id: '5.13',
-        description: 'Falta de liderança, ação, verbalização do comandante.',
-        discount: 0.30,
-      },
+      { id: '5.1', description: 'Deixar de manter comunicação entre socorrista e comandante.', discount: 0.20 },
+      { id: '5.2', description: 'Deixar de usar SCP para segurar o cabo durante a instalação do sistema 5x1.', discount: 0.20 },
+      { id: '5.3', description: 'Montar incorretamente o sistema 5x1 reduzido ou deixá-lo inadequado.', discount: 0.20 },
+      { id: '5.4', description: 'Usar incorretamente equipamento, como Hope Grip ou anel para Prusik.', discount: 0.20 },
+      { id: '5.5', description: 'Tracionar ineficazmente o cabo de ancoragem, mantendo o EPRA no fundo do poço.', discount: 0.20 },
+      { id: '5.6', description: 'Deixar de tensionar o sistema T-Block logo após a primeira puxada da vítima nº 2.', discount: 0.20 },
+      { id: '5.7', description: 'Executar inadequadamente os resets do sistema.', discount: 0.20 },
+      { id: '5.8', description: 'Negligenciar a proteção entre socorrista e vítima.', discount: 0.20 },
+      { id: '5.9', description: 'Ancorar inadequadamente a vítima nº 2 à cadeirinha tipo 3.', discount: 0.20 },
+      { id: '5.10', description: 'Retirar a vítima nº 2 de forma insegura, sem SCP atuando adequadamente.', discount: 0.50 },
+      { id: '5.11', description: 'Deixar de retirar o EPRA do cabo antes da saída da dupla do poço.', discount: 0.20 },
+      { id: '5.12', description: 'Deixar mosquetões abertos ou mal fechados no sistema da vítima nº 2.', discount: 0.20 },
+      { id: '5.13', description: 'Desclipar a vítima nº 2 antes do ponto regulamentar.', discount: 0.30 },
+    ],
+  },
+  {
+    id: '6.0',
+    title: 'DISCIPLINA, TEMPO E OCORRÊNCIAS CRÍTICAS',
+    items: [
+      { id: '6.1', description: 'Executar, como comandante de grupo com 6 alunos, tarefa não estipulada para sua função.', discount: 1.00 },
+      { id: '6.2', description: 'Aproximar-se da zona do poço sem estar devidamente clipado à linha de vida.', discount: 0.30 },
+      { id: '6.3', description: 'Deixar cair material ao solo, de forma insegura.', discount: 0.20 },
+      { id: '6.4', description: 'Deixar cair material no poço.', discount: 2.00 },
+      { id: '6.5', description: 'Permitir discussão exagerada entre os membros da equipe.', discount: 0.20 },
+      { id: '6.6', description: 'Deixar de verbalizar ou comandar com clareza durante a prova.', discount: 0.20 },
+      { id: '6.7a', description: 'Exigir intervenção do avaliador por falha grave de segurança (–0,50).', discount: 0.50 },
+      { id: '6.7b', description: 'Exigir intervenção do avaliador por falha grave de segurança (–1,00).', discount: 1.00 },
+      { id: '6.8', description: 'Deixar o tripé cair durante o salvamento com vítimas (Falta gravíssima – Nota zero).', discount: 10.00 },
+      { id: '6.9.1', description: 'Tempo: Excede 17:00 (>17:01 até 18:00).', discount: 0.20 },
+      { id: '6.9.2', description: 'Tempo: Excede 18:00 (>18:01 até 19:00).', discount: 0.20 },
+      { id: '6.9.3', description: 'Tempo: Excede 19:00 (>19:01 até 20:00).', discount: 0.20 },
+      { id: '6.9.4', description: 'Tempo: Excede 20:00 (>20:01 até 21:00).', discount: 0.20 },
+      { id: '6.9.5', description: 'Tempo: Excede 21:00 (>21:01 até 22:00).', discount: 0.20 },
+      { id: '6.9.6', description: 'Tempo: Excede 22:00 (>22:01 até 23:00).', discount: 0.20 },
+      { id: '6.9.7', description: 'Tempo: Excede 23:00 (>23:01 até 24:00).', discount: 0.20 },
+      { id: '6.9.8', description: 'Tempo: Excede 24:00 (>24:01 até 25:00 - limite máximo).', discount: 0.20 },
     ],
   },
 ]
 
-export function calcScore(checkedItems, customErrorDiscount = 0) {
+/**
+ * Calcula nota final.
+ * @param {Set<string>} checkedItems
+ * @param {number} customErrorDiscount
+ * @param {Object} itemQuantities — { [itemId]: number } para itens perUnit
+ */
+export function calcScore(checkedItems, customErrorDiscount = 0, itemQuantities = {}) {
   let total = 0
   for (const section of SECTIONS) {
     for (const item of section.items) {
-      if (checkedItems.has(item.id)) total += item.discount
+      if (checkedItems.has(item.id)) {
+        const qty = item.perUnit ? (itemQuantities[item.id] || 1) : 1
+        total += item.discount * qty
+      }
     }
   }
   total += customErrorDiscount

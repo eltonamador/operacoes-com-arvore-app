@@ -68,11 +68,11 @@ function SectionHeader({ section }) {
   )
 }
 
-export default function Evaluation({ state, toggleItem, setObservations, setCustomError, goTo }) {
-  const { checkedItems, observations, customError } = state
+export default function Evaluation({ state, toggleItem, setItemQuantity, setObservations, setCustomError, goTo }) {
+  const { checkedItems, itemQuantities = {}, observations, customError } = state
 
   const customDiscount = parseFloat(customError.discount) || 0
-  const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
+  const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount, itemQuantities)
   const isPassing = finalScore >= 7.0
 
   function formatDiscount(val) {
@@ -179,6 +179,75 @@ export default function Evaluation({ state, toggleItem, setObservations, setCust
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {section.items.map(item => {
                     const isChecked = checkedItems.has(item.id)
+                    const qty = item.perUnit ? (itemQuantities[item.id] || 1) : 1
+
+                    if (item.perUnit) {
+                      // Item "por unidade": checkbox + contador [-] [n] [+] + subtotal
+                      return (
+                        <div
+                          key={item.id}
+                          className={`penalty-item ${isChecked ? 'checked' : ''}`}
+                          style={{ cursor: 'default', userSelect: 'none' }}
+                        >
+                          <div
+                            className="penalty-item-check"
+                            style={{ cursor: 'pointer', flexShrink: 0 }}
+                            onClick={() =>
+                              isChecked
+                                ? setItemQuantity(item.id, 0)
+                                : setItemQuantity(item.id, 1)
+                            }
+                          >
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                              <path d="M2.5 7L5.5 10L11.5 4" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                          <span className="penalty-item-id">{item.id}</span>
+                          <span className="penalty-item-desc">{item.description}</span>
+                          {isChecked ? (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                              <button
+                                type="button"
+                                onClick={() => setItemQuantity(item.id, qty - 1)}
+                                style={{
+                                  width: 24, height: 24, borderRadius: 4,
+                                  border: '1px solid #cc8800', background: '#1a1200',
+                                  color: '#ffbb44', fontWeight: 800, fontSize: 15,
+                                  cursor: 'pointer', lineHeight: 1, padding: 0,
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                }}
+                              >−</button>
+                              <span style={{ minWidth: 22, textAlign: 'center', fontWeight: 800, color: 'var(--text-primary)', fontSize: 14 }}>
+                                {qty}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => setItemQuantity(item.id, qty + 1)}
+                                style={{
+                                  width: 24, height: 24, borderRadius: 4,
+                                  border: '1px solid #cc8800', background: '#1a1200',
+                                  color: '#ffbb44', fontWeight: 800, fontSize: 15,
+                                  cursor: 'pointer', lineHeight: 1, padding: 0,
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                }}
+                              >+</button>
+                              <span style={{
+                                fontSize: 11, color: 'var(--red-light)', fontWeight: 700,
+                                marginLeft: 4, whiteSpace: 'nowrap',
+                              }}>
+                                {qty} × {formatDiscount(item.discount)} = {formatDiscount(qty * item.discount)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="penalty-item-discount" style={{ whiteSpace: 'nowrap' }}>
+                              {formatDiscount(item.discount)}/un
+                            </span>
+                          )}
+                        </div>
+                      )
+                    }
+
+                    // Item simples: botão inteiro clicável
                     return (
                       <button
                         key={item.id}

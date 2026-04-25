@@ -65,22 +65,29 @@ export function AuthProvider({ children }) {
     // Caminho 1: onAuthStateChange — dispara com INITIAL_SESSION na inicialização
     // e com SIGNED_IN / SIGNED_OUT / TOKEN_REFRESHED nas trocas subsequentes.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, newSession) => {
+      async (event, newSession) => {
         if (!initialised) {
           // Primeira resolução: delegar para resolveInitialState
           await resolveInitialState(newSession)
+        } else if (event === 'SIGNED_OUT') {
+          // Logout explícito: limpar tudo
+          setSession(null)
+          setProfile(null)
         } else {
-          // Mudanças subsequentes: login, logout, refresh de token
-          let prof = null
+          // SIGNED_IN, TOKEN_REFRESHED e outros: tentar buscar o profile.
+          // Em caso de falha (timeout, rede lenta), preservar o profile
+          // anterior para não derrubar o role e redirecionar o usuário.
+          setSession(newSession)
           if (newSession?.user) {
             try {
-              prof = await fetchProfile(newSession.user.id)
+              const prof = await fetchProfile(newSession.user.id)
+              // Só atualiza se fetchProfile retornou dados válidos
+              if (prof) setProfile(prof)
+              // Se retornou null (timeout/erro), mantém o profile anterior
             } catch {
-              prof = null
+              // Mantém o profile anterior em caso de exceção inesperada
             }
           }
-          setSession(newSession)
-          setProfile(prof)
         }
       }
     )

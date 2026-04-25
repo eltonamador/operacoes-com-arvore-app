@@ -16,7 +16,7 @@ export default function Signature({ state, goTo, confirmMemberSignature }) {
   const [tentativas, setTentativas] = useState(0)
   const [bloqueadoAte, setBloqueadoAte] = useState(null)
 
-  const { groupData, checkedItems, observations, customError, currentSignerIndex } = state
+  const { groupData, checkedItems, itemQuantities = {}, observations, customError, currentSignerIndex } = state
   const integrantes = groupData.integrantes || []
 
   const currentMember = integrantes[currentSignerIndex] ?? null
@@ -24,7 +24,7 @@ export default function Signature({ state, goTo, confirmMemberSignature }) {
   const allSigned = currentSignerIndex >= totalMembers
 
   const customDiscount = parseFloat(customError?.discount) || 0
-  const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
+  const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount, itemQuantities)
   const isPassing = finalScore >= 7.0
 
   // Resolve o PIN do membro atual:
@@ -47,14 +47,17 @@ export default function Signature({ state, goTo, confirmMemberSignature }) {
     const result = []
     for (const section of SECTIONS) {
       for (const item of section.items) {
-        if (checkedItems.has(item.id)) result.push(item)
+        if (checkedItems.has(item.id)) {
+          const qty = item.perUnit ? (itemQuantities[item.id] || 1) : 1
+          result.push({ ...item, qty, effectiveDiscount: item.discount * qty })
+        }
       }
     }
     if (customError?.description?.trim() && customDiscount > 0) {
-      result.push({ id: 'EXTRA', description: customError.description, discount: customDiscount })
+      result.push({ id: 'EXTRA', description: customError.description, discount: customDiscount, qty: 1, effectiveDiscount: customDiscount })
     }
     return result
-  }, [checkedItems, customError, customDiscount])
+  }, [checkedItems, itemQuantities, customError, customDiscount])
 
   const bloqueado = bloqueadoAte && Date.now() < bloqueadoAte
   const canConfirm =
@@ -198,8 +201,11 @@ export default function Signature({ state, goTo, confirmMemberSignature }) {
                       <span style={{ color: 'var(--text-primary)' }}>
                         <strong>{item.id}</strong> — {item.description}
                       </span>
-                      <span style={{ color: 'var(--red-light)', fontWeight: 700 }}>
-                        -{Number(item.discount).toFixed(2).replace('.', ',')}
+                      <span style={{ color: 'var(--red-light)', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                        {item.qty > 1
+                          ? `${item.qty} × -${item.discount.toFixed(2).replace('.', ',')} = -${item.effectiveDiscount.toFixed(2).replace('.', ',')}`
+                          : `-${Number(item.effectiveDiscount).toFixed(2).replace('.', ',')}`
+                        }
                       </span>
                     </div>
                   ))}

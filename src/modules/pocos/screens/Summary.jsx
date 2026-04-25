@@ -13,17 +13,18 @@ import { SECTIONS, calcScore } from '../data/penalties'
  *   integrantes — array com dados de assinatura individual
  */
 export default function Summary({ state, reset, goTo, saveEvaluation }) {
-  const { groupData, checkedItems, observations, customError } = state
+  const { groupData, checkedItems, itemQuantities = {}, observations, customError } = state
   const customDiscount = parseFloat(customError?.discount) || 0
   const hasCustomError = customError?.description?.trim() !== '' && customDiscount > 0
-  const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
+  const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount, itemQuantities)
   const isPassing = finalScore >= 7.0
 
   const penalizedItems = []
   for (const section of SECTIONS) {
     for (const item of section.items) {
       if (checkedItems.has(item.id)) {
-        penalizedItems.push({ section, item })
+        const qty = item.perUnit ? (itemQuantities[item.id] || 1) : 1
+        penalizedItems.push({ section, item, qty })
       }
     }
   }
@@ -45,11 +46,12 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
         erro_nao_previsto: hasCustomError
           ? { descricao: customError.description, desconto: Number(customDiscount.toFixed(2)) }
           : null,
-        itens_penalizados: penalizedItems.map(({ section, item }) => ({
+        itens_penalizados: penalizedItems.map(({ section, item, qty }) => ({
           secao: section.title,
           id: item.id,
           descricao: item.description,
-          desconto: Number(item.discount.toFixed(2)),
+          quantidade: qty,
+          desconto: Number((item.discount * qty).toFixed(2)),
         })),
       }
 
@@ -237,11 +239,16 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
                 </p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {penalizedItems.map(({ item }) => (
+                  {penalizedItems.map(({ item, qty }) => (
                     <div key={item.id} className="summary-penalty-row">
                       <span className="summary-penalty-id">{item.id}</span>
                       <span className="summary-penalty-desc">{item.description}</span>
-                      <span className="summary-penalty-val">–{item.discount.toFixed(2).replace('.', ',')}</span>
+                      <span className="summary-penalty-val">
+                        {qty > 1
+                          ? `${qty} × –${item.discount.toFixed(2).replace('.', ',')} = –${(item.discount * qty).toFixed(2).replace('.', ',')}`
+                          : `–${item.discount.toFixed(2).replace('.', ',')}`
+                        }
+                      </span>
                     </div>
                   ))}
                   {hasCustomError && (

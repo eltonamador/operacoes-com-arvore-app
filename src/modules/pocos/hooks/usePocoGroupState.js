@@ -23,6 +23,7 @@ const initialGroupData = {
 const initialState = {
   groupData: initialGroupData,
   checkedItems: new Set(),
+  itemQuantities: {},   // { [itemId]: number } — só para itens perUnit
   criticalErrors: false,
   observations: '',
   customError: { description: '', discount: '' },
@@ -56,6 +57,26 @@ export function usePocoGroupState() {
 
   function setCustomError(val) {
     setState(s => ({ ...s, customError: val }))
+  }
+
+  /**
+   * Define a quantidade de um item "por unidade".
+   * qty <= 0  → desmarca o item e remove a entrada.
+   * qty > 0   → marca o item e registra a quantidade.
+   */
+  function setItemQuantity(id, qty) {
+    setState(s => {
+      const quantities = { ...s.itemQuantities }
+      const checkedItems = new Set(s.checkedItems)
+      if (qty <= 0) {
+        delete quantities[id]
+        checkedItems.delete(id)
+      } else {
+        quantities[id] = qty
+        checkedItems.add(id)
+      }
+      return { ...s, itemQuantities: quantities, checkedItems }
+    })
   }
 
   /**
@@ -96,6 +117,7 @@ export function usePocoGroupState() {
     setCriticalErrors,
     setObservations,
     setCustomError,
+    setItemQuantity,
     confirmMemberSignature,
     goTo,
     reset,

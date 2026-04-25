@@ -176,6 +176,7 @@ export const GRUPOS_POR_PELOTAO = {
         { id: 86,  nome: 'FRANK' },
         { id: 96,  nome: 'BARBOSA' },
         { id: 100, nome: 'CHARLIE' },
+        { id: 104, nome: 'NATANAEL' },
       ],
     },
     {
@@ -186,33 +187,26 @@ export const GRUPOS_POR_PELOTAO = {
         { id: 95,  nome: 'CESAR AUGUSTO' },
         { id: 98,  nome: 'DANILO' },
         { id: 102, nome: 'MARCOS PAULO' },
+        { id: 81,  nome: 'MANUELLY' },
       ],
     },
     {
       num: 5,
       integrantes: [
+        { id: 74,  nome: 'HUGO' },
         { id: 75,  nome: 'EMANUELE BATISTA' },
-        { id: 81,  nome: 'MANUELLY' },
-        { id: 88,  nome: 'J ARAÚJO' },
-        { id: 104, nome: 'NATANAEL' },
-        { id: 107, nome: 'SAN' },
+        { id: 76,  nome: 'DJALMA' },
+        { id: 80,  nome: 'GILMARIO' },
+        { id: 83,  nome: 'BRELAZ' },
+        { id: 90,  nome: 'MONALISA' },
       ],
     },
     {
       num: 6,
       integrantes: [
-        { id: 74, nome: 'HUGO' },
-        { id: 76, nome: 'DJALMA' },
-        { id: 80, nome: 'GILMARIO' },
-        { id: 83, nome: 'BRELAZ' },
-        { id: 90, nome: 'MONALISA' },
-      ],
-    },
-    {
-      num: 7,
-      integrantes: [
         { id: 77,  nome: 'LORENA' },
         { id: 78,  nome: 'HENRI' },
+        { id: 88,  nome: 'J ARAÚJO' },
         { id: 97,  nome: 'ISMAEL' },
         { id: 99,  nome: 'M GARCIA' },
         { id: 105, nome: 'T OLIVEIRA' },

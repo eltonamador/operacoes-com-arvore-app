@@ -719,14 +719,24 @@ function ConsolidacaoTab({ consolidacoes, loading, error }) {
                     const { vc1, vc2, vc3, mediaFinal, apto } = aluno.consolidacao
                     const badgeClass = apto === true ? 'badge-pass' : apto === false ? 'badge-fail' : 'badge-neutral'
                     const badgeText = apto === true ? 'APTO' : apto === false ? 'NÃO APTO' : 'EM PROGRESSO'
+
+                    const fmtMod = (modId, modName) => {
+                      const score = aluno.modulos?.[modId]?.finalScore
+                      return `${modName}: ${typeof score === 'number' ? score.toFixed(2).replace('.', ',') : 'Sem nota lançada'}`
+                    }
+
+                    const hintVC1 = `VC1:\n${fmtMod('escadas', 'Escadas')}\n${fmtMod('pocos', 'Poço')}`
+                    const hintVC2 = `VC2:\n${fmtMod('motosserra', 'Motosserra')}\n${fmtMod('circuito', 'Circuito')}`
+                    const hintVC3 = `VC3:\n${fmtMod('teorica', 'Prova Teórica')}`
+
                     return (
                       <tr key={aluno.ordem}>
                         <td>{aluno.nome || '—'}</td>
                         <td>{aluno.ordem || '—'}</td>
                         <td>{aluno.pelotao || '—'}</td>
-                        <td className="center">{fmtNota(vc1)}</td>
-                        <td className="center">{fmtNota(vc2)}</td>
-                        <td className="center">{fmtNota(vc3)}</td>
+                        <td className="center" title={hintVC1} style={{ cursor: 'help' }}>{fmtNota(vc1)}</td>
+                        <td className="center" title={hintVC2} style={{ cursor: 'help' }}>{fmtNota(vc2)}</td>
+                        <td className="center" title={hintVC3} style={{ cursor: 'help' }}>{fmtNota(vc3)}</td>
                         <td className="center" style={{ fontWeight: 700 }}>{fmtNota(mediaFinal)}</td>
                         <td className="center"><span className={badgeClass}>{badgeText}</span></td>
                       </tr>
@@ -741,6 +751,213 @@ function ConsolidacaoTab({ consolidacoes, loading, error }) {
     </>
   )
 }
+
+// ═══════════════════════════════════════════════
+//  TAB: RANKING
+// ═══════════════════════════════════════════════
+
+function RankingTab({ consolidacoes, loading, error }) {
+  const [filtroBusca, setFiltroBusca] = useState('')
+  const [filtroPelotao, setFiltroPelotao] = useState('all')
+
+  const pelotoes = useMemo(() => {
+    const set = new Set(consolidacoes.map((a) => a.pelotao).filter(Boolean))
+    return ['all', ...Array.from(set).sort()]
+  }, [consolidacoes])
+
+  const ranking = useMemo(() => {
+    // Apenas alunos com média final calculada
+    const comNotas = consolidacoes.filter((aluno) => aluno.consolidacao.mediaFinal !== null)
+
+    const n = (val) => typeof val === 'number' ? val : -1
+
+    const ordenados = [...comNotas].sort((a, b) => {
+      const ca = a.consolidacao
+      const cb = b.consolidacao
+      const ma = a.modulos
+      const mb = b.modulos
+
+      if (ca.mediaFinal !== cb.mediaFinal) return cb.mediaFinal - ca.mediaFinal
+      if (ca.vc2 !== cb.vc2) return n(cb.vc2) - n(ca.vc2)
+      
+      const aCirc = ma?.circuito?.finalScore
+      const bCirc = mb?.circuito?.finalScore
+      if (n(aCirc) !== n(bCirc)) return n(bCirc) - n(aCirc)
+
+      const aTeor = ma?.teorica?.finalScore
+      const bTeor = mb?.teorica?.finalScore
+      if (n(aTeor) !== n(bTeor)) return n(bTeor) - n(aTeor)
+
+      if (ca.vc1 !== cb.vc1) return n(cb.vc1) - n(ca.vc1)
+
+      const aPoco = ma?.pocos?.finalScore
+      const bPoco = mb?.pocos?.finalScore
+      if (n(aPoco) !== n(bPoco)) return n(bPoco) - n(aPoco)
+
+      const aEsca = ma?.escadas?.finalScore
+      const bEsca = mb?.escadas?.finalScore
+      if (n(aEsca) !== n(bEsca)) return n(bEsca) - n(aEsca)
+
+      return 0
+    })
+
+    let pos = 1
+    return ordenados.map((aluno, index) => {
+      let desempate = '—'
+      if (index > 0) {
+        const prev = ordenados[index - 1]
+        if (prev.consolidacao.mediaFinal === aluno.consolidacao.mediaFinal) {
+          const ca = prev.consolidacao
+          const cb = aluno.consolidacao
+          const ma = prev.modulos
+          const mb = aluno.modulos
+
+          const pCirc = ma?.circuito?.finalScore
+          const aCirc = mb?.circuito?.finalScore
+
+          const pTeor = ma?.teorica?.finalScore
+          const aTeor = mb?.teorica?.finalScore
+
+          const pPoco = ma?.pocos?.finalScore
+          const aPoco = mb?.pocos?.finalScore
+
+          const pEsca = ma?.escadas?.finalScore
+          const aEsca = mb?.escadas?.finalScore
+
+          if (ca.vc2 !== cb.vc2) desempate = 'Desempate por VC2'
+          else if (n(pCirc) !== n(aCirc)) desempate = 'Desempate por Circuito'
+          else if (n(pTeor) !== n(aTeor)) desempate = 'Desempate por Prova Teórica'
+          else if (ca.vc1 !== cb.vc1) desempate = 'Desempate por VC1'
+          else if (n(pPoco) !== n(aPoco)) desempate = 'Desempate por Poço'
+          else if (n(pEsca) !== n(aEsca)) desempate = 'Desempate por Escadas'
+          else desempate = 'Empate mantido'
+          
+          const isTie = desempate === 'Empate mantido'
+          if (!isTie) pos = index + 1
+        } else {
+          pos = index + 1
+        }
+      }
+
+      return { ...aluno, posicao: pos, desempate }
+    })
+  }, [consolidacoes])
+
+  const visiveis = useMemo(() => {
+    return ranking.filter((aluno) => {
+      if (filtroPelotao !== 'all' && aluno.pelotao !== filtroPelotao) return false
+      if (filtroBusca.trim()) {
+        const q = normalize(filtroBusca)
+        if (!normalize(aluno.nome).includes(q) && !normalize(aluno.ordem).includes(q)) return false
+      }
+      return true
+    })
+  }, [ranking, filtroPelotao, filtroBusca])
+
+  const hasActiveFilter = filtroPelotao !== 'all' || filtroBusca.trim() !== ''
+
+  function clearFilters() {
+    setFiltroPelotao('all')
+    setFiltroBusca('')
+  }
+
+  return (
+    <>
+      <div className="coord-filters-card">
+        <FilterRow>
+          <div className="coord-filter-field coord-filter-field--wide">
+            <label className="coord-filter-label">Buscar</label>
+            <input
+              className="coord-filter-input"
+              type="text"
+              placeholder="Nome ou ordem..."
+              value={filtroBusca}
+              onChange={(e) => setFiltroBusca(e.target.value)}
+            />
+          </div>
+          <div className="coord-filter-field">
+            <label className="coord-filter-label">Pelotão</label>
+            <select className="coord-filter-select" value={filtroPelotao}
+              onChange={(e) => setFiltroPelotao(e.target.value)}>
+              {pelotoes.map((p) => (
+                <option key={p} value={p}>{p === 'all' ? 'Todos os pelotões' : p}</option>
+              ))}
+            </select>
+          </div>
+        </FilterRow>
+        {hasActiveFilter && (
+          <div className="coord-filter-actions">
+            <button className="coord-clear-btn" onClick={clearFilters}>✕ Limpar filtros</button>
+          </div>
+        )}
+      </div>
+
+      {loading && <p className="status-muted">Carregando ranking...</p>}
+      {!loading && error && <p className="status-error">Erro: {error}</p>}
+
+      {!loading && !error && (
+        <>
+          <p className="coord-count">{visiveis.length} aluno(s) no ranking</p>
+
+          {visiveis.length === 0 ? (
+            <p className="status-muted">Nenhum aluno com notas concluídas encontrado.</p>
+          ) : (
+            <div className="portal-table-wrapper">
+              <table className="portal-table">
+                <thead>
+                  <tr>
+                    <th className="center">Posição</th>
+                    <th>Aluno</th>
+                    <th>Ordem</th>
+                    <th>Pelotão</th>
+                    <th className="center">VC1</th>
+                    <th className="center">VC2</th>
+                    <th className="center">VC3</th>
+                    <th className="center">Média Final</th>
+                    <th>Critério</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visiveis.map((aluno) => {
+                    const { vc1, vc2, vc3, mediaFinal } = aluno.consolidacao
+                    return (
+                      <tr key={aluno.ordem}>
+                        <td className="center">
+                          <span style={{
+                            display: 'inline-block',
+                            padding: '4px 10px',
+                            borderRadius: '12px',
+                            fontSize: '13px',
+                            fontWeight: 'bold',
+                            ...(aluno.posicao === 1 ? { background: 'var(--gold)', color: '#000' } :
+                                aluno.posicao === 2 ? { background: '#C0C0C0', color: '#000' } :
+                                aluno.posicao === 3 ? { background: '#CD7F32', color: '#fff' } :
+                                { color: 'var(--text-secondary)' })
+                          }}>
+                            {aluno.posicao}º
+                          </span>
+                        </td>
+                        <td style={{ fontWeight: aluno.posicao <= 3 ? 700 : 400 }}>{aluno.nome || '—'}</td>
+                        <td>{aluno.ordem || '—'}</td>
+                        <td>{aluno.pelotao || '—'}</td>
+                        <td className="center">{fmtNota(vc1)}</td>
+                        <td className="center">{fmtNota(vc2)}</td>
+                        <td className="center">{fmtNota(vc3)}</td>
+                        <td className="center" style={{ fontWeight: 700, color: 'var(--gold)' }}>{fmtNota(mediaFinal)}</td>
+                        <td style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{aluno.desempate}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
+      )}
+    </>
+  )
+}
+
 
 // ═══════════════════════════════════════════════
 //  MAIN PAGE
@@ -782,14 +999,14 @@ export default function AlunoArea() {
     load()
   }, [])
 
-  function handleAbaConsolidacao() {
-    setAba('consolidacao')
-    if (consolidacoes.length === 0 && !loadingConsolidacao) {
+  function handleAbaChange(novaAba) {
+    setAba(novaAba)
+    if ((novaAba === 'consolidacao' || novaAba === 'ranking') && consolidacoes.length === 0 && !loadingConsolidacao) {
       setLoadingConsolidacao(true)
       setErrorConsolidacao(null)
       fetchConsolidacaoTodos()
         .then(setConsolidacoes)
-        .catch((err) => setErrorConsolidacao(err.message || 'Erro ao carregar consolidação.'))
+        .catch((err) => setErrorConsolidacao(err.message || 'Erro ao carregar dados.'))
         .finally(() => setLoadingConsolidacao(false))
     }
   }
@@ -804,16 +1021,22 @@ export default function AlunoArea() {
 
       <div className="filter-bar" style={{ marginBottom: '24px' }}>
         <button
-          onClick={() => setAba('avaliacoes')}
+          onClick={() => handleAbaChange('avaliacoes')}
           className={`filter-btn${aba === 'avaliacoes' ? ' filter-btn--active' : ''}`}
         >
           Avaliações
         </button>
         <button
-          onClick={handleAbaConsolidacao}
+          onClick={() => handleAbaChange('consolidacao')}
           className={`filter-btn${aba === 'consolidacao' ? ' filter-btn--active' : ''}`}
         >
           Consolidação
+        </button>
+        <button
+          onClick={() => handleAbaChange('ranking')}
+          className={`filter-btn${aba === 'ranking' ? ' filter-btn--active' : ''}`}
+        >
+          Ranking
         </button>
       </div>
 
@@ -823,6 +1046,14 @@ export default function AlunoArea() {
 
       {aba === 'consolidacao' && (
         <ConsolidacaoTab
+          consolidacoes={consolidacoes}
+          loading={loadingConsolidacao}
+          error={errorConsolidacao}
+        />
+      )}
+
+      {aba === 'ranking' && (
+        <RankingTab
           consolidacoes={consolidacoes}
           loading={loadingConsolidacao}
           error={errorConsolidacao}
