@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { fetchAvaliacoesByModulo } from '../services/avaliacoesService'
 import { fetchConsolidacaoTodos } from '../services/consolidacaoService'
 import PortalLayout from '../components/PortalLayout'
+import VcTooltip from '../components/VcTooltip'
 
 // ═══════════════════════════════════════════════
 //  CONSTANTS
@@ -725,18 +726,35 @@ function ConsolidacaoTab({ consolidacoes, loading, error }) {
                       return `${modName}: ${typeof score === 'number' ? score.toFixed(2).replace('.', ',') : 'Sem nota lançada'}`
                     }
 
-                    const hintVC1 = `VC1:\n${fmtMod('escadas', 'Escadas')}\n${fmtMod('pocos', 'Poço')}`
-                    const hintVC2 = `VC2:\n${fmtMod('motosserra', 'Motosserra')}\n${fmtMod('circuito', 'Circuito')}`
-                    const hintVC3 = `VC3:\n${fmtMod('teorica', 'Prova Teórica')}`
-
                     return (
                       <tr key={aluno.ordem}>
                         <td>{aluno.nome || '—'}</td>
                         <td>{aluno.ordem || '—'}</td>
                         <td>{aluno.pelotao || '—'}</td>
-                        <td className="center" title={hintVC1} style={{ cursor: 'help' }}>{fmtNota(vc1)}</td>
-                        <td className="center" title={hintVC2} style={{ cursor: 'help' }}>{fmtNota(vc2)}</td>
-                        <td className="center" title={hintVC3} style={{ cursor: 'help' }}>{fmtNota(vc3)}</td>
+                        <td className="center">
+                          <VcTooltip
+                            label="VC1"
+                            lines={[fmtMod('escadas', 'Escadas'), fmtMod('pocos', 'Poço')]}
+                          >
+                            {fmtNota(vc1)}
+                          </VcTooltip>
+                        </td>
+                        <td className="center">
+                          <VcTooltip
+                            label="VC2"
+                            lines={[fmtMod('motosserra', 'Motosserra'), fmtMod('circuito', 'Circuito')]}
+                          >
+                            {fmtNota(vc2)}
+                          </VcTooltip>
+                        </td>
+                        <td className="center">
+                          <VcTooltip
+                            label="VC3"
+                            lines={[fmtMod('teorica', 'Prova Teórica')]}
+                          >
+                            {fmtNota(vc3)}
+                          </VcTooltip>
+                        </td>
                         <td className="center" style={{ fontWeight: 700 }}>{fmtNota(mediaFinal)}</td>
                         <td className="center"><span className={badgeClass}>{badgeText}</span></td>
                       </tr>

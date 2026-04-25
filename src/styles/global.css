@@ -1617,6 +1617,53 @@ body {
   border: 1px solid rgba(120, 120, 140, 0.35);
 }
 
+/* VC Tooltip (touch-friendly popover for VC1/VC2/VC3 columns) */
+.vc-tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 6px;
+  margin: -4px -6px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 4px;
+  text-decoration: underline dotted var(--text-muted);
+  text-underline-offset: 3px;
+  outline-offset: 2px;
+  min-width: 32px;
+}
+
+.vc-tooltip-trigger:focus-visible {
+  outline: 2px solid var(--gold);
+}
+
+.vc-tooltip-popover {
+  position: fixed;
+  z-index: 9999;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+}
+
+.vc-tooltip-label {
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.vc-tooltip-line {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
 /* Portal header user area */
 .header-user-info {
   display: flex;
