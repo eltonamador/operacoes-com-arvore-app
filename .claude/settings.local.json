@@ -16,7 +16,10 @@
       "mcp__mcp-registry__search_mcp_registry",
       "Bash(node scripts/update-escadas-notas.js)",
       "Bash(node scripts/update-escadas-notas.js --execute)",
-      "mcp__plugin_context-mode_context-mode__ctx_batch_execute"
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "Bash(grep -E '\\\\.\\(tsx?|json|jsx\\)$')",
+      "mcp__plugin_context-mode_context-mode__ctx_execute_file",
+      "mcp__plugin_context-mode_context-mode__ctx_search"
     ]
   }
 }

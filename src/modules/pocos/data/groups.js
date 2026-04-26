@@ -60,6 +60,7 @@ export const GRUPOS_POR_PELOTAO = {
       num: 5,
       integrantes: [
         { id: 2,  nome: 'TIAGO FERREIRA' },
+        { id: 3,  nome: 'RUAN' },
         { id: 7,  nome: 'PRAXEDES' },
         { id: 11, nome: 'KAWAN' },
         { id: 12, nome: 'LARISSA' },

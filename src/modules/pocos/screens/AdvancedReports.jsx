@@ -271,7 +271,7 @@ export default function AdvancedReports({
         </div>
       </header>
 
-      <div className="screen-content" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div className="screen-content" style={{ display: 'flex', flexDirection: 'column', gap: 20, overflowY: 'auto', paddingBottom: 40 }}>
         {/* Filtros */}
         <div
           style={{
@@ -414,48 +414,6 @@ export default function AdvancedReports({
           </div>
         </div>
 
-        {/* Ranking por Pelotão */}
-        {stats.pelotaoRanking.length > 0 && (
-          <div
-            style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '16px 20px',
-            }}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12 }}>
-              Ranking por Pelotão
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
-              {stats.pelotaoRanking.map((pelotao, index) => (
-                <div
-                  key={pelotao.pelotao}
-                  style={{
-                    background: 'var(--bg-main)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 8,
-                    padding: 12,
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
-                      {index + 1}. {pelotao.pelotao}
-                    </div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gold)' }}>
-                      {pelotao.approvalRate}%
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-secondary)' }}>
-                    <span>{pelotao.approved}/{pelotao.total} aprov.</span>
-                    <span>Média: {pelotao.average.replace('.', ',')}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Controles de Exportação */}
         <div
           style={{
@@ -519,9 +477,6 @@ export default function AdvancedReports({
             border: '1px solid var(--border)',
             borderRadius: 'var(--radius)',
             overflow: 'hidden',
-            minHeight: 0,
-            display: 'flex',
-            flexDirection: 'column',
           }}
         >
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
@@ -588,7 +543,7 @@ export default function AdvancedReports({
                 : 'Nenhuma avaliação encontrada.'}
             </div>
           ) : (
-            <div style={{ overflowY: 'auto', overflowX: 'auto', flex: 1, minHeight: 0 }}>
+            <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ background: '#121212', position: 'sticky', top: 0, zIndex: 1 }}>

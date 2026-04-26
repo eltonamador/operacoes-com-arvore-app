@@ -43,6 +43,12 @@ export default function GroupForm({
   const [showAddForm, setShowAddForm] = useState(false)
   const [extraForm, setExtraForm] = useState({ id: '', nome: '', pin: '' })
   const [extraErro, setExtraErro] = useState('')
+  const [extraNomeAuto, setExtraNomeAuto] = useState(false)
+
+  // Remoção com justificativa
+  const [removingIdx, setRemovingIdx] = useState(null)
+  const [justificativa, setJustificativa] = useState('')
+  const [justificativaErro, setJustificativaErro] = useState(false)
 
   // Sincroniza data padrão na primeira montagem
   useMemo(() => {
@@ -91,6 +97,44 @@ export default function GroupForm({
     )
   }, [searchInstrutor, instructors])
 
+  // Auto-preenche nome ao digitar ID
+  function handleExtraIdChange(val) {
+    const cleaned = val.replace(/\D/g, '')
+    const idNum = parseInt(cleaned, 10)
+    const student = !isNaN(idNum) ? studentsMap[idNum] : null
+    setExtraNomeAuto(!!student)
+    setExtraForm(f => ({ ...f, id: cleaned, nome: student ? student.nome : f.nome }))
+    setExtraErro(cleaned && !student ? 'ID não encontrado — preencha o nome manualmente.' : '')
+  }
+
+  // Iniciar remoção de integrante
+  function startRemove(idx) {
+    setRemovingIdx(idx)
+    setJustificativa('')
+    setJustificativaErro(false)
+  }
+
+  // Confirmar remoção com justificativa
+  function confirmRemove(idx) {
+    if (!justificativa.trim()) {
+      setJustificativaErro(true)
+      return
+    }
+    const membro = groupData.integrantes[idx]
+    const registro = {
+      id: membro.id,
+      nome: membro.nome,
+      justificativa: justificativa.trim(),
+      removidoEm: new Date().toISOString(),
+    }
+    const history = [...(groupData.removalsHistory || []), registro]
+    const next = groupData.integrantes.filter((_, i) => i !== idx)
+    updateGroupData({ integrantes: next, removalsHistory: history })
+    setRemovingIdx(null)
+    setJustificativa('')
+    setJustificativaErro(false)
+  }
+
   // Adicionar integrante extra
   function handleAddExtra() {
     setExtraErro('')
@@ -115,6 +159,7 @@ export default function GroupForm({
     }
     updateGroupData({ integrantes: [...groupData.integrantes, novoMembro] })
     setExtraForm({ id: '', nome: '', pin: '' })
+    setExtraNomeAuto(false)
     setShowAddForm(false)
   }
 
@@ -278,42 +323,93 @@ export default function GroupForm({
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {groupData.integrantes.map((m, idx) => (
-                  <div key={`${m.id}-${idx}`} style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    padding: '10px 14px', borderRadius: 8,
-                    border: m.extra ? '1px solid #cc8800' : '1px solid var(--border)',
-                    background: m.extra ? '#1a1200' : 'var(--bg-card)',
-                    gap: 12,
-                  }}>
-                    <span style={{
-                      fontSize: 13, fontWeight: 700, color: 'var(--gold)', minWidth: 36,
+                  <div key={`${m.id}-${idx}`}>
+                    <div style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '10px 14px', borderRadius: removingIdx === idx ? '8px 8px 0 0' : 8,
+                      border: m.extra ? '1px solid #cc8800' : '1px solid var(--border)',
+                      borderBottom: removingIdx === idx ? 'none' : undefined,
+                      background: m.extra ? '#1a1200' : 'var(--bg-card)',
+                      gap: 12,
                     }}>
-                      {String(m.id).padStart(3, '0')}
-                    </span>
-                    <span style={{ flex: 1, color: 'var(--text-primary)', fontSize: 14 }}>
-                      {m.nome}
-                      {m.extra && (
-                        <span style={{
-                          marginLeft: 8, fontSize: 10, fontWeight: 700, color: '#ffbb44',
-                          background: '#2a1a00', border: '1px solid #cc8800',
-                          borderRadius: 4, padding: '1px 6px', letterSpacing: 1,
-                        }}>
-                          EXTRA
-                        </span>
-                      )}
-                    </span>
-                    {m.extra && (
+                      <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gold)', minWidth: 36 }}>
+                        {String(m.id).padStart(3, '0')}
+                      </span>
+                      <span style={{ flex: 1, color: 'var(--text-primary)', fontSize: 14 }}>
+                        {m.nome}
+                        {m.extra && (
+                          <span style={{
+                            marginLeft: 8, fontSize: 10, fontWeight: 700, color: '#ffbb44',
+                            background: '#2a1a00', border: '1px solid #cc8800',
+                            borderRadius: 4, padding: '1px 6px', letterSpacing: 1,
+                          }}>
+                            EXTRA
+                          </span>
+                        )}
+                      </span>
                       <button
                         type="button"
                         style={{
                           background: 'none', border: 'none', cursor: 'pointer',
-                          color: 'var(--text-muted)', fontSize: 16, padding: '2px 6px',
+                          color: removingIdx === idx ? '#ff6b6b' : 'var(--text-muted)',
+                          fontSize: 16, padding: '2px 6px',
                         }}
-                        title="Remover integrante extra"
-                        onClick={() => removerIntegrante(idx)}
+                        title="Remover integrante"
+                        onClick={() => removingIdx === idx ? setRemovingIdx(null) : startRemove(idx)}
                       >
                         ✕
                       </button>
+                    </div>
+                    {removingIdx === idx && (
+                      <div style={{
+                        padding: '10px 14px 12px', borderRadius: '0 0 8px 8px',
+                        border: '1px solid #cc4444', borderTop: 'none',
+                        background: '#1a0a0a',
+                      }}>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: '#ff9999', display: 'block', marginBottom: 6 }}>
+                          Justificativa para remoção (obrigatória)
+                        </label>
+                        <textarea
+                          style={{
+                            width: '100%', minHeight: 56, padding: '8px 10px',
+                            borderRadius: 6, border: justificativaErro ? '1px solid #ff4444' : '1px solid #993333',
+                            background: '#0e0606', color: 'var(--text-primary)', fontSize: 13,
+                            resize: 'vertical', boxSizing: 'border-box',
+                          }}
+                          placeholder="Descreva o motivo da remoção deste integrante..."
+                          value={justificativa}
+                          onChange={e => { setJustificativa(e.target.value); setJustificativaErro(false) }}
+                        />
+                        {justificativaErro && (
+                          <div style={{ fontSize: 11, color: '#ff6b6b', marginTop: 4 }}>
+                            Justificativa obrigatória para confirmar a remoção.
+                          </div>
+                        )}
+                        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                          <button
+                            type="button"
+                            style={{
+                              flex: 1, padding: '8px 12px', borderRadius: 6, cursor: 'pointer',
+                              border: '1px solid #cc4444', background: 'rgba(204,0,0,0.15)',
+                              color: '#ff9999', fontSize: 12, fontWeight: 700,
+                            }}
+                            onClick={() => confirmRemove(idx)}
+                          >
+                            Confirmar Remoção
+                          </button>
+                          <button
+                            type="button"
+                            style={{
+                              padding: '8px 14px', borderRadius: 6, cursor: 'pointer',
+                              border: '1px solid var(--border)', background: 'transparent',
+                              color: 'var(--text-muted)', fontSize: 12,
+                            }}
+                            onClick={() => { setRemovingIdx(null); setJustificativa('') }}
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
                     )}
                   </div>
                 ))}
@@ -353,17 +449,25 @@ export default function GroupForm({
                       type="text"
                       placeholder="Ex: 99"
                       value={extraForm.id}
-                      onChange={e => setExtraForm(f => ({ ...f, id: e.target.value }))}
+                      onChange={e => handleExtraIdChange(e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="form-label" style={{ fontSize: 11 }}>Nome</label>
+                    <label className="form-label" style={{ fontSize: 11 }}>
+                      Nome
+                      {extraNomeAuto && (
+                        <span style={{ marginLeft: 6, fontSize: 10, color: '#8ddf63', fontWeight: 700 }}>
+                          ✓ preenchido
+                        </span>
+                      )}
+                    </label>
                     <input
                       className="form-input"
                       type="text"
                       placeholder="Nome do integrante"
                       value={extraForm.nome}
-                      onChange={e => setExtraForm(f => ({ ...f, nome: e.target.value }))}
+                      onChange={e => { setExtraNomeAuto(false); setExtraForm(f => ({ ...f, nome: e.target.value })) }}
+                      style={extraNomeAuto ? { borderColor: '#4a9040' } : {}}
                     />
                   </div>
                   <div>
@@ -397,7 +501,7 @@ export default function GroupForm({
                     type="button"
                     className="btn btn-secondary"
                     style={{ fontSize: 13 }}
-                    onClick={() => { setShowAddForm(false); setExtraForm({ id: '', nome: '', pin: '' }); setExtraErro('') }}
+                    onClick={() => { setShowAddForm(false); setExtraForm({ id: '', nome: '', pin: '' }); setExtraErro(''); setExtraNomeAuto(false) }}
                   >
                     Cancelar
                   </button>
