@@ -145,18 +145,18 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>
               NOTA FINAL
             </div>
             <div style={{
               fontSize: 56, fontWeight: 900,
-              color: isPassing ? 'var(--gold)' : 'var(--red-light)',
+              color: isPassing ? '#FFD700' : '#ff6b6b',
               lineHeight: 1,
               textShadow: isPassing ? '0 0 30px rgba(255,215,0,0.4)' : '0 0 30px rgba(204,0,0,0.4)',
             }}>
               {finalScore.toFixed(2).replace('.', ',')}
             </div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>
               Descontos: {totalDiscount > 0 ? `–${totalDiscount.toFixed(2).replace('.', ',')}` : '0,00'}
             </div>
           </div>
@@ -203,10 +203,10 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
                     border: m.signed ? '1px solid #22c55e' : '1px solid var(--border)',
                     background: m.signed ? '#0d2e0d' : 'var(--bg-card)',
                   }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gold)', minWidth: 36 }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: m.signed ? '#FFD700' : 'var(--gold)', minWidth: 36 }}>
                       {String(m.id).padStart(3, '0')}
                     </span>
-                    <span style={{ flex: 1, fontSize: 14, color: 'var(--text-primary)' }}>
+                    <span style={{ flex: 1, fontSize: 14, color: m.signed ? '#e8e8e8' : 'var(--text-primary)' }}>
                       {m.nome}
                       {m.extra && (
                         <span style={{

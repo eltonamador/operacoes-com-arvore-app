@@ -165,21 +165,21 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
             )}
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>
               NOTA FINAL
             </div>
             <div
               style={{
                 fontSize: 56,
                 fontWeight: 900,
-                color: isPassing ? 'var(--gold)' : 'var(--red-light)',
+                color: isPassing ? '#FFD700' : '#ff6b6b',
                 lineHeight: 1,
                 textShadow: isPassing ? '0 0 30px rgba(255,215,0,0.4)' : '0 0 30px rgba(204,0,0,0.4)',
               }}
             >
               {finalScore.toFixed(2).replace('.', ',')}
             </div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>
               Descontos: {totalDiscount > 0 ? `–${totalDiscount.toFixed(2).replace('.', ',')}` : '0,00'}
             </div>
           </div>
@@ -306,7 +306,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
                     borderRadius: 8,
                     padding: 20,
                     textAlign: 'center',
-                    color: 'var(--text-muted)',
+                    color: 'rgba(255,255,255,0.6)',
                     fontSize: 13,
                     fontStyle: 'italic',
                   }}

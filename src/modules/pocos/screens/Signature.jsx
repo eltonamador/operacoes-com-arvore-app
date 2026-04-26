@@ -167,7 +167,7 @@ export default function Signature({ state, goTo, confirmMemberSignature }) {
             <div style={{
               background: '#1a1200', border: '1px solid #3a2a00', borderRadius: 14, padding: 20,
             }}>
-              <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 12 }}>
+              <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: '#FFD700', fontWeight: 700, marginBottom: 12 }}>
                 Resultado do Grupo
               </div>
               <div style={{ fontSize: 36, fontWeight: 900, color: isPassing ? '#8ddf63' : '#ff6b6b' }}>
@@ -176,7 +176,7 @@ export default function Signature({ state, goTo, confirmMemberSignature }) {
               <div style={{ marginTop: 6, fontWeight: 700, color: isPassing ? '#8ddf63' : '#ff6b6b' }}>
                 {isPassing ? 'APROVADO' : 'REPROVADO'}
               </div>
-              <div style={{ marginTop: 10, color: 'var(--text-secondary)' }}>
+              <div style={{ marginTop: 10, color: 'rgba(255,255,255,0.65)' }}>
                 Total de descontos: {totalDiscount.toFixed(2).replace('.', ',')}
               </div>
             </div>
