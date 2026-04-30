@@ -362,18 +362,19 @@ export default function GroupForm({
                     </div>
                     {removingIdx === idx && (
                       <div style={{
-                        padding: '10px 14px 12px', borderRadius: '0 0 8px 8px',
-                        border: '1px solid #cc4444', borderTop: 'none',
-                        background: '#1a0a0a',
+                        padding: '12px 14px 14px', borderRadius: '0 0 8px 8px',
+                        border: '2px solid #cc2200', borderTop: 'none',
+                        background: '#2d0a00',
                       }}>
-                        <label style={{ fontSize: 11, fontWeight: 700, color: '#ff9999', display: 'block', marginBottom: 6 }}>
+                        <label style={{ fontSize: 12, fontWeight: 700, color: '#ffddcc', display: 'block', marginBottom: 7, letterSpacing: 0.3 }}>
                           Justificativa para remoção (obrigatória)
                         </label>
                         <textarea
                           style={{
-                            width: '100%', minHeight: 56, padding: '8px 10px',
-                            borderRadius: 6, border: justificativaErro ? '1px solid #ff4444' : '1px solid #993333',
-                            background: '#0e0606', color: 'var(--text-primary)', fontSize: 13,
+                            width: '100%', minHeight: 64, padding: '9px 11px',
+                            borderRadius: 6,
+                            border: justificativaErro ? '2px solid #ff2200' : '2px solid #ff6644',
+                            background: '#fff8f6', color: '#1a0a00', fontSize: 13,
                             resize: 'vertical', boxSizing: 'border-box',
                           }}
                           placeholder="Descreva o motivo da remoção deste integrante..."
@@ -381,17 +382,17 @@ export default function GroupForm({
                           onChange={e => { setJustificativa(e.target.value); setJustificativaErro(false) }}
                         />
                         {justificativaErro && (
-                          <div style={{ fontSize: 11, color: '#ff6b6b', marginTop: 4 }}>
+                          <div style={{ fontSize: 12, color: '#ffcc99', marginTop: 5, fontWeight: 600 }}>
                             Justificativa obrigatória para confirmar a remoção.
                           </div>
                         )}
-                        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                        <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
                           <button
                             type="button"
                             style={{
-                              flex: 1, padding: '8px 12px', borderRadius: 6, cursor: 'pointer',
-                              border: '1px solid #cc4444', background: 'rgba(204,0,0,0.15)',
-                              color: '#ff9999', fontSize: 12, fontWeight: 700,
+                              flex: 1, padding: '10px 12px', borderRadius: 6, cursor: 'pointer',
+                              border: 'none', background: '#cc2200',
+                              color: '#ffffff', fontSize: 13, fontWeight: 700, letterSpacing: 0.3,
                             }}
                             onClick={() => confirmRemove(idx)}
                           >
@@ -400,9 +401,9 @@ export default function GroupForm({
                           <button
                             type="button"
                             style={{
-                              padding: '8px 14px', borderRadius: 6, cursor: 'pointer',
-                              border: '1px solid var(--border)', background: 'transparent',
-                              color: 'var(--text-muted)', fontSize: 12,
+                              padding: '10px 16px', borderRadius: 6, cursor: 'pointer',
+                              border: '2px solid #ffccaa', background: '#4a1a00',
+                              color: '#ffddcc', fontSize: 13, fontWeight: 600,
                             }}
                             onClick={() => { setRemovingIdx(null); setJustificativa('') }}
                           >

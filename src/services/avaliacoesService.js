@@ -1,19 +1,22 @@
 import { supabase } from '../lib/supabase'
+import { getStudentByOrdem } from '../modules/shared/utils/studentResolver'
 
 /**
  * Transforma uma linha do banco de dados no formato de objeto UI.
  * Função centralizada — usada por App.jsx e utilitários de relatório.
+ * nome e pelotao são sempre resolvidos canonicamente via numero_ordem → students.json.
  */
 export function mapDbToUi(row) {
+  const canonical = getStudentByOrdem(row.numero_ordem)
   return {
     id: row.id,
     moduleId: row.module_id || null,
     savedAt: row.created_at,
     studentData: {
-      nome: row.nome_aluno || '',
+      nome: canonical?.nome || row.nome_aluno || '',
       ordem: row.numero_ordem || '',
       data: row.data_avaliacao || '',
-      pelotao: row.pelotao || '',
+      pelotao: canonical?.pelotao || row.pelotao || '',
       avaliador: row.avaliador || '',
     },
     checkedItems: row.itens_avaliados?.itens_penalizados?.map(item => item.id) || [],

@@ -756,92 +756,182 @@ function ConsolidacaoTab({ consolidacoes, loading, error }) {
 //  TAB: RANKING
 // ═══════════════════════════════════════════════
 
+const ESTAGIO_LABELS = {
+  vc1: 'Parcial — VC1',
+  vc1vc2: 'Parcial — VC1 + VC2',
+  final: 'Final',
+}
+
 function RankingTab({ consolidacoes, loading, error }) {
   const [filtroBusca, setFiltroBusca] = useState('')
   const [filtroPelotao, setFiltroPelotao] = useState('all')
+  const [estagioManual, setEstagioManual] = useState(null)
 
   const pelotoes = useMemo(() => {
     const set = new Set(consolidacoes.map((a) => a.pelotao).filter(Boolean))
     return ['all', ...Array.from(set).sort()]
   }, [consolidacoes])
 
+  const estagiosComDados = useMemo(() => {
+    const temVC1 = consolidacoes.some((a) => a.consolidacao.vc1 !== null)
+    const temVC2 = consolidacoes.some((a) => a.consolidacao.vc2 !== null)
+    const temFinal = consolidacoes.some((a) => a.consolidacao.mediaFinal !== null)
+    return { vc1: temVC1, vc1vc2: temVC1 || temVC2, final: temFinal }
+  }, [consolidacoes])
+
+  const estagioDefault = useMemo(() => {
+    if (estagiosComDados.final) return 'final'
+    if (estagiosComDados.vc1vc2) return 'vc1vc2'
+    return 'vc1'
+  }, [estagiosComDados])
+
+  const estagio = (estagioManual && estagiosComDados[estagioManual]) ? estagioManual : estagioDefault
+
   const ranking = useMemo(() => {
-    // Apenas alunos com média final calculada
-    const comNotas = consolidacoes.filter((aluno) => aluno.consolidacao.mediaFinal !== null)
+    const n = (val) => (typeof val === 'number' ? val : -1)
 
-    const n = (val) => typeof val === 'number' ? val : -1
+    if (estagio === 'final') {
+      const comNotas = consolidacoes.filter((aluno) => aluno.consolidacao.mediaFinal !== null)
+      const ordenados = [...comNotas].sort((a, b) => {
+        const ca = a.consolidacao
+        const cb = b.consolidacao
+        const ma = a.modulos
+        const mb = b.modulos
 
-    const ordenados = [...comNotas].sort((a, b) => {
-      const ca = a.consolidacao
-      const cb = b.consolidacao
-      const ma = a.modulos
-      const mb = b.modulos
+        if (ca.mediaFinal !== cb.mediaFinal) return cb.mediaFinal - ca.mediaFinal
+        if (ca.vc2 !== cb.vc2) return n(cb.vc2) - n(ca.vc2)
 
-      if (ca.mediaFinal !== cb.mediaFinal) return cb.mediaFinal - ca.mediaFinal
-      if (ca.vc2 !== cb.vc2) return n(cb.vc2) - n(ca.vc2)
-      
-      const aCirc = ma?.circuito?.finalScore
-      const bCirc = mb?.circuito?.finalScore
-      if (n(aCirc) !== n(bCirc)) return n(bCirc) - n(aCirc)
+        const aCirc = ma?.circuito?.finalScore
+        const bCirc = mb?.circuito?.finalScore
+        if (n(aCirc) !== n(bCirc)) return n(bCirc) - n(aCirc)
 
-      const aTeor = ma?.teorica?.finalScore
-      const bTeor = mb?.teorica?.finalScore
-      if (n(aTeor) !== n(bTeor)) return n(bTeor) - n(aTeor)
+        const aTeor = ma?.teorica?.finalScore
+        const bTeor = mb?.teorica?.finalScore
+        if (n(aTeor) !== n(bTeor)) return n(bTeor) - n(aTeor)
 
-      if (ca.vc1 !== cb.vc1) return n(cb.vc1) - n(ca.vc1)
+        if (ca.vc1 !== cb.vc1) return n(cb.vc1) - n(ca.vc1)
 
-      const aPoco = ma?.pocos?.finalScore
-      const bPoco = mb?.pocos?.finalScore
-      if (n(aPoco) !== n(bPoco)) return n(bPoco) - n(aPoco)
+        const aPoco = ma?.pocos?.finalScore
+        const bPoco = mb?.pocos?.finalScore
+        if (n(aPoco) !== n(bPoco)) return n(bPoco) - n(aPoco)
 
-      const aEsca = ma?.escadas?.finalScore
-      const bEsca = mb?.escadas?.finalScore
-      if (n(aEsca) !== n(bEsca)) return n(bEsca) - n(aEsca)
+        const aEsca = ma?.escadas?.finalScore
+        const bEsca = mb?.escadas?.finalScore
+        if (n(aEsca) !== n(bEsca)) return n(bEsca) - n(aEsca)
 
-      return 0
+        return 0
+      })
+
+      let pos = 1
+      return ordenados.map((aluno, index) => {
+        let desempate = '—'
+        if (index > 0) {
+          const prev = ordenados[index - 1]
+          if (prev.consolidacao.mediaFinal === aluno.consolidacao.mediaFinal) {
+            const ca = prev.consolidacao
+            const cb = aluno.consolidacao
+            const ma = prev.modulos
+            const mb = aluno.modulos
+
+            const pCirc = ma?.circuito?.finalScore
+            const aCirc = mb?.circuito?.finalScore
+            const pTeor = ma?.teorica?.finalScore
+            const aTeor = mb?.teorica?.finalScore
+            const pPoco = ma?.pocos?.finalScore
+            const aPoco = mb?.pocos?.finalScore
+            const pEsca = ma?.escadas?.finalScore
+            const aEsca = mb?.escadas?.finalScore
+
+            if (ca.vc2 !== cb.vc2) desempate = 'Desempate por VC2'
+            else if (n(pCirc) !== n(aCirc)) desempate = 'Desempate por Circuito'
+            else if (n(pTeor) !== n(aTeor)) desempate = 'Desempate por Prova Teórica'
+            else if (ca.vc1 !== cb.vc1) desempate = 'Desempate por VC1'
+            else if (n(pPoco) !== n(aPoco)) desempate = 'Desempate por Poço'
+            else if (n(pEsca) !== n(aEsca)) desempate = 'Desempate por Escadas'
+            else desempate = 'Empate mantido'
+
+            const isTie = desempate === 'Empate mantido'
+            if (!isTie) pos = index + 1
+          } else {
+            pos = index + 1
+          }
+        }
+        return { ...aluno, posicao: pos, scoreParcial: aluno.consolidacao.mediaFinal, desempate }
+      })
+    }
+
+    // Estágios parciais
+    let candidatos
+    let getScore
+
+    if (estagio === 'vc1vc2') {
+      candidatos = consolidacoes.filter((a) => a.consolidacao.vc1 !== null || a.consolidacao.vc2 !== null)
+      getScore = (a) => {
+        const { vc1, vc2 } = a.consolidacao
+        const vals = [vc1, vc2].filter((v) => v !== null)
+        return vals.reduce((s, v) => s + v, 0) / vals.length
+      }
+    } else {
+      candidatos = consolidacoes.filter((a) => a.consolidacao.vc1 !== null)
+      getScore = (a) => a.consolidacao.vc1
+    }
+
+    const ordenados = [...candidatos].sort((a, b) => {
+      const sa = getScore(a)
+      const sb = getScore(b)
+      if (sb !== sa) return sb - sa
+
+      if (estagio === 'vc1') {
+        const pocoa = a.modulos?.pocos?.finalScore ?? -1
+        const pocob = b.modulos?.pocos?.finalScore ?? -1
+        if (pocoa !== pocob) return pocob - pocoa
+      }
+
+      if (estagio === 'vc1vc2') {
+        const vc2a = a.consolidacao.vc2 ?? -1
+        const vc2b = b.consolidacao.vc2 ?? -1
+        if (vc2a !== vc2b) return vc2b - vc2a
+      }
+
+      return Number(a.ordem || 0) - Number(b.ordem || 0)
     })
 
     let pos = 1
-    return ordenados.map((aluno, index) => {
+    return ordenados.map((aluno, idx) => {
       let desempate = '—'
-      if (index > 0) {
-        const prev = ordenados[index - 1]
-        if (prev.consolidacao.mediaFinal === aluno.consolidacao.mediaFinal) {
-          const ca = prev.consolidacao
-          const cb = aluno.consolidacao
-          const ma = prev.modulos
-          const mb = aluno.modulos
-
-          const pCirc = ma?.circuito?.finalScore
-          const aCirc = mb?.circuito?.finalScore
-
-          const pTeor = ma?.teorica?.finalScore
-          const aTeor = mb?.teorica?.finalScore
-
-          const pPoco = ma?.pocos?.finalScore
-          const aPoco = mb?.pocos?.finalScore
-
-          const pEsca = ma?.escadas?.finalScore
-          const aEsca = mb?.escadas?.finalScore
-
-          if (ca.vc2 !== cb.vc2) desempate = 'Desempate por VC2'
-          else if (n(pCirc) !== n(aCirc)) desempate = 'Desempate por Circuito'
-          else if (n(pTeor) !== n(aTeor)) desempate = 'Desempate por Prova Teórica'
-          else if (ca.vc1 !== cb.vc1) desempate = 'Desempate por VC1'
-          else if (n(pPoco) !== n(aPoco)) desempate = 'Desempate por Poço'
-          else if (n(pEsca) !== n(aEsca)) desempate = 'Desempate por Escadas'
-          else desempate = 'Empate mantido'
-          
-          const isTie = desempate === 'Empate mantido'
-          if (!isTie) pos = index + 1
+      if (idx > 0) {
+        const prev = ordenados[idx - 1]
+        const sa = getScore(aluno)
+        const sb = getScore(prev)
+        if (sa === sb) {
+          if (estagio === 'vc1') {
+            const pocoa = aluno.modulos?.pocos?.finalScore
+            const pocob = prev.modulos?.pocos?.finalScore
+            if (pocoa !== pocob) {
+              desempate = 'Desempate por Poço'
+              pos = idx + 1
+            }
+          } else if (estagio === 'vc1vc2') {
+            const vc2a = aluno.consolidacao.vc2
+            const vc2b = prev.consolidacao.vc2
+            if (vc2a !== vc2b) {
+              desempate = 'Desempate por VC2'
+              pos = idx + 1
+            }
+          }
+          if (desempate === '—') {
+            desempate = 'Desempate por nº ordem'
+            const aOrdem = Number(aluno.ordem || 0)
+            const bOrdem = Number(prev.ordem || 0)
+            if (aOrdem !== bOrdem) pos = idx + 1
+          }
         } else {
-          pos = index + 1
+          pos = idx + 1
         }
       }
-
-      return { ...aluno, posicao: pos, desempate }
+      return { ...aluno, posicao: pos, scoreParcial: getScore(aluno), desempate }
     })
-  }, [consolidacoes])
+  }, [consolidacoes, estagio])
 
   const visiveis = useMemo(() => {
     return ranking.filter((aluno) => {
@@ -861,8 +951,24 @@ function RankingTab({ consolidacoes, loading, error }) {
     setFiltroBusca('')
   }
 
+  const isFinal = estagio === 'final'
+
   return (
     <>
+      <div className="filter-bar" style={{ marginBottom: '16px' }}>
+        {['vc1', 'vc1vc2', 'final'].map((e) => (
+          <button
+            key={e}
+            onClick={() => setEstagioManual(e)}
+            disabled={!estagiosComDados[e]}
+            className={`filter-btn${estagio === e ? ' filter-btn--active' : ''}`}
+            title={!estagiosComDados[e] ? 'Sem dados para este estágio' : ''}
+          >
+            {ESTAGIO_LABELS[e]}
+          </button>
+        ))}
+      </div>
+
       <div className="coord-filters-card">
         <FilterRow>
           <div className="coord-filter-field coord-filter-field--wide">
@@ -897,10 +1003,13 @@ function RankingTab({ consolidacoes, loading, error }) {
 
       {!loading && !error && (
         <>
-          <p className="coord-count">{visiveis.length} aluno(s) no ranking</p>
+          <p className="coord-count">
+            {visiveis.length} aluno(s) no ranking —{' '}
+            <strong>Ranking {ESTAGIO_LABELS[estagio]}</strong>
+          </p>
 
           {visiveis.length === 0 ? (
-            <p className="status-muted">Nenhum aluno com notas concluídas encontrado.</p>
+            <p className="status-muted">Nenhum aluno com notas para este estágio encontrado.</p>
           ) : (
             <div className="portal-table-wrapper">
               <table className="portal-table">
@@ -912,14 +1021,14 @@ function RankingTab({ consolidacoes, loading, error }) {
                     <th>Pelotão</th>
                     <th className="center">VC1</th>
                     <th className="center">VC2</th>
-                    <th className="center">VC3</th>
-                    <th className="center">Média Final</th>
+                    {isFinal && <th className="center">VC3</th>}
+                    <th className="center">{isFinal ? 'Média Final' : 'Média Parcial'}</th>
                     <th>Critério</th>
                   </tr>
                 </thead>
                 <tbody>
                   {visiveis.map((aluno) => {
-                    const { vc1, vc2, vc3, mediaFinal } = aluno.consolidacao
+                    const { vc1, vc2, vc3 } = aluno.consolidacao
                     return (
                       <tr key={aluno.ordem}>
                         <td className="center">
@@ -942,8 +1051,10 @@ function RankingTab({ consolidacoes, loading, error }) {
                         <td>{aluno.pelotao || '—'}</td>
                         <td className="center">{fmtNota(vc1)}</td>
                         <td className="center">{fmtNota(vc2)}</td>
-                        <td className="center">{fmtNota(vc3)}</td>
-                        <td className="center" style={{ fontWeight: 700, color: 'var(--gold)' }}>{fmtNota(mediaFinal)}</td>
+                        {isFinal && <td className="center">{fmtNota(vc3)}</td>}
+                        <td className="center" style={{ fontWeight: 700, color: 'var(--gold)' }}>
+                          {fmtNota(aluno.scoreParcial)}
+                        </td>
                         <td style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{aluno.desempate}</td>
                       </tr>
                     )

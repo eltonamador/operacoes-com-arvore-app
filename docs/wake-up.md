@@ -1,5 +1,47 @@
 # wake-up.md
 
+## Sprint 2026-04-30 — Ranking progressivo por estágios de VC
+
+### O que foi feito
+
+Implementado ranking progressivo por estágios na `RankingTab` de `AlunoArea.jsx`. Antes, o ranking exigia as 5 oficinas concluídas (VC1+VC2+VC3 completos) para exibir qualquer aluno, retornando sempre vazio durante as fases iniciais de lançamento de notas.
+
+**Causa raiz:** `AlunoArea.jsx` filtrava `consolidacoes` por `mediaFinal !== null`, que só existe quando escadas, poços, motosserra, circuito e teórica estão todos avaliados.
+
+**Solução:** três estágios selecionáveis com auto-detecção do mais avançado disponível:
+- **Parcial — VC1**: alunos com `vc1 ≠ null` (escadas + poços concluídos); ordenação por `vc1` desc, desempate por `numero_ordem` asc
+- **Parcial — VC1 + VC2**: alunos com `vc1` ou `vc2 ≠ null`; ordenação por `avg(VCs disponíveis)` desc; desempate por `vc2` (se disponível) ou `numero_ordem`
+- **Final**: comportamento anterior preservado integralmente (ordem de desempate por VC2, circuito, teórica, VC1, poço, escadas)
+
+Todos os estágios exibem a coluna "Critério" indicando qual regra foi aplicada em caso de empate na pontuação.
+
+O sistema auto-seleciona o estágio mais avançado com dados ao carregar; o usuário pode trocar manualmente via botões. Estágios sem dados ficam desabilitados.
+
+**Arquivo alterado:**
+- `src/pages/AlunoArea.jsx` — `RankingTab` reescrita com lógica de estágios; constante `ESTAGIO_LABELS` adicionada no mesmo bloco. Nenhuma outra função ou tab foi tocada.
+
+**O que não foi alterado:** `consolidacaoService.js`, `CoordenacaoArea.jsx`, módulos individuais, cálculo de `mediaFinal`, filtros de pelotão e busca.
+
+---
+
+## Sprint 2026-04-30 — Correção da vinculação canônica de nome do aluno
+
+### O que foi feito
+
+Corrigida inconsistência onde o mesmo aluno aparecia com nomes diferentes em relatórios e buscas (ex: "J SOUZA" vs "JOÃO VICTOR PINHEIRO DE SOUZA" para `numero_ordem = 141`), causada por registros legados no banco com `nome_aluno` digitado manualmente antes do dropdown ser implementado.
+
+**Causa raiz:** `nome_aluno` é TEXT livre no banco (sem FK). `mapDbToUi` lia esse texto diretamente, sem validação, perpetuando variações históricas em todos os lugares que consomem avaliações.
+
+**Solução:** resolução canônica em leitura — `mapDbToUi` agora cruza `numero_ordem` com `students.json` e substitui `nome` e `pelotao` pelo valor autoritativo. Fallback para o texto do banco se `numero_ordem` não resolver (registros sem número, entradas manuais).
+
+**Arquivos criados/alterados:**
+- `src/modules/shared/utils/studentResolver.js` — criado. Exporta `getStudentByOrdem(numero_ordem)` → `{ nome, pelotao } | null`. Fonte única: `students.json`.
+- `src/services/avaliacoesService.js` — `mapDbToUi` agora chama `getStudentByOrdem` e usa o resultado canônico para `nome` e `pelotao`. Cascateia automaticamente para `consolidacaoService`, relatórios, rankings e buscas.
+
+**O que não foi alterado:** banco de dados, schema, queries, cálculos de nota, módulos Summary, lógica de save, StudentForm.
+
+---
+
 ## Sprint 2026-04-15 — Correção de scroll nas páginas de Relatórios Avançados
 
 ### O que foi feito
