@@ -762,6 +762,100 @@ const ESTAGIO_LABELS = {
   final: 'Final',
 }
 
+const TIEBREAK_INFO = {
+  vc1: [
+    'Ordenação: maior média VC1 (Poços + Escadas)',
+    'Desempate 1º: maior nota em Poço',
+    'Desempate 2º: menor número de ordem',
+  ],
+  vc1vc2: [
+    'Ordenação: maior média VC1 + VC2',
+    'Desempate 1º: maior nota em VC2',
+    'Desempate 2º: menor número de ordem',
+  ],
+  final: [
+    'Ordenação: maior Média Final',
+    'Desempate 1º: maior VC2',
+    'Desempate 2º: maior Circuito',
+    'Desempate 3º: maior Prova Teórica',
+    'Desempate 4º: maior VC1',
+    'Desempate 5º: maior Poço',
+    'Desempate 6º: maior Escadas',
+    'Empate total: posição mantida',
+  ],
+}
+
+function TiebreakInfo({ estagio }) {
+  const [mode, setMode] = useState(null)
+  const open = mode !== null
+  const linhas = TIEBREAK_INFO[estagio] || []
+
+  const handleMouseEnter = () => { if (mode !== 'click') setMode('hover') }
+  const handleMouseLeave = () => { if (mode === 'hover') setMode(null) }
+  const handleClick = (e) => {
+    e.stopPropagation()
+    setMode(mode === 'click' ? null : 'click')
+  }
+
+  return (
+    <span style={{ position: 'relative', display: 'inline-block', marginLeft: '6px', verticalAlign: 'middle' }}>
+      <button
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
+        aria-label="Ver critérios de desempate"
+        style={{
+          background: 'none', border: 'none', cursor: 'pointer',
+          fontSize: '14px', color: 'var(--text-muted)',
+          padding: '0 2px', lineHeight: 1, userSelect: 'none',
+        }}
+      >
+        ⓘ
+      </button>
+      {mode === 'click' && (
+        <div onClick={() => setMode(null)} style={{ position: 'fixed', inset: 0, zIndex: 99 }} />
+      )}
+      {open && (
+        <div style={{
+          position: 'absolute',
+          top: 'calc(100% + 8px)',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: '#1c1c1e',
+          border: '1px solid rgba(255,255,255,0.12)',
+          borderRadius: '10px',
+          padding: '12px 16px',
+          zIndex: 100,
+          width: '270px',
+          maxWidth: 'calc(100vw - 32px)',
+          boxShadow: '0 8px 28px rgba(0,0,0,0.45)',
+          pointerEvents: mode === 'click' ? 'auto' : 'none',
+        }}>
+          <p style={{ margin: '0 0 8px', fontWeight: 700, fontSize: '12px', color: '#ffffff', letterSpacing: '0.02em' }}>
+            Critérios — Ranking {ESTAGIO_LABELS[estagio]}
+          </p>
+          <ul style={{ margin: 0, padding: '0 0 0 14px', fontSize: '12px', color: '#d1d1d6', lineHeight: 1.8 }}>
+            {linhas.map((l, i) => <li key={i}>{l}</li>)}
+          </ul>
+          {mode === 'click' && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setMode(null) }}
+              style={{
+                marginTop: '10px', background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                borderRadius: '5px', fontSize: '11px', color: '#aeaeb2',
+                cursor: 'pointer', padding: '3px 10px', display: 'block',
+              }}
+            >
+              ✕ fechar
+            </button>
+          )}
+        </div>
+      )}
+    </span>
+  )
+}
+
 function RankingTab({ consolidacoes, loading, error }) {
   const [filtroBusca, setFiltroBusca] = useState('')
   const [filtroPelotao, setFiltroPelotao] = useState('all')
@@ -1006,6 +1100,7 @@ function RankingTab({ consolidacoes, loading, error }) {
           <p className="coord-count">
             {visiveis.length} aluno(s) no ranking —{' '}
             <strong>Ranking {ESTAGIO_LABELS[estagio]}</strong>
+            <TiebreakInfo estagio={estagio} />
           </p>
 
           {visiveis.length === 0 ? (
