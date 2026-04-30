@@ -1127,19 +1127,46 @@ function RankingTab({ consolidacoes, loading, error }) {
                     return (
                       <tr key={aluno.ordem}>
                         <td className="center">
-                          <span style={{
-                            display: 'inline-block',
-                            padding: '4px 10px',
-                            borderRadius: '12px',
-                            fontSize: '13px',
-                            fontWeight: 'bold',
-                            ...(aluno.posicao === 1 ? { background: 'var(--gold)', color: '#000' } :
-                                aluno.posicao === 2 ? { background: '#C0C0C0', color: '#000' } :
-                                aluno.posicao === 3 ? { background: '#CD7F32', color: '#fff' } :
-                                { color: 'var(--text-secondary)' })
-                          }}>
-                            {aluno.posicao}º
-                          </span>
+                          {aluno.posicao <= 3 ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                              <a href="/trofeu.png" target="_blank" rel="noopener noreferrer" title="Ver troféu em tamanho completo" style={{ display: 'block', lineHeight: 0 }}>
+                                <img
+                                  src="/trofeu.png"
+                                  alt={`${aluno.posicao}º lugar`}
+                                  style={{
+                                    width: aluno.posicao === 1 ? 44 : aluno.posicao === 2 ? 34 : 28,
+                                    height: 'auto',
+                                    opacity: aluno.posicao === 1 ? 1 : aluno.posicao === 2 ? 0.82 : 0.68,
+                                    display: 'block',
+                                    cursor: 'pointer',
+                                  }}
+                                />
+                              </a>
+                              <span style={{
+                                display: 'inline-block',
+                                padding: '2px 8px',
+                                borderRadius: '10px',
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                ...(aluno.posicao === 1 ? { background: 'var(--gold)', color: '#000' } :
+                                    aluno.posicao === 2 ? { background: '#C0C0C0', color: '#000' } :
+                                    { background: '#CD7F32', color: '#fff' })
+                              }}>
+                                {aluno.posicao}º
+                              </span>
+                            </div>
+                          ) : (
+                            <span style={{
+                              display: 'inline-block',
+                              padding: '4px 10px',
+                              borderRadius: '12px',
+                              fontSize: '13px',
+                              fontWeight: 'bold',
+                              color: 'var(--text-secondary)',
+                            }}>
+                              {aluno.posicao}º
+                            </span>
+                          )}
                         </td>
                         <td style={{ fontWeight: aluno.posicao <= 3 ? 700 : 400 }}>{aluno.nome || '—'}</td>
                         <td>{aluno.ordem || '—'}</td>
