@@ -1,24 +1,186 @@
 import { SECTIONS, calcScore } from '../data/penalties'
 
-// Seções 2.0 a 7.0 são estações operacionais — recebem cabeçalho dourado destacado
-const STATION_SECTION_IDS = ['2.0', '3.0', '4.0', '5.0', '6.0', '7.0']
+// ── helpers ──────────────────────────────────────────────────────────────────
+
+function fmtDiscount(val) {
+  return `–${val.toFixed(2).replace('.', ',')}`
+}
+
+// ── sub-components ────────────────────────────────────────────────────────────
+
+function BlocoHeader({ bloco, subtitle }) {
+  return (
+    <div style={{
+      background: 'var(--navy, #1a2a3a)',
+      borderRadius: 'var(--radius-sm)',
+      padding: '8px 14px',
+      marginTop: 24,
+      marginBottom: 4,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10,
+    }}>
+      <span style={{
+        background: 'var(--gold, #cc8800)',
+        color: '#000',
+        fontWeight: 800,
+        fontSize: 11,
+        borderRadius: 4,
+        padding: '2px 10px',
+        letterSpacing: 1,
+        whiteSpace: 'nowrap',
+      }}>
+        BLOCO {bloco}
+      </span>
+      <span style={{ fontSize: 12, color: '#a8c8e0', fontWeight: 600 }}>
+        {subtitle}
+      </span>
+    </div>
+  )
+}
+
+function StationHeader({ section, checkedCount }) {
+  return (
+    <div style={{
+      background: 'linear-gradient(90deg, #1a1200 0%, #2a1e00 100%)',
+      border: '1.5px solid #cc8800',
+      borderRadius: 'var(--radius-sm)',
+      padding: '9px 14px',
+      marginTop: 14,
+      marginBottom: 6,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10,
+    }}>
+      <span style={{
+        background: '#cc8800',
+        color: '#000',
+        fontWeight: 800,
+        fontSize: 11,
+        borderRadius: 4,
+        padding: '2px 8px',
+        letterSpacing: 1,
+        whiteSpace: 'nowrap',
+      }}>
+        {section.id}
+      </span>
+      <span style={{
+        fontWeight: 700,
+        fontSize: 12,
+        color: '#ffcc55',
+        letterSpacing: 0.4,
+        textTransform: 'uppercase',
+        flex: 1,
+      }}>
+        {section.title}
+      </span>
+      {section.subtitle && (
+        <span style={{ fontSize: 10, color: '#9aacbc', fontWeight: 500, whiteSpace: 'nowrap' }}>
+          {section.subtitle}
+        </span>
+      )}
+      <span style={{
+        fontSize: 10,
+        color: '#cc8800',
+        fontWeight: 700,
+        whiteSpace: 'nowrap',
+        background: '#2a1e00',
+        border: '1px solid #553300',
+        borderRadius: 3,
+        padding: '2px 6px',
+      }}>
+        Teto {section.teto.toFixed(2).replace('.', ',')} pt
+      </span>
+      <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>
+        {checkedCount}/{section.items.length} erros
+      </span>
+    </div>
+  )
+}
+
+function TemporalHeader({ section, checkedCount, cappedDiscount }) {
+  return (
+    <div style={{
+      background: 'linear-gradient(90deg, #1a0800 0%, #2a1000 100%)',
+      border: '1.5px solid #c05010',
+      borderRadius: 'var(--radius-sm)',
+      padding: '9px 14px',
+      marginTop: 14,
+      marginBottom: 6,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10,
+    }}>
+      <span style={{
+        background: '#c05010',
+        color: '#fff',
+        fontWeight: 800,
+        fontSize: 11,
+        borderRadius: 4,
+        padding: '2px 8px',
+        letterSpacing: 1,
+        whiteSpace: 'nowrap',
+      }}>
+        ⏱ TEMPO
+      </span>
+      <span style={{
+        fontWeight: 700,
+        fontSize: 12,
+        color: '#ffaa66',
+        letterSpacing: 0.4,
+        textTransform: 'uppercase',
+        flex: 1,
+      }}>
+        {section.title}
+      </span>
+      <span style={{ fontSize: 10, color: '#cc7040', fontWeight: 500 }}>
+        {section.subtitle}
+      </span>
+      {cappedDiscount > 0 && (
+        <span style={{
+          fontSize: 11,
+          color: '#ff7030',
+          fontWeight: 700,
+          whiteSpace: 'nowrap',
+          background: '#2a1000',
+          border: '1px solid #c05010',
+          borderRadius: 3,
+          padding: '2px 6px',
+        }}>
+          {fmtDiscount(cappedDiscount)}
+        </span>
+      )}
+      <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>
+        {checkedCount}/{section.items.length} min
+      </span>
+    </div>
+  )
+}
+
+// ── main component ────────────────────────────────────────────────────────────
 
 export default function Evaluation({ state, toggleItem, setObservations, setCustomError, goTo }) {
   const { checkedItems, observations, customError } = state
 
   const customDiscount = parseFloat(customError.discount) || 0
-  const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
+  const { totalDiscount, temporalDiscount, stationDiscount, finalScore } = calcScore(checkedItems, customDiscount)
   const isPassing = finalScore >= 7.0
-
-  function formatDiscount(val) {
-    return `–${val.toFixed(2).replace('.', ',')}`
-  }
+  const hasCustomError = customError.description.trim() !== '' && customDiscount > 0
 
   function handleCustomChange(field, value) {
     setCustomError({ ...customError, [field]: value })
   }
 
-  const hasCustomError = customError.description.trim() !== '' && customDiscount > 0
+  // compute per-section capped discount (for display in TemporalHeader)
+  function sectionCappedDiscount(section) {
+    let sum = 0
+    for (const item of section.items) {
+      if (checkedItems.has(item.id)) sum += item.discount
+    }
+    return Math.min(sum, section.teto)
+  }
+
+  let lastBloco = null
 
   return (
     <div className="screen-container">
@@ -48,86 +210,60 @@ export default function Evaluation({ state, toggleItem, setObservations, setCust
         {/* LEFT: scrollable penalty list */}
         <div className="eval-left">
           {SECTIONS.map(section => {
-            const isStation = STATION_SECTION_IDS.includes(section.id)
             const checkedCount = section.items.filter(i => checkedItems.has(i.id)).length
+            const showBlocoHeader = section.bloco !== lastBloco
+            lastBloco = section.bloco
+
+            const blocoSubtitles = {
+              'I': 'Estações 1 a 6 · Ref: 16 min · Máx: 25 min',
+              'II': 'Estação 7 · Cronometrado em separado · Ref: 1min30s · Máx: 2min',
+            }
 
             return (
               <div key={section.id}>
-                {isStation ? (
-                  <div style={{
-                    background: 'linear-gradient(90deg, #1a1200 0%, #2a1e00 100%)',
-                    border: '1.5px solid #cc8800',
-                    borderRadius: 'var(--radius-sm)',
-                    padding: '10px 14px',
-                    marginTop: 20,
-                    marginBottom: 6,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 10,
-                  }}>
-                    <span style={{
-                      background: '#cc8800',
-                      color: '#000',
-                      fontWeight: 800,
-                      fontSize: 11,
-                      borderRadius: 4,
-                      padding: '2px 8px',
-                      letterSpacing: 1,
-                      whiteSpace: 'nowrap',
-                    }}>
-                      {section.id}
-                    </span>
-                    <span style={{
-                      fontWeight: 700,
-                      fontSize: 13,
-                      color: '#ffcc55',
-                      letterSpacing: 0.5,
-                      textTransform: 'uppercase',
-                    }}>
-                      {section.title}
-                    </span>
-                    <span style={{
-                      marginLeft: 'auto',
-                      fontSize: 11,
-                      color: 'var(--text-muted)',
-                      fontWeight: 600,
-                      whiteSpace: 'nowrap',
-                    }}>
-                      {checkedCount}/{section.items.length} erros
-                    </span>
-                  </div>
+                {showBlocoHeader && (
+                  <BlocoHeader bloco={section.bloco} subtitle={blocoSubtitles[section.bloco]} />
+                )}
+
+                {section.isTemporal ? (
+                  <TemporalHeader
+                    section={section}
+                    checkedCount={checkedCount}
+                    cappedDiscount={sectionCappedDiscount(section)}
+                  />
                 ) : (
-                  <div className="section-header">
-                    <span className="section-id">{section.id}</span>
-                    <span className="section-title">{section.title}</span>
-                    <span style={{
-                      marginLeft: 'auto',
-                      fontSize: 12,
-                      color: 'var(--text-muted)',
-                      fontWeight: 600,
-                    }}>
-                      {checkedCount}/{section.items.length} erros
-                    </span>
-                  </div>
+                  <StationHeader section={section} checkedCount={checkedCount} />
                 )}
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {section.items.map(item => {
                     const isChecked = checkedItems.has(item.id)
+                    const isTemporal = section.isTemporal
                     return (
                       <button
                         key={item.id}
                         className={`penalty-item ${isChecked ? 'checked' : ''}`}
                         onClick={() => toggleItem(item.id)}
+                        style={isTemporal && isChecked ? {
+                          borderColor: '#c05010',
+                          background: 'rgba(192,80,16,0.12)',
+                        } : undefined}
                       >
                         <div className="penalty-item-check">
                           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                             <path d="M2.5 7L5.5 10L11.5 4" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                         </div>
-                        <span className="penalty-item-id">{item.id}</span>
+                        <span className="penalty-item-id" style={isTemporal ? { color: '#cc7040' } : undefined}>
+                          {item.id}
+                        </span>
                         <span className="penalty-item-desc">{item.description}</span>
-                        <span className="penalty-item-discount">{formatDiscount(item.discount)}</span>
+                        <span
+                          className="penalty-item-discount"
+                          style={isTemporal ? { color: '#ff7030' } : undefined}
+                        >
+                          {fmtDiscount(item.discount)}
+                        </span>
                       </button>
                     )
                   })}
@@ -160,14 +296,28 @@ export default function Evaluation({ state, toggleItem, setObservations, setCust
                 <span className="score-value">10,00</span>
               </div>
               <div className="score-row">
-                <span>Total de Descontos</span>
+                <span>Desc. estações</span>
                 <span className="score-value discount">
-                  {totalDiscount > 0 ? `–${totalDiscount.toFixed(2).replace('.', ',')}` : '0,00'}
+                  {stationDiscount > 0 ? fmtDiscount(stationDiscount) : '0,00'}
                 </span>
               </div>
               <div className="score-row">
-                <span>Erros marcados</span>
-                <span className="score-value">{checkedItems.size}{hasCustomError ? ' +1' : ''}</span>
+                <span>Penalidade temporal</span>
+                <span className="score-value" style={{ color: temporalDiscount > 0 ? '#ff7030' : undefined }}>
+                  {temporalDiscount > 0 ? fmtDiscount(temporalDiscount) : '0,00'}
+                </span>
+              </div>
+              {hasCustomError && (
+                <div className="score-row">
+                  <span>Erro não previsto</span>
+                  <span className="score-value discount">{fmtDiscount(customDiscount)}</span>
+                </div>
+              )}
+              <div className="score-row">
+                <span>Total descontos</span>
+                <span className="score-value discount">
+                  {totalDiscount > 0 ? fmtDiscount(totalDiscount) : '0,00'}
+                </span>
               </div>
               <div className="score-row final" style={{ flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <span className="score-final-label">Nota Final</span>
@@ -274,7 +424,7 @@ export default function Evaluation({ state, toggleItem, setObservations, setCust
             />
           </div>
 
-          {/* Advance button — Signature screen pending */}
+          {/* Advance button */}
           <button
             className="btn btn-primary"
             style={{ width: '100%', minHeight: 48, fontSize: 16, fontWeight: 700 }}
