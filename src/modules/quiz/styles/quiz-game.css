@@ -1,0 +1,232 @@
+/* ═══════════════════════════════════════════════
+   QUIZ GAME — Gamified visual (Kahoot-inspired)
+   ═══════════════════════════════════════════════ */
+
+.qg-wrapper {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #1a1a2e;
+  color: #fff;
+  font-family: inherit;
+}
+
+/* Header bar */
+.qg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(0,0,0,0.3);
+}
+
+.qg-progress {
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.qg-level-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+.qg-level-badge--basico { background: #4caf50; }
+.qg-level-badge--intermediario { background: #ff9800; }
+.qg-level-badge--avancado { background: #f44336; }
+
+.qg-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: 900;
+  background: rgba(255,255,255,0.1);
+  border: 3px solid rgba(255,255,255,0.3);
+  transition: border-color 0.3s;
+}
+.qg-timer--warning { border-color: #ff9800; color: #ff9800; }
+.qg-timer--danger { border-color: #f44336; color: #f44336; animation: qg-pulse 0.5s infinite alternate; }
+
+@keyframes qg-pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+/* Question area */
+.qg-question {
+  flex: 0 0 auto;
+  padding: 24px 16px 16px;
+  text-align: center;
+}
+
+.qg-enunciado {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Alternatives grid */
+.qg-alternatives {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 12px 16px 24px;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .qg-alternatives {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+.qg-alt-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.4;
+  transition: transform 0.1s, opacity 0.2s, filter 0.2s;
+  min-height: 60px;
+}
+
+.qg-alt-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.qg-alt-btn:disabled {
+  cursor: default;
+}
+
+.qg-alt-btn--0 { background: #e21b3c; }
+.qg-alt-btn--1 { background: #1368ce; }
+.qg-alt-btn--2 { background: #d89e00; }
+.qg-alt-btn--3 { background: #26890c; }
+.qg-alt-btn--4 { background: #864cbf; }
+
+.qg-alt-letra {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  font-weight: 900;
+  font-size: 14px;
+}
+
+/* Feedback states */
+.qg-alt-btn--correct {
+  background: #4caf50 !important;
+  animation: qg-correct-pop 0.3s ease;
+}
+
+.qg-alt-btn--wrong {
+  background: #c62828 !important;
+  opacity: 0.9;
+}
+
+.qg-alt-btn--dimmed {
+  opacity: 0.4;
+  filter: grayscale(0.5);
+}
+
+@keyframes qg-correct-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+/* Feedback / justificativa */
+.qg-feedback {
+  padding: 16px;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.qg-feedback-card {
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px;
+  border-left: 4px solid;
+}
+
+.qg-feedback-card--correct { border-left-color: #4caf50; }
+.qg-feedback-card--wrong { border-left-color: #f44336; }
+.qg-feedback-card--timeout { border-left-color: #ff9800; }
+
+.qg-feedback-title {
+  font-weight: 700;
+  font-size: 15px;
+  margin: 0 0 8px;
+}
+
+.qg-feedback-justificativa {
+  font-size: 13px;
+  line-height: 1.6;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.qg-feedback-points {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+/* Next button */
+.qg-next-bar {
+  padding: 12px 16px 24px;
+  text-align: center;
+}
+
+.qg-next-btn {
+  background: #fff;
+  color: #1a1a2e;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 48px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.qg-next-btn:active {
+  transform: scale(0.97);
+}
+
+/* Score bar */
+.qg-score-bar {
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffd700;
+  background: rgba(0,0,0,0.2);
+}

@@ -1271,6 +1271,12 @@ export default function AlunoArea() {
         >
           Ranking
         </button>
+        <button
+          onClick={() => handleAbaChange('quiz')}
+          className={`filter-btn${aba === 'quiz' ? ' filter-btn--active' : ''}`}
+        >
+          Quiz Teórico
+        </button>
       </div>
 
       {aba === 'avaliacoes' && (
@@ -1291,6 +1297,22 @@ export default function AlunoArea() {
           loading={loadingConsolidacao}
           error={errorConsolidacao}
         />
+      )}
+
+      {aba === 'quiz' && (
+        <div style={{ textAlign: 'center', padding: '48px 16px' }}>
+          <h3 style={{ marginBottom: 8 }}>Quiz Teórico</h3>
+          <p className="status-muted" style={{ marginBottom: 24 }}>
+            Teste seus conhecimentos com questões de Salvamento Terrestre.
+          </p>
+          <Link
+            to="/aluno/quiz"
+            className="btn btn-primary"
+            style={{ display: 'inline-block', padding: '12px 32px', textDecoration: 'none' }}
+          >
+            Acessar Quiz
+          </Link>
+        </div>
       )}
 
       <Link to="/" className="portal-back-link">
