@@ -1,0 +1,2293 @@
+[
+  {
+    "id": 1,
+    "nivel": "basico",
+    "enunciado": "Conforme a Norma Operacional 003/2023-CBMAP, em quais situações o serviço de corte de árvore realizado pelo CBMAP se aplica?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Em manutenção preventiva e poda estética de arborização urbana."
+      },
+      {
+        "letra": "B",
+        "texto": "Somente quando houver autorização judicial prévia."
+      },
+      {
+        "letra": "C",
+        "texto": "Em situações emergenciais de Perigo de Queda Iminente (PQI) ou Perigo Potencial de Queda (PPQ)."
+      },
+      {
+        "letra": "D",
+        "texto": "Em qualquer solicitação feita por morador, independentemente de risco."
+      },
+      {
+        "letra": "E",
+        "texto": "Exclusivamente em áreas de preservação permanente."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "O material estabelece que o serviço de corte de árvore do CBMAP compreende abate/retirada e desbaste/poda apenas em situações emergenciais, nos casos de PQI ou PPQ."
+  },
+  {
+    "id": 2,
+    "nivel": "basico",
+    "enunciado": "Qual conjunto de sinais pode indicar perigo de queda iminente de uma árvore, conforme o material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Folhas verdes, copa equilibrada e ausência de pragas."
+      },
+      {
+        "letra": "B",
+        "texto": "Pintura no tronco, crescimento lento e sombra excessiva."
+      },
+      {
+        "letra": "C",
+        "texto": "Presença de flores, frutos maduros e raízes profundas."
+      },
+      {
+        "letra": "D",
+        "texto": "Rachadura no tronco, apodrecimento, ação de pragas, partes ocas, inclinação anormal maior ou igual a 45° e desequilíbrio da copa."
+      },
+      {
+        "letra": "E",
+        "texto": "Altura elevada isoladamente, independentemente de anomalias."
+      }
+    ],
+    "gabarito": "D",
+    "justificativa": "O material apresenta equipe com 01 comandante, 01 segurança e backup, 02 operadores do sistema e 01 resgateiro, totalizando cinco integrantes."
+  },
+  {
+    "id": 3,
+    "nivel": "basico",
+    "enunciado": "Qual alternativa reúne equipamentos básicos previstos para Salvamento em Poço?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Tripé ou sistema de ancoragem, cordas principal e de segurança, polias, mosquetões, bloqueadores, placa de ancoragem, detector multigases, EPRA, cinto tipo paraquedista, estacas e marreta/malho."
+      },
+      {
+        "letra": "B",
+        "texto": "Apenas escada prolongável, prancha rígida e cones."
+      },
+      {
+        "letra": "C",
+        "texto": "Motosserra, motopoda, óleo de corrente e calça de corte."
+      },
+      {
+        "letra": "D",
+        "texto": "Mangueira de incêndio, esguicho, extintor e ventilador hidráulico."
+      },
+      {
+        "letra": "E",
+        "texto": "Colete balístico, algema e escudo."
+      }
+    ],
+    "gabarito": "A",
+    "justificativa": "O material lista esses itens como equipamentos básicos para a operação de salvamento em poço."
+  },
+  {
+    "id": 4,
+    "nivel": "basico",
+    "enunciado": "O que é resistência elétrica no contexto apresentado?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "A energia acumulada em placas fotovoltaicas."
+      },
+      {
+        "letra": "B",
+        "texto": "O valor de tensão em redes de média tensão."
+      },
+      {
+        "letra": "C",
+        "texto": "O fluxo alternado de elétrons."
+      },
+      {
+        "letra": "D",
+        "texto": "Característica do corpo ou material de se opor à passagem da corrente elétrica."
+      },
+      {
+        "letra": "E",
+        "texto": "A capacidade de geração de arco elétrico."
+      }
+    ],
+    "gabarito": "D",
+    "justificativa": "A resistência é indicada como a oposição à passagem da corrente elétrica, medida em ohm."
+  },
+  {
+    "id": 5,
+    "nivel": "basico",
+    "enunciado": "De acordo com o material, de quais fatores depende o choque elétrico?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Somente da idade da vítima."
+      },
+      {
+        "letra": "B",
+        "texto": "Percurso, intensidade, duração, tipo de corrente (CA ou DC) e resistência do corpo."
+      },
+      {
+        "letra": "C",
+        "texto": "Somente da tensão nominal da rede."
+      },
+      {
+        "letra": "D",
+        "texto": "Somente da umidade do solo."
+      },
+      {
+        "letra": "E",
+        "texto": "Temperatura ambiente, vento e luminosidade."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "O choque elétrico é apresentado como reação do organismo à passagem de corrente, dependendo de percurso, intensidade, duração, CA/DC e resistência do corpo."
+  },
+  {
+    "id": 6,
+    "nivel": "basico",
+    "enunciado": "Conforme o material da disciplina de Operações de Corte de Árvore, qual o percentual de apodrecimento do tronco que já é considerado indicativo para o corte da árvore?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Igual ou superior a 20%."
+      },
+      {
+        "letra": "B",
+        "texto": "Igual ou superior a 30%."
+      },
+      {
+        "letra": "C",
+        "texto": "Igual ou superior a 40%."
+      },
+      {
+        "letra": "D",
+        "texto": "Igual ou superior a 50%."
+      },
+      {
+        "letra": "E",
+        "texto": "Igual ou superior a 60%."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Segundo o material didático, o apodrecimento igual ou superior a 40% do tronco já é indicativo para o corte da árvore."
+  },
+  {
+    "id": 7,
+    "nivel": "basico",
+    "enunciado": "Sobre a inclinação das árvores, o material de instrução estabelece um ângulo de referência a partir do qual a inclinação é considerada anormal e indício de perigo de queda iminente. Qual é esse ângulo?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Maior ou igual a 15°."
+      },
+      {
+        "letra": "B",
+        "texto": "Maior ou igual a 25°."
+      },
+      {
+        "letra": "C",
+        "texto": "Maior ou igual a 35°."
+      },
+      {
+        "letra": "D",
+        "texto": "Maior ou igual a 45°."
+      },
+      {
+        "letra": "E",
+        "texto": "Maior ou igual a 60°."
+      }
+    ],
+    "gabarito": "D",
+    "justificativa": "Conforme o material, a inclinação anormal é caracterizada quando é maior ou igual a 45°, podendo ser indício de perigo de queda iminente da árvore."
+  },
+  {
+    "id": 8,
+    "nivel": "basico",
+    "enunciado": "Quais são os três sistemas de alimentação utilizados pelas grandes marcas de motosserras, segundo o material da disciplina?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Combustão interna, hidráulica e pneumática."
+      },
+      {
+        "letra": "B",
+        "texto": "Combustão interna, elétrica por cabo e por baterias de íons de lítio."
+      },
+      {
+        "letra": "C",
+        "texto": "Diesel, gasolina e elétrica."
+      },
+      {
+        "letra": "D",
+        "texto": "Manual, semiautomática e automática."
+      },
+      {
+        "letra": "E",
+        "texto": "Combustão interna, energia solar e baterias recarregáveis."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, as motosserras possuem 3 sistemas de alimentação: Combustão Interna (explosão), elétrica por cabo e por baterias de Íons de Lítio."
+  },
+  {
+    "id": 9,
+    "nivel": "basico",
+    "enunciado": "Sobre os Equipamentos de Proteção Individual (EPI) para operações de corte de árvore, qual peça é especificamente projetada para proteger o operador da motosserra contra o contato acidental da corrente em movimento com os membros inferiores?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Bota de segurança comum."
+      },
+      {
+        "letra": "B",
+        "texto": "Talabarte de posicionamento."
+      },
+      {
+        "letra": "C",
+        "texto": "Calça para uso de motosserras."
+      },
+      {
+        "letra": "D",
+        "texto": "Cinturão de arborista."
+      },
+      {
+        "letra": "E",
+        "texto": "Uniforme de manga longa."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, dentre os EPIs para corte de árvore consta a calça para uso de motosserras, sendo destacada a sua importância: 'Sempre utilize os EPIs no manuseio e operação das motosserras (especialmente a calça de corte)'."
+  },
+  {
+    "id": 10,
+    "nivel": "basico",
+    "enunciado": "De acordo com a doutrina operacional de Salvamento em Poço, quais são as fases sequenciais do salvamento?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Acionamento, deslocamento, execução, retirada e relatório."
+      },
+      {
+        "letra": "B",
+        "texto": "Análise de Risco, Monitoramento, Ventilação, Montagem do Sistema, Acesso e Salvamento."
+      },
+      {
+        "letra": "C",
+        "texto": "Avaliação, ancoragem, descida, içamento e desmobilização."
+      },
+      {
+        "letra": "D",
+        "texto": "Reconhecimento, isolamento, ventilação, descida e regresso."
+      },
+      {
+        "letra": "E",
+        "texto": "Mobilização, monitoramento, intervenção, içamento e finalização."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme a doutrina operacional de Salvamento em Poço apresentada no material, as fases são: Análise de Riscos, Monitoramento, Ventilação, Montagem do Sistema de Multiplicação de Força, Acesso e Salvamento."
+  },
+  {
+    "id": 11,
+    "nivel": "basico",
+    "enunciado": "Conforme o material de Salvamento em Poço, o que se entende por 'Espaço Confinado'?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Qualquer ambiente com profundidade superior a 5 metros."
+      },
+      {
+        "letra": "B",
+        "texto": "Ambiente com acesso limitado e ventilação insuficiente."
+      },
+      {
+        "letra": "C",
+        "texto": "Ambiente totalmente vedado e sem possibilidade de monitoramento."
+      },
+      {
+        "letra": "D",
+        "texto": "Ambiente subterrâneo com presença obrigatória de água."
+      },
+      {
+        "letra": "E",
+        "texto": "Espaço industrial com risco químico, biológico e radiológico simultâneos."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Segundo as definições do material, Espaço Confinado é um ambiente com acesso limitado e ventilação insuficiente."
+  },
+  {
+    "id": 12,
+    "nivel": "basico",
+    "enunciado": "Os principais riscos associados às ocorrências em poço são classificados como multirriscos. Quais grupos compõem essa classificação?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Mecânico, térmico, elétrico e radiológico."
+      },
+      {
+        "letra": "B",
+        "texto": "Químico, biológico, físico e operacional."
+      },
+      {
+        "letra": "C",
+        "texto": "Estrutural, ambiental, sanitário e logístico."
+      },
+      {
+        "letra": "D",
+        "texto": "Atmosférico, térmico, mecânico e elétrico."
+      },
+      {
+        "letra": "E",
+        "texto": "Hidráulico, biológico, químico e estrutural."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, os principais riscos no poço são: Químico (gases), Biológico (microrganismos), Físico (queda/colapso) e Operacional (falha nas fases), tratando-se de um ambiente multirriscos."
+  },
+  {
+    "id": 13,
+    "nivel": "basico",
+    "enunciado": "Quais os parâmetros aceitáveis para o teor de oxigênio (O₂) na atmosfera de um poço, conforme o monitoramento atmosférico estabelecido pelo material da disciplina?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Entre 15% e 19%."
+      },
+      {
+        "letra": "B",
+        "texto": "Entre 17,5% e 21%."
+      },
+      {
+        "letra": "C",
+        "texto": "Entre 19,5% e 23%."
+      },
+      {
+        "letra": "D",
+        "texto": "Entre 21% e 25%."
+      },
+      {
+        "letra": "E",
+        "texto": "Acima de 25%."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, os parâmetros aceitáveis para monitoramento atmosférico do poço são: O₂ entre 19,5% e 23%; LEL menor que 10%; e CO/H₂S abaixo do limite de tolerância."
+  },
+  {
+    "id": 14,
+    "nivel": "basico",
+    "enunciado": "Conforme a composição de equipe estabelecida no material de Salvamento em Poço, quantos integrantes compõem a equipe padrão e qual a função do Resgateiro?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "4 integrantes; o Resgateiro é o comandante da operação."
+      },
+      {
+        "letra": "B",
+        "texto": "5 integrantes; o Resgateiro realiza acesso, atendimento e retirada."
+      },
+      {
+        "letra": "C",
+        "texto": "6 integrantes; o Resgateiro monitora os gases internos."
+      },
+      {
+        "letra": "D",
+        "texto": "5 integrantes; o Resgateiro opera o sistema de multiplicação de força."
+      },
+      {
+        "letra": "E",
+        "texto": "7 integrantes; o Resgateiro é responsável pela ventilação do poço."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "A composição é: 01 Comandante, 01 Segurança e backup, 02 Operadores do Sistema e 01 Resgateiro (totalizando 5). Cabe ao Resgateiro: acesso, atendimento e retirada da vítima."
+  },
+  {
+    "id": 15,
+    "nivel": "basico",
+    "enunciado": "Em que fase do salvamento em poço o resgateiro deve ser equipado com cinto tipo paraquedista, capacete com jugular, detector portátil e Equipamento de Proteção Respiratória (EPR)?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Fase de Análise de Risco."
+      },
+      {
+        "letra": "B",
+        "texto": "Fase de Monitoramento."
+      },
+      {
+        "letra": "C",
+        "texto": "Fase de Ventilação."
+      },
+      {
+        "letra": "D",
+        "texto": "Fase de Acesso."
+      },
+      {
+        "letra": "E",
+        "texto": "Fase de Salvamento."
+      }
+    ],
+    "gabarito": "D",
+    "justificativa": "Conforme o material, na Fase 5 (Acesso), os passos incluem equipar o resgateiro com cinto tipo paraquedista, capacete com jugular, detector portátil e EPR, antes de realizar a descida controlada."
+  },
+  {
+    "id": 16,
+    "nivel": "basico",
+    "enunciado": "Qual a definição correta de 'Sobrecarga de Borda' em ocorrências de salvamento em poço, conforme o material da disciplina?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Excesso de equipamentos no veículo de socorro."
+      },
+      {
+        "letra": "B",
+        "texto": "Aplicação excessiva de carga na periferia da boca do poço."
+      },
+      {
+        "letra": "C",
+        "texto": "Sobrepeso na ancoragem do tripé central."
+      },
+      {
+        "letra": "D",
+        "texto": "Acúmulo de gases na borda externa do poço."
+      },
+      {
+        "letra": "E",
+        "texto": "Concentração de água acumulada ao redor do poço."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Segundo as definições do material, Sobrecarga de Borda é a aplicação excessiva de carga na periferia da 'boca poço'."
+  },
+  {
+    "id": 17,
+    "nivel": "basico",
+    "enunciado": "Conforme o material da disciplina de Salvamento Terrestre, na classificação de tensões elétricas, qual a faixa de Baixa Tensão (BT)?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Até 220V."
+      },
+      {
+        "letra": "B",
+        "texto": "Até 500V."
+      },
+      {
+        "letra": "C",
+        "texto": "Até 1.000V."
+      },
+      {
+        "letra": "D",
+        "texto": "Até 7.500V."
+      },
+      {
+        "letra": "E",
+        "texto": "Até 13.800V."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, a Baixa Tensão (BT) é caracterizada por valores até 1.000V, enquanto Média Tensão (MT) está entre 1KV e 69.000V e Alta Tensão (AT) entre 69KV e 230KV."
+  },
+  {
+    "id": 18,
+    "nivel": "basico",
+    "enunciado": "Em ocorrências envolvendo eletricidade, conforme o material da disciplina, qual a distância de segurança mínima recomendada para o bombeiro militar?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "3 metros."
+      },
+      {
+        "letra": "B",
+        "texto": "5 metros."
+      },
+      {
+        "letra": "C",
+        "texto": "8 metros."
+      },
+      {
+        "letra": "D",
+        "texto": "10 metros."
+      },
+      {
+        "letra": "E",
+        "texto": "15 metros."
+      }
+    ],
+    "gabarito": "D",
+    "justificativa": "Conforme os procedimentos operacionais do material, no local da ocorrência envolvendo eletricidade, deve-se manter distância de 10 metros, além de aplicar os 3 S (Scene, Situação e Segurança) e desenergizar."
+  },
+  {
+    "id": 19,
+    "nivel": "basico",
+    "enunciado": "Sobre o choque elétrico, qual grandeza física determina a quantidade de corrente que passa pelo corpo humano com uma resistência fixa, conforme apresentado no material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Resistência."
+      },
+      {
+        "letra": "B",
+        "texto": "Potência."
+      },
+      {
+        "letra": "C",
+        "texto": "Tensão."
+      },
+      {
+        "letra": "D",
+        "texto": "Frequência."
+      },
+      {
+        "letra": "E",
+        "texto": "Capacitância."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, a grandeza que determina a quantidade de corrente que passa pelo corpo com uma resistência fixa é a tensão. Embora seja o efeito da corrente que mata, é a tensão que proporciona o movimento dos elétrons sobre o corpo."
+  },
+  {
+    "id": 20,
+    "nivel": "basico",
+    "enunciado": "Com relação aos tipos de corrente elétrica, qual delas oferece MAIOR risco e é mais utilizada na transmissão e distribuição no Brasil?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Corrente Contínua (DC)."
+      },
+      {
+        "letra": "B",
+        "texto": "Corrente Alternada (AC)."
+      },
+      {
+        "letra": "C",
+        "texto": "Corrente direta retificada."
+      },
+      {
+        "letra": "D",
+        "texto": "Corrente trifásica polarizada."
+      },
+      {
+        "letra": "E",
+        "texto": "Corrente residual de fuga."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, a Corrente Alternada (AC) é a mais utilizada na transmissão e distribuição, com fluxo que muda de sentido em uma determinada frequência (no Brasil, 60Hz), oferecendo maior risco em comparação com a Corrente Contínua (DC)."
+  },
+  {
+    "id": 21,
+    "nivel": "basico",
+    "enunciado": "Em quais situações o material da disciplina justifica o emprego do salvamento com escada prolongável para a retirada de vítimas em plano vertical?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Apenas em incêndios estruturais com fumaça intensa."
+      },
+      {
+        "letra": "B",
+        "texto": "Apenas quando há necessidade de acesso por janelas em pavimento térreo."
+      },
+      {
+        "letra": "C",
+        "texto": "Quando não há acesso seguro por escadas internas, elevadores estão inoperantes, há fumaça/fogo bloqueando rotas de fuga ou a vítima não pode deambular."
+      },
+      {
+        "letra": "D",
+        "texto": "Sempre que a edificação possuir mais de três pavimentos."
+      },
+      {
+        "letra": "E",
+        "texto": "Exclusivamente em situações de salvamento aquático em embarcações."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, o salvamento com escada prolongável é empregado quando: não há acesso seguro por escadas internas; elevadores estão inoperantes; há presença de fumaça ou fogo bloqueando rotas de fuga; ou a vítima apresenta lesões que impedem sua deambulação."
+  },
+  {
+    "id": 22,
+    "nivel": "basico",
+    "enunciado": "Quais são as três técnicas de salvamento com escada prolongável apresentadas no material da disciplina?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Mão Francesa, Escada Deslizante e Escada Rebatida."
+      },
+      {
+        "letra": "B",
+        "texto": "Mão Inglesa, Escada Reta e Escada Pivotante."
+      },
+      {
+        "letra": "C",
+        "texto": "Tirolesa, Rapel e Escada Reta."
+      },
+      {
+        "letra": "D",
+        "texto": "Mão Francesa, Tirolesa e Balancinho."
+      },
+      {
+        "letra": "E",
+        "texto": "Escada Deslizante, Içamento Vertical e Mão Direta."
+      }
+    ],
+    "gabarito": "A",
+    "justificativa": "Conforme o material, as técnicas com escada são: Mão Francesa, Escada Deslizante e Escada Rebatida."
+  },
+  {
+    "id": 23,
+    "nivel": "basico",
+    "enunciado": "Quais são partes constitutivas da escada prolongável conforme apresentadas no material da disciplina?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Apenas degraus, banzos e sapatas."
+      },
+      {
+        "letra": "B",
+        "texto": "Cinta de apoio, roldana, catraca, sapata, degrau, banzo, lance e corda."
+      },
+      {
+        "letra": "C",
+        "texto": "Banzo, mosquetão, polia, ancoragem e descensor."
+      },
+      {
+        "letra": "D",
+        "texto": "Sapata, gancho croque, fita tubular, mosquetão e corda."
+      },
+      {
+        "letra": "E",
+        "texto": "Lance único, catraca dupla, roldana fixa e sapata móvel."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, as partes da escada prolongável são: cinta de apoio, roldana, catraca, sapata, degrau, banzo, lance e corda."
+  },
+  {
+    "id": 24,
+    "nivel": "basico",
+    "enunciado": "Durante a subida na escada prolongável, conforme o material, em quantos pontos diferentes mãos e pés devem tocar?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "2 pontos diferentes."
+      },
+      {
+        "letra": "B",
+        "texto": "3 pontos diferentes."
+      },
+      {
+        "letra": "C",
+        "texto": "4 pontos diferentes."
+      },
+      {
+        "letra": "D",
+        "texto": "5 pontos diferentes."
+      },
+      {
+        "letra": "E",
+        "texto": "6 pontos diferentes."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, durante a subida na escada prolongável, as mãos e os pés devem tocar em 4 pontos diferentes, salvo situação que exija."
+  },
+  {
+    "id": 25,
+    "nivel": "basico",
+    "enunciado": "Conforme o material da disciplina, qual a definição precisa de TENTANTE?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Pessoa que pratica autolesão sem intenção letal."
+      },
+      {
+        "letra": "B",
+        "texto": "Pessoa que ideou o suicídio sem efetivar o ato."
+      },
+      {
+        "letra": "C",
+        "texto": "Pessoa que atenta contra sua própria vida sem êxito no resultado morte."
+      },
+      {
+        "letra": "D",
+        "texto": "Pessoa em sofrimento psíquico após perda recente."
+      },
+      {
+        "letra": "E",
+        "texto": "Indivíduo com transtorno de personalidade em surto."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Segundo a definição do material baseada no CBMCE, a pessoa que atenta contra sua própria vida sem êxito no resultado morte será chamada de TENTANTE; já o SUICÍDA é aquele que conseguiu consumar sua própria morte."
+  },
+  {
+    "id": 26,
+    "nivel": "basico",
+    "enunciado": "Qual deve ser o procedimento durante o deslocamento da viatura para uma ocorrência de tentativa de suicídio, segundo a doutrina humanizada apresentada?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Deslocamento com sirenes em volume máximo para advertir trânsito."
+      },
+      {
+        "letra": "B",
+        "texto": "Deslocamento com sinalização sonora intermitente."
+      },
+      {
+        "letra": "C",
+        "texto": "Deve-se chegar ao local com as sirenes desligadas."
+      },
+      {
+        "letra": "D",
+        "texto": "Apenas faróis e giroflex acionados, sem sirene durante a aproximação."
+      },
+      {
+        "letra": "E",
+        "texto": "Deslocamento padrão idêntico a outras ocorrências."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, na fase de deslocamento da ocorrência, deve-se chegar ao local com as sirenes desligadas, evitando agravar o quadro emocional do tentante."
+  },
+  {
+    "id": 27,
+    "nivel": "basico",
+    "enunciado": "Qual a forma correta de o bombeiro militar se apresentar ao tentante na fase de Apresentação da abordagem técnica?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "'Sou o SGT tal, do Corpo de Bombeiros, e estou aqui para te AJUDAR.'"
+      },
+      {
+        "letra": "B",
+        "texto": "'Sou o SGT tal, do Corpo de Bombeiros, e estou aqui para te ESCUTAR ou CONVERSAR.'"
+      },
+      {
+        "letra": "C",
+        "texto": "'Sou bombeiro militar e vim te tirar dessa situação.'"
+      },
+      {
+        "letra": "D",
+        "texto": "'Boa noite, sou enviado da família, posso me aproximar?'"
+      },
+      {
+        "letra": "E",
+        "texto": "'Não tem motivo para fazer isso, vim aqui para te orientar.'"
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na fase de apresentação deve-se ser formal e cuidadoso, do tipo: 'Sou o SGT tal, sou do Corpo de Bombeiros e estou aqui para te ESCUTAR ou CONVERSAR'. Nunca iniciar com 'AJUDAR'."
+  },
+  {
+    "id": 28,
+    "nivel": "basico",
+    "enunciado": "De acordo com o protocolo SAMU - Suporte Básico de Vida, citado no material, qual o número mínimo de socorristas para a realização da contenção física de um paciente psiquiátrico?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "2 socorristas."
+      },
+      {
+        "letra": "B",
+        "texto": "3 socorristas."
+      },
+      {
+        "letra": "C",
+        "texto": "4 socorristas."
+      },
+      {
+        "letra": "D",
+        "texto": "5 socorristas."
+      },
+      {
+        "letra": "E",
+        "texto": "6 socorristas."
+      }
+    ],
+    "gabarito": "D",
+    "justificativa": "Conforme o material, baseado no Protocolo SAMU - Suporte Básico de Vida, a contenção física tem como objetivo proteger o indivíduo, terceiros ou bens materiais e deve ser feita por no mínimo 5 socorristas."
+  },
+  {
+    "id": 29,
+    "nivel": "basico",
+    "enunciado": "Sobre a diferenciação técnica entre contenção física e contenção mecânica, conforme o material da disciplina, é correto afirmar que:",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Ambas as técnicas usam exclusivamente faixas de couro fixadas ao leito."
+      },
+      {
+        "letra": "B",
+        "texto": "A contenção física é a imobilização por várias pessoas; a contenção mecânica utiliza faixas de couro/tecido em quatro ou cinco pontos fixando o paciente ao leito."
+      },
+      {
+        "letra": "C",
+        "texto": "A contenção mecânica é feita com algemas; a física com abraçadeiras plásticas."
+      },
+      {
+        "letra": "D",
+        "texto": "Não há diferenciação técnica entre os dois termos."
+      },
+      {
+        "letra": "E",
+        "texto": "A contenção física só pode ser realizada por enfermeiros."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, a contenção física se caracteriza pela imobilização do paciente por várias pessoas da equipe que o seguram firmemente no solo. Já a contenção mecânica se caracteriza pelo uso de faixas de couro ou tecido em quatro ou cinco pontos que fixam o paciente ao leito."
+  },
+  {
+    "id": 30,
+    "nivel": "basico",
+    "enunciado": "Qual a Norma Operacional do CBMAP que disciplina, dentre outros aspectos, o atendimento a vítimas em sofrimento mental emergencial e crise em saúde mental?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Norma Operacional nº 001/2020-CBMAP."
+      },
+      {
+        "letra": "B",
+        "texto": "Norma Operacional nº 003/2023-CBMAP."
+      },
+      {
+        "letra": "C",
+        "texto": "Norma Operacional nº 005, BG 209 - 15 de novembro de 2023."
+      },
+      {
+        "letra": "D",
+        "texto": "Norma Operacional nº 010/2018-CBMAP."
+      },
+      {
+        "letra": "E",
+        "texto": "Norma Operacional nº 002/2022-CBMAP."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, no CBMAP a regulamentação aplicável é a NORMA OPERACIONAL Nº 005, publicada no BG 209 de 15 de novembro de 2023, que trata da Crise em Saúde Mental."
+  },
+  {
+    "id": 31,
+    "nivel": "basico",
+    "enunciado": "Em ocorrências envolvendo eletricidade, qual o primeiro órgão a ser comunicado para que ocorra o desligamento da rede e o bloqueio do religamento automático, conforme apresentado no material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Defesa Civil municipal."
+      },
+      {
+        "letra": "B",
+        "texto": "ANEEL diretamente."
+      },
+      {
+        "letra": "C",
+        "texto": "193 / CIODES, com comunicação ao COI da concessionária."
+      },
+      {
+        "letra": "D",
+        "texto": "Polícia Militar do estado."
+      },
+      {
+        "letra": "E",
+        "texto": "Ministério das Minas e Energia."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, a sequência correta é: 193/CIODES/Comunicação com o COI; o COI desliga a rede elétrica e bloqueia o religamento automático; aciona equipe de plantão; equipe de campo elimina os riscos de choque elétrico e entrega para o Corpo de Bombeiro."
+  },
+  {
+    "id": 32,
+    "nivel": "intermediario",
+    "enunciado": "Durante o corte de uma árvore, a motosserra sofre rebote (kickback) e é lançada repentinamente sobre o operador. Qual mecanismo do equipamento, somado ao uso correto das duas mãos, é responsável por interromper a corrente e proteger o operador?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Válvula de descompressão."
+      },
+      {
+        "letra": "B",
+        "texto": "Freio de inércia ou freio de punho."
+      },
+      {
+        "letra": "C",
+        "texto": "Sistema de afogador automático."
+      },
+      {
+        "letra": "D",
+        "texto": "Embreagem centrífuga reversa."
+      },
+      {
+        "letra": "E",
+        "texto": "Lubrificador automático da corrente."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, ao usar as duas mãos na operação, caso haja rebote do sabre, o freio de inércia ou freio de punho é acionado, parando a corrente e protegendo o operador."
+  },
+  {
+    "id": 33,
+    "nivel": "intermediario",
+    "enunciado": "Durante o atendimento de uma ocorrência, o bombeiro identifica obstáculos abaixo de um galho que precisa ser cortado, impossibilitando a queda livre. Qual técnica de descensão deve ser empregada para realizar uma queda diagonal ou horizontal sob controle de cordas?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Tirolesa simples."
+      },
+      {
+        "letra": "B",
+        "texto": "Balancinho."
+      },
+      {
+        "letra": "C",
+        "texto": "Rapel direto."
+      },
+      {
+        "letra": "D",
+        "texto": "Queda livre orientada."
+      },
+      {
+        "letra": "E",
+        "texto": "Descensão por gravidade controlada."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, o balancinho é a técnica utilizada quando há obstáculos que impeçam a queda livre, sendo uma queda diagonal ou horizontal dos galhos sob controle de cordas, usando uma forquilha mais favorável acima do galho a ser cortado."
+  },
+  {
+    "id": 34,
+    "nivel": "intermediario",
+    "enunciado": "Conforme a Norma Operacional 003/2023-CBMAP, o serviço de corte de árvore em regime emergencial classificado como PQI de Baixa Complexidade deverá ser realizado por qual estrutura operacional?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Pelo BBS - Batalhão de Busca e Salvamento, exclusivamente."
+      },
+      {
+        "letra": "B",
+        "texto": "Pelo Grupamento Especializado de Salvamento Vertical."
+      },
+      {
+        "letra": "C",
+        "texto": "Pelas guarnições de salvamento do serviço operacional (ABS) dos GBM, respeitando as suas respectivas áreas de atuação."
+      },
+      {
+        "letra": "D",
+        "texto": "Pela equipe específica de Salvamento Terrestre da capital."
+      },
+      {
+        "letra": "E",
+        "texto": "Pela contratada da Prefeitura mediante convênio."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme item 6.1 do material, o serviço de corte de árvore em regime emergencial caracterizado como PQI de Baixa Complexidade deverá ser realizado pelas guarnições de salvamento do serviço operacional (ABS) dos GBM, respeitando suas respectivas áreas de atuação."
+  },
+  {
+    "id": 35,
+    "nivel": "intermediario",
+    "enunciado": "Durante a avaliação de uma árvore, o bombeiro percebe a presença de podridão e questiona o munícipe que reside em frente ao vegetal. Quais informações são consideradas IMPORTANTES nesse questionamento, segundo o material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Apenas a espécie da árvore e seu valor comercial."
+      },
+      {
+        "letra": "B",
+        "texto": "Tempo de vida da árvore, espécie, se já foi ouvida ranger/rachar, posição atual diferente, presença de maus-tratos ou podas excessivas, e tempo sem folhas."
+      },
+      {
+        "letra": "C",
+        "texto": "Apenas o tempo aproximado de existência da árvore."
+      },
+      {
+        "letra": "D",
+        "texto": "A previsão meteorológica para os próximos 7 dias."
+      },
+      {
+        "letra": "E",
+        "texto": "Os custos prévios de manutenção da arborização."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, as perguntas importantes ao munícipe incluem: tempo de vida da árvore, espécie, se chegou a ouvir ranger/rachar, se a posição atual está diferente, se já presenciou maus-tratos/muitas podas e, se estiver sem folhas, há quanto tempo."
+  },
+  {
+    "id": 36,
+    "nivel": "intermediario",
+    "enunciado": "Durante a Fase 2 - Monitoramento de uma ocorrência em poço, a equipe deve realizar medições atmosféricas em três níveis. Quais são esses níveis?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Externo, intermediário e interno."
+      },
+      {
+        "letra": "B",
+        "texto": "Topo, meio e fundo."
+      },
+      {
+        "letra": "C",
+        "texto": "Norte, sul e central do poço."
+      },
+      {
+        "letra": "D",
+        "texto": "Borda, paredes e leito do poço."
+      },
+      {
+        "letra": "E",
+        "texto": "Antes da ventilação, durante e após a ventilação."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na Fase 2 - Monitoramento, devem ser realizadas medições em três níveis: Topo, Meio e Fundo do poço, observando os parâmetros aceitáveis (O₂: 19,5% a 23%, LEL: <10%, CO/H₂S abaixo do limite)."
+  },
+  {
+    "id": 37,
+    "nivel": "intermediario",
+    "enunciado": "Em uma ocorrência de salvamento em poço, durante a montagem do sistema de multiplicação de força, dois riscos críticos podem ocorrer simultaneamente. Quais são?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Risco elétrico e queda de raios."
+      },
+      {
+        "letra": "B",
+        "texto": "Sobrecarga de borda e atmosfera dinâmica (espaço confinado perturbado)."
+      },
+      {
+        "letra": "C",
+        "texto": "Hipotermia e desidratação da equipe."
+      },
+      {
+        "letra": "D",
+        "texto": "Desabamento estrutural e contaminação biológica."
+      },
+      {
+        "letra": "E",
+        "texto": "Falha de comunicação e queda de equipamentos."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, durante a montagem do sistema (3:1, 4:1) ocorrem simultaneamente concentração de equipe, aplicação de carga no solo e início da perturbação do ambiente, resultando na combinação de dois riscos críticos: Sobrecarga de borda e Atmosfera dinâmica (espaço confinado perturbado)."
+  },
+  {
+    "id": 38,
+    "nivel": "intermediario",
+    "enunciado": "Durante o Monitoramento (Fase 2) em uma ocorrência de salvamento em poço, qual o procedimento correto para ligar o detector multigás?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Diretamente sobre a boca do poço para calibração imediata."
+      },
+      {
+        "letra": "B",
+        "texto": "Em área ventilada e livre de possíveis gases tóxicos, longe da boca de visita."
+      },
+      {
+        "letra": "C",
+        "texto": "Após a entrada do resgateiro no poço."
+      },
+      {
+        "letra": "D",
+        "texto": "Apenas no fundo do poço, com auxílio do tripé."
+      },
+      {
+        "letra": "E",
+        "texto": "Sempre em ambiente fechado para isolar correntes de ar."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, o detector multigás deve ser ligado em área ventilada e livre de possíveis gases tóxicos, longe da boca de visita, garantindo a calibração correta antes de monitorar o perímetro próximo da borda do poço."
+  },
+  {
+    "id": 39,
+    "nivel": "intermediario",
+    "enunciado": "São apontadas pelo material como CAUSAS de sobrecarga de borda em ocorrências de salvamento em poço:",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Tripé subdimensionado, cordas curtas e nós inadequados."
+      },
+      {
+        "letra": "B",
+        "texto": "Concentração de bombeiros na boca de visita; solo instável (úmido, arenoso); poço não concretado; e não uso de proteção na borda."
+      },
+      {
+        "letra": "C",
+        "texto": "Apenas a presença de água acumulada nas paredes do poço."
+      },
+      {
+        "letra": "D",
+        "texto": "Erros na calibração do detector multigás."
+      },
+      {
+        "letra": "E",
+        "texto": "Excesso de iluminação intrinsecamente segura na boca do poço."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, as causas da sobrecarga de borda são: concentração de bombeiros na boca de visita, solo instável (úmido, arenoso), poço não concretado e não uso de proteção na borda."
+  },
+  {
+    "id": 40,
+    "nivel": "intermediario",
+    "enunciado": "Conforme o material, são considerados ERROS CRÍTICOS em uma operação de salvamento em poço:",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Realizar duas medições em pontos diferentes; instalar ventilação somente após acesso."
+      },
+      {
+        "letra": "B",
+        "texto": "Entrar sem monitorar gases; não usar EPRA; não usar linha de vida; improvisar ancoragem; ignorar ventilação; resgate impulsivo."
+      },
+      {
+        "letra": "C",
+        "texto": "Usar tripé original do fabricante; testar o sistema com carga real."
+      },
+      {
+        "letra": "D",
+        "texto": "Solicitar apoio adicional logo no início da operação."
+      },
+      {
+        "letra": "E",
+        "texto": "Realizar reanimação cardiopulmonar antes do içamento."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, os erros críticos são: entrar sem monitorar gases, não usar EPRA, não usar linha de vida, improvisar ancoragem, ignorar ventilação e resgate impulsivo (efeito vítima múltipla)."
+  },
+  {
+    "id": 41,
+    "nivel": "intermediario",
+    "enunciado": "Conforme o material, qual a posição correta para a montagem do sistema de multiplicação de força em uma operação de salvamento em poço?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Diretamente sobre a borda do poço, para garantir tração vertical perfeita."
+      },
+      {
+        "letra": "B",
+        "texto": "Fora da boca de visita, evitando sobrecarga de borda."
+      },
+      {
+        "letra": "C",
+        "texto": "Na própria borda interna, abaixo da linha do solo."
+      },
+      {
+        "letra": "D",
+        "texto": "No interior do poço, junto ao resgateiro."
+      },
+      {
+        "letra": "E",
+        "texto": "A no mínimo 50 metros de distância para isolamento."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na Fase 4 - Montagem do Sistema, deve-se montar o sistema de multiplicação de força fora da boca de visita, justamente para evitar sobrecarga de borda."
+  },
+  {
+    "id": 42,
+    "nivel": "intermediario",
+    "enunciado": "Durante uma ocorrência, um veículo está com fios energizados sobre o teto e há vítimas inconscientes ou feridas com risco de explosão. Qual a conduta operacional correta para essa SITUAÇÃO 4, conforme o material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Aproximar-se imediatamente para retirar as vítimas, sem EPI específico."
+      },
+      {
+        "letra": "B",
+        "texto": "Verificar a tensão presente, condições do solo (não úmido); abordar a 6 metros de distância usando luvas isolantes adequadas e bastão isolante de 6 metros; usar botas com isolamento."
+      },
+      {
+        "letra": "C",
+        "texto": "Solicitar apenas a presença da concessionária e aguardar à distância padrão de 10 metros."
+      },
+      {
+        "letra": "D",
+        "texto": "Cortar o fio com tesoura comum, isolando o veículo com placas de madeira."
+      },
+      {
+        "letra": "E",
+        "texto": "Despejar água sobre o veículo para dissipar a corrente."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na situação 4 deve-se: verificar a tensão presente e se o solo não está úmido; realizar a abordagem a 6 metros de distância do veículo; usar luvas adequadas ao isolamento da rede elétrica e bastão isolante de 6 metros para remoção do cabo elétrico, bem como botas com isolamento adequado."
+  },
+  {
+    "id": 43,
+    "nivel": "intermediario",
+    "enunciado": "Durante uma ocorrência de fios caídos sobre veículo em que o motorista CONSEGUE mover o veículo (Situação 1), qual a orientação correta a ser passada?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Sair imediatamente com os pés alinhados, evitando giroflexes."
+      },
+      {
+        "letra": "B",
+        "texto": "Não tocar nas partes metálicas e mover o veículo lentamente para longe do fio, evitando poças d'água."
+      },
+      {
+        "letra": "C",
+        "texto": "Permanecer no veículo e aguardar a chegada da concessionária."
+      },
+      {
+        "letra": "D",
+        "texto": "Mover o veículo em alta velocidade para fugir da zona de tensão de passo."
+      },
+      {
+        "letra": "E",
+        "texto": "Acelerar para dispersar a corrente residual sobre o solo."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na situação 1, o motorista deve ser orientado a não tocar nas partes metálicas e mover o veículo lentamente para longe do fio, evitando poças d'água."
+  },
+  {
+    "id": 44,
+    "nivel": "intermediario",
+    "enunciado": "Em uma ocorrência onde o veículo possui foco de incêndio que não pode ser extinto e há fios energizados sobre ele (Situação 2), qual a conduta a ser orientada às vítimas?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Permanecer no veículo até o término do fogo."
+      },
+      {
+        "letra": "B",
+        "texto": "Saltar do veículo com as duas mãos sobre as partes metálicas."
+      },
+      {
+        "letra": "C",
+        "texto": "Não tocar nas partes metálicas e saltar com os pés juntos, afastando-se mantendo os pés bem próximos por pelo menos 10 metros."
+      },
+      {
+        "letra": "D",
+        "texto": "Caminhar normalmente para longe do veículo, sem preocupação com o solo."
+      },
+      {
+        "letra": "E",
+        "texto": "Saltar do veículo lentamente, primeiro um pé, depois o outro."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, na situação 2 (foco de incêndio que não pode ser extinto), oriente a não tocar nas partes metálicas e que salte do veículo com os pés juntos e que se afaste mantendo os pés bem próximos por pelo menos 10 metros, prevenindo a tensão de passo."
+  },
+  {
+    "id": 45,
+    "nivel": "intermediario",
+    "enunciado": "Em uma ocorrência de corte de árvore (situação 6) em que a vegetação está em contato com a rede de distribuição, qual conduta NÃO deve ser adotada?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Garantir a desenergização da rede próxima."
+      },
+      {
+        "letra": "B",
+        "texto": "Não tocar na árvore se a rede energizada estiver em contato com galhos ou tronco."
+      },
+      {
+        "letra": "C",
+        "texto": "Redobrar os cuidados em caso de chuva."
+      },
+      {
+        "letra": "D",
+        "texto": "Aguardar a equipe da concessionária realizar a desenergização."
+      },
+      {
+        "letra": "E",
+        "texto": "Iniciar imediatamente o corte com motosserra mesmo com rede energizada em contato com a árvore."
+      }
+    ],
+    "gabarito": "E",
+    "justificativa": "Conforme o material, na situação 6 (corte de árvore com risco elétrico), os procedimentos são: garantir a desenergização da rede próxima; NÃO tocar na árvore se a rede energizada estiver em contato com galhos ou tronco; e redobrar os cuidados se estiver chovendo. Iniciar o corte com a rede energizada é proibido."
+  },
+  {
+    "id": 46,
+    "nivel": "intermediario",
+    "enunciado": "Conforme o material, qual o efeito físico que descreve a transformação de energia elétrica em térmica quando a corrente atravessa um condutor?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Efeito Faraday."
+      },
+      {
+        "letra": "B",
+        "texto": "Efeito Tesla."
+      },
+      {
+        "letra": "C",
+        "texto": "Efeito Joule."
+      },
+      {
+        "letra": "D",
+        "texto": "Efeito Edison."
+      },
+      {
+        "letra": "E",
+        "texto": "Efeito Hall."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, o Efeito Joule é a transformação de energia elétrica em térmica, quando corrente elétrica atravessa um condutor."
+  },
+  {
+    "id": 47,
+    "nivel": "intermediario",
+    "enunciado": "Conforme o material, sistemas fotovoltaicos apresentam um risco específico em ocorrências, mesmo após o desligamento do inversor. Qual é esse risco?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Liberação de hidrogênio gasoso pelos painéis."
+      },
+      {
+        "letra": "B",
+        "texto": "Mesmo após o desligamento do inversor, abaixo dos painéis altas tensões podem passar pelos condutores, com risco de arco elétrico e/ou incêndio."
+      },
+      {
+        "letra": "C",
+        "texto": "Os painéis acumulam carga residual por 7 dias."
+      },
+      {
+        "letra": "D",
+        "texto": "Apenas em horário noturno os painéis representam risco."
+      },
+      {
+        "letra": "E",
+        "texto": "A queda de raios é multiplicada quando os painéis estão presentes."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, mesmo após o desligamento do inversor, abaixo dos painéis fotovoltaicos altas tensões podem passar pelos condutores, com riscos de arco elétrico e/ou incêndio, podendo alcançar valores danosos à saúde humana."
+  },
+  {
+    "id": 48,
+    "nivel": "intermediario",
+    "enunciado": "Durante a aplicação da técnica de Escada Deslizante para descida de vítima, qual a angulação recomendada para a posição da escada?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Próximo de 45 graus."
+      },
+      {
+        "letra": "B",
+        "texto": "Próximo de 55 a 60 graus."
+      },
+      {
+        "letra": "C",
+        "texto": "Próximo de 70 a 75 graus."
+      },
+      {
+        "letra": "D",
+        "texto": "Próximo de 85 a 90 graus."
+      },
+      {
+        "letra": "E",
+        "texto": "Sempre 60 graus, independentemente da situação."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, na técnica de Escada Deslizante, a escada prolongável deverá ser arvorada em local seguro de maneira que fique inclinada com angulação que permita a descida da maca cesto/sked de forma segura, próximo de 70 a 75 graus."
+  },
+  {
+    "id": 49,
+    "nivel": "intermediario",
+    "enunciado": "No içamento de vítima pela técnica de Escada Deslizante, qual sistema de multiplicação de força é citado pelo material como utilizado para facilitar a subida?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Sistema 4 para 1 reduzido."
+      },
+      {
+        "letra": "B",
+        "texto": "Sistema 3 para 1 reduzido."
+      },
+      {
+        "letra": "C",
+        "texto": "Sistema 9 para 1 simples."
+      },
+      {
+        "letra": "D",
+        "texto": "Sistema 7 para 2 reduzido."
+      },
+      {
+        "letra": "E",
+        "texto": "Sistema 4 para 1 com vantagem dupla."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, no caso da subida da vítima pela escada deslizante, será utilizado o sistema de multiplicação de força 3 para 1 reduzido."
+  },
+  {
+    "id": 50,
+    "nivel": "intermediario",
+    "enunciado": "Sobre a amarração 'Diamante' empregada nos salvamentos com escadas prolongáveis, qual sua principal característica e finalidade?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "É uma técnica de amarração frouxa para vítimas com lesões medulares."
+      },
+      {
+        "letra": "B",
+        "texto": "É uma técnica de amarração usada em macas cesto para fixar a vítima de forma segura, considerada uma das mais seguras e confiáveis por criar estrutura estável."
+      },
+      {
+        "letra": "C",
+        "texto": "Aplicada apenas em descidas em rapel sem maca."
+      },
+      {
+        "letra": "D",
+        "texto": "Substitui o uso de cinto de salvamento."
+      },
+      {
+        "letra": "E",
+        "texto": "Utilizada apenas para fixar pranchas a edificações."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, a amarração 'Diamante' é uma técnica usada em macas cesto para fixar a vítima de forma segura. É considerada uma das mais seguras e confiáveis, pois cria uma estrutura estável e resistente, sendo comumente usada em resgates e operações de salvamento no plano vertical."
+  },
+  {
+    "id": 51,
+    "nivel": "intermediario",
+    "enunciado": "Em qual técnica de salvamento com escada a maca é fixada ao topo da escada colocada junto à edificação, sendo a escada tombada de modo que a maca vai se 'apoiando' sobre os banzos na horizontal?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Escada Deslizante."
+      },
+      {
+        "letra": "B",
+        "texto": "Mão Francesa."
+      },
+      {
+        "letra": "C",
+        "texto": "Escada Rebatida."
+      },
+      {
+        "letra": "D",
+        "texto": "Tirolesa transversal."
+      },
+      {
+        "letra": "E",
+        "texto": "Içamento Vertical Direto."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, a técnica de Escada Rebatida fixa a maca ao topo da escada colocada junto à edificação. À medida em que a escada é tombada, a maca vai se apoiando sobre os banzos da escada, na horizontal. Requer espaço suficiente para o rebatimento, livre de obstáculos."
+  },
+  {
+    "id": 52,
+    "nivel": "intermediario",
+    "enunciado": "No procedimento de descida da vítima pela técnica de Escada Deslizante, qual peça é instalada à corda de salvamento para efetuar a descida controlada (sistema debreado)?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Apenas mosquetão de aço."
+      },
+      {
+        "letra": "B",
+        "texto": "Polia simples conectada à placa de ancoragem."
+      },
+      {
+        "letra": "C",
+        "texto": "Descensor (ID, Maestro ou freio Oito), em seguida colocado em ponto de ancoragem."
+      },
+      {
+        "letra": "D",
+        "texto": "Bloqueador mecânico travável."
+      },
+      {
+        "letra": "E",
+        "texto": "Estrobo dinâmico em corda guia."
+      }
+    ],
+    "gabarito": "C",
+    "justificativa": "Conforme o material, na descida da vítima a corda de salvamento é instalada em um descensor (ID/Maestro/freio Oito) para efetuar a descida controlada (sistema debreado), em seguida coloca-se o sistema debreado em um ponto de ancoragem (humana, improvisada ou estrutural)."
+  },
+  {
+    "id": 53,
+    "nivel": "intermediario",
+    "enunciado": "Durante a abordagem técnica a um tentante classificado como AGRESSIVO, qual a conduta correta do abordador?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Encarar o tentante para impor autoridade."
+      },
+      {
+        "letra": "B",
+        "texto": "Falar menos, deixando-o desabafar; não encarar; posicionar-se no nível do tentante ou abaixo; falar mais baixo se houver gritos; não desafiar e não ceder a exigências; evitar 'não pode', 'não vai'."
+      },
+      {
+        "letra": "C",
+        "texto": "Subir o tom de voz para se impor."
+      },
+      {
+        "letra": "D",
+        "texto": "Confrontar diretamente as ideias do tentante."
+      },
+      {
+        "letra": "E",
+        "texto": "Forçar uma decisão rápida sob pressão."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na abordagem ao tentante agressivo deve-se: falar menos, deixando-o desabafar; não encarar o tentante; posicionar-se no nível do tentante ou abaixo; falar mais baixo se houver gritos; não desafiar nem ceder a exigências; evitar expressões como 'não pode', 'não vai'."
+  },
+  {
+    "id": 54,
+    "nivel": "intermediario",
+    "enunciado": "A técnica de diálogo 'Ponte', empregada na abordagem ao tentante, tem qual finalidade?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Mudar o tema da conversa abruptamente para temas neutros."
+      },
+      {
+        "letra": "B",
+        "texto": "Conduzir uma pergunta perigosa para um local seguro, como condicionar uma resposta à permanência da pessoa viva."
+      },
+      {
+        "letra": "C",
+        "texto": "Repetir a última frase do tentante para confundi-lo."
+      },
+      {
+        "letra": "D",
+        "texto": "Permitir que o tentante expresse fantasias suicidas detalhadamente."
+      },
+      {
+        "letra": "E",
+        "texto": "Forçar o tentante a tomar uma decisão imediata."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na Técnica da Ponte uma pergunta perigosa pode ser conduzida para um local seguro. Exemplo: 'Eu posso garantir que só se o senhor permanecer vivo nós podemos descobrir se... o sr. recuperará o seu emprego, ou se a sua mulher voltará para o senhor'."
+  },
+  {
+    "id": 55,
+    "nivel": "intermediario",
+    "enunciado": "Conforme o material da disciplina, em uma ocorrência consumada de suicídio, qual conduta deve ser observada pelo bombeiro militar?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Iniciar imediatamente manobras de RCP, mesmo se houver sinais inequívocos de morte."
+      },
+      {
+        "letra": "B",
+        "texto": "Realizar a preservação e isolamento do local, pois pode ter ocorrido crime; não tocar/remover o cadáver; não mexer em armas ou pertences; descobrir se houve induzimento, instigação ou auxílio ao suicídio."
+      },
+      {
+        "letra": "C",
+        "texto": "Remover o corpo e armas para preservar a família."
+      },
+      {
+        "letra": "D",
+        "texto": "Comunicar apenas o CIODES e abandonar o local."
+      },
+      {
+        "letra": "E",
+        "texto": "Realizar fotografias do corpo para documentação."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, no atendimento a ocorrências consumadas, deve-se realizar a preservação e isolamento (pode ter ocorrido CRIME), não tocar ou remover o cadáver, não mexer em armas ou remover pertences e descobrir se houve induzimento, instigação ou auxílio ao suicídio."
+  },
+  {
+    "id": 56,
+    "nivel": "intermediario",
+    "enunciado": "Sobre o ABORDADOR TÉCNICO em ocorrências de tentativa de suicídio, qual o seu principal objetivo, conforme o material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Convencer o tentante a desistir em até 5 minutos."
+      },
+      {
+        "letra": "B",
+        "texto": "Criar um vínculo de confiança com o tentante."
+      },
+      {
+        "letra": "C",
+        "texto": "Atuar exclusivamente como negociador de demandas materiais."
+      },
+      {
+        "letra": "D",
+        "texto": "Aplicar contenção mecânica logo na aproximação."
+      },
+      {
+        "letra": "E",
+        "texto": "Substituir a equipe médica em primeiros socorros psicológicos."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, o ABORDADOR é diferente do NEGOCIADOR, e um dos principais objetivos do Abordador é criar um VÍNCULO DE CONFIANÇA com o tentante."
+  },
+  {
+    "id": 57,
+    "nivel": "intermediario",
+    "enunciado": "Em uma ocorrência psiquiátrica, ao classificar o indivíduo como 'Hostil' segundo o material, quais sinais comportamentais são esperados?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Quebra de objetos, ameaças verbais constantes e gritos altos."
+      },
+      {
+        "letra": "B",
+        "texto": "Inquieto, tamborila os dedos, aperta uma mão contra a outra, morde os lábios, evita os olhos do socorrista, demonstra irritação, com risco alto de violência."
+      },
+      {
+        "letra": "C",
+        "texto": "Calmo, colaborativo e empático com a equipe."
+      },
+      {
+        "letra": "D",
+        "texto": "Possui algo em mãos para se defender ou atacar."
+      },
+      {
+        "letra": "E",
+        "texto": "Está em decúbito dorsal, totalmente alheio ao ambiente."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, o indivíduo Hostil apresenta-se inquieto, tamborila os dedos, aperta uma mão contra a outra, morde os lábios, não olha o socorrista ou evita seus olhos, tom de voz pode ser elevado ou lacônico, demonstra irritação e falta de empatia, com risco alto de violência."
+  },
+  {
+    "id": 58,
+    "nivel": "intermediario",
+    "enunciado": "Sobre a Resolução nº 427/2012 do Conselho Federal de Enfermagem, citada no material como referência legal, qual sua determinação principal sobre contenção mecânica?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Permite uso disciplinar e punitivo da contenção em qualquer paciente."
+      },
+      {
+        "letra": "B",
+        "texto": "A contenção mecânica será empregada quando for o único meio disponível para prevenir dano imediato ou iminente, sendo vedado seu uso para disciplina, punição ou conveniência da equipe."
+      },
+      {
+        "letra": "C",
+        "texto": "Determina que apenas médicos podem realizar contenção."
+      },
+      {
+        "letra": "D",
+        "texto": "Permite contenção prolongada além do necessário se o paciente for agressivo."
+      },
+      {
+        "letra": "E",
+        "texto": "Estabelece uso obrigatório de algemas em todos os casos."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, o Art. 2º da Resolução 427/2012 estabelece que a contenção mecânica será empregada quando for o único meio disponível para prevenir dano imediato ou iminente ao paciente ou aos demais. O Art. 3º veda o emprego com propósito de disciplina, punição, coerção ou conveniência da equipe."
+  },
+  {
+    "id": 59,
+    "nivel": "intermediario",
+    "enunciado": "Em situações de contenção com guarnição reduzida em ocorrência psiquiátrica, conforme o material, qual a estratégia recomendada?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Aguardar reforço por tempo indeterminado, sem qualquer ação."
+      },
+      {
+        "letra": "B",
+        "texto": "Começar pelos membros que oferecem maior risco aos militares e, se necessário, solicitar auxílio dos familiares, repassando ao familiar o que será feito e qual sua função."
+      },
+      {
+        "letra": "C",
+        "texto": "Realizar a contenção sem instruções aos familiares para evitar interferências."
+      },
+      {
+        "letra": "D",
+        "texto": "Apenas observar e monitorar o paciente até a chegada do reforço."
+      },
+      {
+        "letra": "E",
+        "texto": "Imobilizar primeiro a cabeça, sem estabilizar membros."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na contenção com guarnição reduzida deve-se começar pelos membros que oferecem maior risco aos militares. Se necessário, solicitar auxílio de familiares, sendo importante repassar ao familiar o que será feito e qual sua função."
+  },
+  {
+    "id": 60,
+    "nivel": "intermediario",
+    "enunciado": "Conforme o material, qual a postura correta do socorrista que NÃO foi designado como abordador/negociador em uma ocorrência com paciente em agitação psicomotora?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Participar da conversa para reforçar argumentos."
+      },
+      {
+        "letra": "B",
+        "texto": "Manter-se a certa distância, mas apto a interferir se o indivíduo se tornar agressivo/violento."
+      },
+      {
+        "letra": "C",
+        "texto": "Aplicar imediatamente a contenção mecânica."
+      },
+      {
+        "letra": "D",
+        "texto": "Sair de cena para evitar pressão sobre o paciente."
+      },
+      {
+        "letra": "E",
+        "texto": "Chamar familiares para participar do diálogo."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, a negociação DEVE SER BREVE e apenas o socorrista eleito como Abordador/negociador deve conduzir a conversa. Os outros socorristas devem manter-se a certa distância, mas aptos a interferir se o indivíduo se tornar agressivo/violento."
+  },
+  {
+    "id": 61,
+    "nivel": "intermediario",
+    "enunciado": "Conforme o material, são considerados FATORES CAUSADORES de suicídio:",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Apenas transtornos psiquiátricos primários."
+      },
+      {
+        "letra": "B",
+        "texto": "Modificação imprevista na vida (desemprego/dificuldades financeiras), mudança no contexto familiar ou relacional, sensação de isolamento/solidão e perturbações de humor."
+      },
+      {
+        "letra": "C",
+        "texto": "Apenas o uso de substâncias entorpecentes."
+      },
+      {
+        "letra": "D",
+        "texto": "Exclusivamente o histórico genético familiar."
+      },
+      {
+        "letra": "E",
+        "texto": "Apenas a ausência de fé religiosa."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, os fatores causadores incluem: modificação imprevista na vida (desemprego ou dificuldades financeiras), mudança no contexto familiar ou relacional (divórcio, fim de relacionamento, morte de familiar), sensação de isolamento/solidão e perturbações de humor (depressão, transtorno bipolar, esquizofrenia)."
+  },
+  {
+    "id": 62,
+    "nivel": "intermediario",
+    "enunciado": "Considere a seguinte situação operacional: a guarnição é acionada para corte de árvore que apresenta inclinação anormal sobre uma residência. Durante o reconhecimento, observa-se que a copa toca uma rede de média tensão (13,8 kV) energizada. Qual a conduta INICIAL correta?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Iniciar o corte com motosserra a bateria para reduzir o risco elétrico."
+      },
+      {
+        "letra": "B",
+        "texto": "Solicitar imediatamente a desenergização da rede pela CEA Equatorial e aguardar a confirmação antes de qualquer ação na árvore; não tocar na vegetação enquanto a rede estiver energizada."
+      },
+      {
+        "letra": "C",
+        "texto": "Cortar primeiro os galhos que tocam o fio com luvas de couro comuns."
+      },
+      {
+        "letra": "D",
+        "texto": "Aspergir água sobre a árvore para dispersar a corrente."
+      },
+      {
+        "letra": "E",
+        "texto": "Realizar abordagem direta a 5 metros, com bastão isolante de 3 metros."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material da disciplina (Eletricidade - Situação 6), em corte de árvore com risco elétrico deve-se garantir a desenergização da rede próxima (acionar a CEA Equatorial via 193/CIODES/COI), não tocar na árvore se a rede energizada estiver em contato com galhos ou tronco e redobrar os cuidados em caso de chuva."
+  },
+  {
+    "id": 63,
+    "nivel": "intermediario",
+    "enunciado": "Em ocorrência de salvamento em poço, durante a Fase 1 (Análise de Risco), o comandante deve OBSERVAR alguns aspectos antes de autorizar a intervenção. Quais são esses aspectos?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Apenas a profundidade do poço e a distância do hospital de referência."
+      },
+      {
+        "letra": "B",
+        "texto": "Isolar e sinalizar para evitar novas vítimas; identificar tipo e profundidade do poço; avaliar riscos atmosféricos, estabilidade estrutural, boca de visita, presença de líquidos/obstáculos; estabelecer zonas de segurança e palco de ferramentas."
+      },
+      {
+        "letra": "C",
+        "texto": "Apenas se há gases inflamáveis, dispensando avaliação estrutural."
+      },
+      {
+        "letra": "D",
+        "texto": "A previsão de horários de pico de tráfego para a remoção da vítima."
+      },
+      {
+        "letra": "E",
+        "texto": "Apenas o estado emocional dos familiares presentes."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na Fase 1 - Análise de Risco deve-se: isolar e sinalizar a área para evitar novas vítimas; identificar tipo e profundidade do poço; avaliar riscos atmosféricos (gases tóxicos, asfixiantes/explosivos), estabilidade estrutural, boca de visita e presença de líquidos/obstáculos; estabelecer zonas de segurança e palco de ferramentas. A entrada sem avaliação prévia é proibida."
+  },
+  {
+    "id": 64,
+    "nivel": "intermediario",
+    "enunciado": "Conforme apresentado no material, qual a sequência de fatores que afeta o risco letal do choque elétrico (1ª Lei de Ohm: I = V/R)?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Quanto MENOR a tensão e MAIOR a resistência, MAIOR a intensidade da corrente."
+      },
+      {
+        "letra": "B",
+        "texto": "Quanto MAIOR a tensão e MENOR a resistência, MAIOR a intensidade da corrente."
+      },
+      {
+        "letra": "C",
+        "texto": "A resistência do corpo humano é constante e igual a zero."
+      },
+      {
+        "letra": "D",
+        "texto": "Apenas a frequência da corrente influencia a intensidade."
+      },
+      {
+        "letra": "E",
+        "texto": "Tensão e corrente são grandezas independentes da resistência."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material e a 1ª Lei de Ohm (I = V/R), quanto MAIOR a tensão, MAIOR a intensidade da corrente; e quanto MENOR a resistência, MAIOR a intensidade da corrente. Por isso, em redes de média tensão (ex.: 13,8 kV em fase-terra equivale a aproximadamente 7.970V) o efeito sobre o corpo humano é potencialmente letal."
+  },
+  {
+    "id": 65,
+    "nivel": "intermediario",
+    "enunciado": "Em ocorrência envolvendo um arco elétrico em rede energizada, qual a magnitude aproximada da temperatura que pode ser alcançada, conforme o material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Até 1.000 °C."
+      },
+      {
+        "letra": "B",
+        "texto": "Até 5.000 °C."
+      },
+      {
+        "letra": "C",
+        "texto": "Até 10.000 °C."
+      },
+      {
+        "letra": "D",
+        "texto": "Até 20.000 °C."
+      },
+      {
+        "letra": "E",
+        "texto": "Até 100.000 °C."
+      }
+    ],
+    "gabarito": "D",
+    "justificativa": "Conforme o material, o arco elétrico caracteriza-se pelo fluxo de corrente elétrica entre dois pontos, rompendo a resistência do ar, podendo a temperatura alcançar 20.000 °C. As normas de referência são a NR-10 (BR) e NFPA 70-E 2005 (EUA)."
+  },
+  {
+    "id": 66,
+    "nivel": "avancado",
+    "enunciado": "Durante o corte de uma árvore, o operador da motosserra deve estar atento a fenômenos que ameacem sua segurança. Sobre o REBOTE (kickback) e os cuidados ao cortar troncos sob tensão, é INCORRETO afirmar:",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "No rebote, a motosserra é lançada repentinamente e sem controle sobre o operador."
+      },
+      {
+        "letra": "B",
+        "texto": "O uso de duas mãos durante a operação ativa o freio de inércia ou freio de punho em caso de rebote."
+      },
+      {
+        "letra": "C",
+        "texto": "Caso a motosserra não esteja em uso para corte, ela DEVE estar travada."
+      },
+      {
+        "letra": "D",
+        "texto": "É permitido operar a motosserra com uma única mão, desde que o operador esteja experiente."
+      },
+      {
+        "letra": "E",
+        "texto": "A falta de óleo lubrificante na corrente pode causar travamento e dano ao equipamento."
+      }
+    ],
+    "gabarito": "D",
+    "justificativa": "Conforme o material, é OBRIGATÓRIO usar as duas mãos na operação. Justamente porque, com as duas mãos em operação, o freio de inércia ou freio de punho é acionado parando a corrente e protegendo o operador em caso de rebote. Operar com uma só mão é uma prática insegura e não permitida pelo material."
+  },
+  {
+    "id": 67,
+    "nivel": "avancado",
+    "enunciado": "Conforme a Lei nº 4.771/1965 (alterada pela Lei nº 7.803/1989) e a legislação ambiental do município de Macapá citada no material, é correto afirmar:",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Qualquer cidadão pode podar e suprimir árvores em logradouros públicos sem autorização."
+      },
+      {
+        "letra": "B",
+        "texto": "É de exclusiva responsabilidade do Município (PMM) podar, cortar, derrubar, remover ou sacrificar árvores da arborização pública (Lei Complementar nº 010/98-PMM, Art. 79); a SEMAM autoriza podas e supressões; em emergências, o Corpo de Bombeiros e a Defesa Civil são órgãos competentes."
+      },
+      {
+        "letra": "C",
+        "texto": "A SEMAM tem competência exclusiva para todo e qualquer corte, inclusive emergencial."
+      },
+      {
+        "letra": "D",
+        "texto": "A multa por corte irregular é apenas de natureza educativa, sem responsabilidade criminal."
+      },
+      {
+        "letra": "E",
+        "texto": "O Corpo de Bombeiros não tem competência para realizar cortes emergenciais em vias urbanas."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, a Lei nº 948/98-PMM proíbe podar/suprimir árvores sem autorização da SEMAM, e a Lei Complementar nº 010/98-PMM (Art. 79) preconiza ser exclusiva responsabilidade do Município podar, cortar, derrubar e remover árvores da arborização pública. Porém, em emergências envolvendo riscos à vida, integridade física ou patrimônio, o Corpo de Bombeiros e a Defesa Civil são órgãos competentes na supressão arbórea."
+  },
+  {
+    "id": 68,
+    "nivel": "avancado",
+    "enunciado": "Considere a Fase 4 (Montagem do Sistema) em uma operação de salvamento em poço. Qual a sequência operacional CORRETA dos passos da montagem, segundo o material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Testar o sistema com carga, depois instalar o tripé, depois montar o sistema na borda do poço."
+      },
+      {
+        "letra": "B",
+        "texto": "Instalar tripé/ancoragem segura → promover ancoragem do tripé → montar sistema de multiplicação de força fora da boca de visita → não fazer sobrecarga de borda → configurar linha principal e linha de segurança (backup) → testar sistema com carga."
+      },
+      {
+        "letra": "C",
+        "texto": "Montar o sistema na borda → testar carga → instalar tripé → ancorar → ventilar."
+      },
+      {
+        "letra": "D",
+        "texto": "Iniciar a descida e somente depois montar o sistema de segurança."
+      },
+      {
+        "letra": "E",
+        "texto": "Configurar apenas a linha principal, dispensando linha de segurança backup."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, a sequência da Fase 4 é: 1) instalar tripé de forma adequada ou ponto de ancoragem seguro; 2) promover ancoragem do tripé; 3) montar sistema de multiplicação de força fora da boca de visita; 4) não fazer sobrecarga de borda; 5) configurar linha principal e linha de segurança (backup); 6) testar sistema com carga."
+  },
+  {
+    "id": 69,
+    "nivel": "avancado",
+    "enunciado": "Durante uma operação de salvamento em poço, ao acionar o sistema de multiplicação de força (4:1) para içar a vítima, o material informa que para um poço de 20 metros de profundidade, com vantagem mecânica 4x, a quantidade de corda necessária no bloco será de:",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "20 metros (igual à profundidade)."
+      },
+      {
+        "letra": "B",
+        "texto": "40 metros (profundidade × 2)."
+      },
+      {
+        "letra": "C",
+        "texto": "60 metros (profundidade × 3)."
+      },
+      {
+        "letra": "D",
+        "texto": "80 metros (profundidade × 4 = vantagem mecânica)."
+      },
+      {
+        "letra": "E",
+        "texto": "100 metros (profundidade × 5)."
+      }
+    ],
+    "gabarito": "D",
+    "justificativa": "Conforme o material, em poço de 20 metros com vantagem mecânica 4 (sistema 4:1), a quantidade de corda no bloco será de 80 metros (20 × 4 = 80). Adicionalmente, a corda do socorrista deve ter mais ou menos 5 metros a mais para puxar a vítima e realizar nós necessários para a ancoragem."
+  },
+  {
+    "id": 70,
+    "nivel": "avancado",
+    "enunciado": "Conforme o material, a NBR 11854/92 estabelece os requisitos para bastões isolantes (croquis) utilizados em redes energizadas de distribuição. Qual o nível de tensão para o qual esses bastões são qualificados, segundo o material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "13,8 kV."
+      },
+      {
+        "letra": "B",
+        "texto": "34,5 kV."
+      },
+      {
+        "letra": "C",
+        "texto": "69 kV."
+      },
+      {
+        "letra": "D",
+        "texto": "100 kV."
+      },
+      {
+        "letra": "E",
+        "texto": "230 kV."
+      }
+    ],
+    "gabarito": "D",
+    "justificativa": "Conforme o material, a NBR 11854/92 trata do bastão isolante para trabalho em redes energizadas de distribuição com qualificação de 100 kV."
+  },
+  {
+    "id": 71,
+    "nivel": "avancado",
+    "enunciado": "Em uma rede de distribuição de média tensão de 13,8 kV (tensão de linha), considere a tensão fase-terra (13,8/1,73 = 7.970 V) e uma resistência fixa do corpo humano de 1.000 Ω. Qual a intensidade aproximada da corrente que passaria pelo corpo, conforme cálculo apresentado no material? Qual sua implicação?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Aproximadamente 7,97 mA, sem efeitos perceptíveis."
+      },
+      {
+        "letra": "B",
+        "texto": "Aproximadamente 7,97 A, valor altamente letal, demonstrando que MT exige distância de segurança rigorosa e desenergização prévia."
+      },
+      {
+        "letra": "C",
+        "texto": "Aproximadamente 0,79 A, com efeitos apenas musculares."
+      },
+      {
+        "letra": "D",
+        "texto": "Aproximadamente 79 A, valor compatível com baixa tensão."
+      },
+      {
+        "letra": "E",
+        "texto": "0 A, pois o ar oferece resistência infinita."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o cálculo apresentado no material: 13,8 kV / 1,73 = 7.970 V (tensão fase-terra); 7.970 V / 1.000 Ω = 7,97 A. Esse valor é amplamente letal (a corrente que mata o coração humano é da ordem de 100 mA), reforçando a obrigatoriedade da desenergização prévia e do respeito à distância mínima de 10 metros em ocorrências envolvendo MT."
+  },
+  {
+    "id": 72,
+    "nivel": "avancado",
+    "enunciado": "Conforme classificação por classe de luvas isolantes apresentada no material, qual a tensão máxima de uso (corrente alternada) das luvas Classe 2 e qual a cor de etiqueta correspondente?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "7.500 V; cor branca."
+      },
+      {
+        "letra": "B",
+        "texto": "17.000 V; cor amarela."
+      },
+      {
+        "letra": "C",
+        "texto": "26.500 V; cor verde."
+      },
+      {
+        "letra": "D",
+        "texto": "36.000 V; cor laranja."
+      },
+      {
+        "letra": "E",
+        "texto": "1.000 V; cor vermelha."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme a tabela do material, as luvas isolantes Classe 2 possuem tensão de ensaio de 20.000 V e tensão máxima de uso de 17.000 V, com cor de etiqueta amarela. A Classe 0 (5.000/1.000 V) é vermelha; Classe 1 (10.000/7.500 V) branca; Classe 3 (30.000/26.500 V) verde; Classe 4 (40.000/36.000 V) laranja."
+  },
+  {
+    "id": 73,
+    "nivel": "avancado",
+    "enunciado": "Considere a aplicação da técnica Mão Francesa para descida de uma vítima imobilizada em maca cesto. Qual a sequência operacional CORRETA dos procedimentos preparatórios, conforme o material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Subir a vítima primeiro pela escada e depois fixar a corda à maca."
+      },
+      {
+        "letra": "B",
+        "texto": "Amarração nas alças da maca cesto (próximo aos pés e à cabeça da vítima) para descida horizontal; amarração na maca para guiar a descida; arvorar escada em local seguro com fixação de fita tubular no banzo (acima do degrau) em ambos os lados próximo ao topo; fixar croque com cabo da vida paralelo ao solo no degrau; nó oito/nove na corda de salvamento instalada na peça oito fixa à escada; conectar mosquetão da maca ao nó duplo oito."
+      },
+      {
+        "letra": "C",
+        "texto": "Apenas amarrar a maca à corda de salvamento, dispensando fitas tubulares."
+      },
+      {
+        "letra": "D",
+        "texto": "Realizar descida em queda livre, sem peça oito ou descensores."
+      },
+      {
+        "letra": "E",
+        "texto": "Substituir a fita tubular por mosquetão simples no topo da escada."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na execução da Mão Francesa devem ser seguidos os passos: amarração nas alças da maca cesto próximo aos pés e cabeça da vítima (descida horizontal); amarração para guia da descida; arvoramento da escada em local seguro com fixação de fita tubular no banzo acima do degrau em ambos os lados próximo ao topo; croque fixado com cabo da vida paralelo ao solo e preso ao degrau; nó oito/nove na corda de salvamento instalada na peça oito fixa à escada; conexão do mosquetão da maca ao nó duplo oito."
+  },
+  {
+    "id": 74,
+    "nivel": "avancado",
+    "enunciado": "Em ocorrência de tentativa de suicídio em ponte, o tentante apresenta-se classificado como PSICÓTICO, com alucinações e delírios. Qual a abordagem técnica recomendada pelo material e por que ela difere da abordagem aos demais perfis?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Abordagem rápida e firme, confrontando todos os delírios para resgatar o senso de realidade."
+      },
+      {
+        "letra": "B",
+        "texto": "Ainda não existe um consenso sobre a melhor abordagem; pode-se concordar com as alucinações ou delírios, mas se o tentante perceber a mentira, deve-se trocar o abordador; recomenda-se uso de socorristas conhecidos do tentante; abordagens mais demoradas; isso difere por se tratar de surto em decorrência de doenças, com perda da capacidade de reagir emocionalmente."
+      },
+      {
+        "letra": "C",
+        "texto": "Aplicar contenção mecânica imediata, mesmo à distância."
+      },
+      {
+        "letra": "D",
+        "texto": "Solicitar a presença obrigatória de psiquiatra antes de qualquer fala."
+      },
+      {
+        "letra": "E",
+        "texto": "Encerrar a comunicação verbal e sinalizar apenas com gestos."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, na abordagem aos psicóticos ainda não existe um consenso sobre a melhor abordagem; pode-se concordar com as alucinações ou delírios, mas se o tentante perceber a mentira, deve-se trocar o abordador. Recomenda-se utilizar socorristas conhecidos do tentante. São abordagens mais demoradas. Os psicóticos sofrem alucinações ou delírios, ideias confusas e perda da capacidade de reagir emocionalmente."
+  },
+  {
+    "id": 75,
+    "nivel": "avancado",
+    "enunciado": "São situações que justificam a TROCA DO ABORDADOR durante uma ocorrência de tentativa de suicídio, conforme o material:",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Apenas o cansaço físico do bombeiro."
+      },
+      {
+        "letra": "B",
+        "texto": "Exaustão do bombeiro; perda da confiança e vínculo; desfalecimento muscular; abordador homem e tentante mulher que sofreu violência sexual; situações diversas imprevistas."
+      },
+      {
+        "letra": "C",
+        "texto": "Apenas a necessidade de revezamento estatutário a cada 30 minutos."
+      },
+      {
+        "letra": "D",
+        "texto": "Quando o tentante solicitar diretamente a substituição."
+      },
+      {
+        "letra": "E",
+        "texto": "Apenas quando houver chegada de oficial superior."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, as situações que justificam a troca do abordador são: exaustão do bombeiro; perda da confiança e vínculo; desfalecimento muscular; situação em que o abordador é homem e o tentante é mulher que sofreu violência sexual; situações diversas imprevistas."
+  },
+  {
+    "id": 76,
+    "nivel": "avancado",
+    "enunciado": "A técnica de diálogo do 'OUTDOOR' aplicada ao tentante depressivo tem como característica reforçar o que é mais importante para o momento: a vida. Qual sentença abaixo melhor representa essa técnica, conforme o material?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "'Vamos conversar sobre outra coisa, esqueça seus problemas.'"
+      },
+      {
+        "letra": "B",
+        "texto": "'Se existe uma mensagem que eu quero enfatizar hoje é... a coisa mais importante para lembrarmos é que se o senhor sair vivo daqui hoje, poderá ter novas chances de recuperar seus bens.'"
+      },
+      {
+        "letra": "C",
+        "texto": "'Você está exagerando, sua situação não é tão grave.'"
+      },
+      {
+        "letra": "D",
+        "texto": "'Devo lhe alertar que sua família vai te culpar para sempre.'"
+      },
+      {
+        "letra": "E",
+        "texto": "'Eu posso garantir que tudo vai melhorar amanhã.'"
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, a Técnica do Outdoor reforça o que é mais importante para o momento: a vida. Frases como 'Se existe uma mensagem que eu quero enfatizar hoje é...', 'A coisa mais importante para lembrarmos é...', 'Deixe-me lembrar a você que...' são típicas dessa técnica."
+  },
+  {
+    "id": 77,
+    "nivel": "avancado",
+    "enunciado": "Em uma ocorrência psiquiátrica com paciente classificado como VIOLENTO, conforme o material, qual o conjunto de comportamentos esperados e a conduta operacional recomendada?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Comportamento calmo, com perguntas reflexivas; conduta de mero diálogo prolongado."
+      },
+      {
+        "letra": "B",
+        "texto": "Comportamento muito agitado e furioso, com algo nas mãos para se defender ou atacar, quebrando objetos, andando de um lado para outro, com intenção declarada de violência (risco altíssimo); na maior parte dos casos há necessidade de procedimentos de contenção (mecânica ou física), iniciando-se pelos membros que oferecem maior risco aos militares, com no mínimo 5 socorristas (protocolo SAMU)."
+      },
+      {
+        "letra": "C",
+        "texto": "Comportamento depressivo, com choro e tristeza; conduta de afago físico imediato."
+      },
+      {
+        "letra": "D",
+        "texto": "Comportamento hostil, com tamborilar de dedos; aplicar apenas algemas."
+      },
+      {
+        "letra": "E",
+        "texto": "Comportamento dissociativo, com olhar fixo; aguardar familiares conduzirem o paciente sem intervenção da guarnição."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Conforme o material, o paciente Violento apresenta-se muito agitado e furioso, tem algo nas mãos para se defender ou atacar, quebra objetos, anda de um lado para outro, declara intenção de violência, com risco altíssimo. Indivíduos agressivos/violentos não respondem à negociação de forma geral, sendo necessária contenção. Em guarnição reduzida deve-se iniciar pelos membros de maior risco; o protocolo SAMU exige no mínimo 5 socorristas; algemas e abraçadeiras devem ser EVITADAS."
+  },
+  {
+    "id": 78,
+    "nivel": "avancado",
+    "enunciado": "Em situação operacional integrada: a guarnição é acionada para vítima caída em poço de 12 metros após salto deliberado em tentativa de suicídio. A vítima está consciente, agitada, hostiliza a equipe verbalmente e recusa o resgate. O detector aponta atmosfera segura. Qual a conduta CORRETA, considerando as doutrinas integradas de Salvamento em Poço, Tentativa de Suicídio e Pacientes Psiquiátricos?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Realizar acesso imediato e contenção mecânica forçada da vítima dentro do poço, sem diálogo prévio."
+      },
+      {
+        "letra": "B",
+        "texto": "Manter a doutrina de salvamento em poço (análise de risco, monitoramento, ventilação se necessário, montagem do sistema fora da boca, EPRA para o resgateiro, linha de vida); designar um abordador técnico para criar vínculo de confiança com a vítima por meio do diálogo, empatia e escuta; jamais confrontar; só realizar acesso quando houver vínculo e consentimento ou risco vital iminente; estar preparado para eventual contenção no içamento, com no mínimo 5 socorristas se necessária."
+      },
+      {
+        "letra": "C",
+        "texto": "Solicitar à vítima que escale sozinha pelas paredes do poço, dispensando montagem do sistema."
+      },
+      {
+        "letra": "D",
+        "texto": "Abandonar a ocorrência se a vítima recusar o resgate, registrando como recusa formal."
+      },
+      {
+        "letra": "E",
+        "texto": "Aplicar contenção mecânica antes do diálogo, pois toda vítima de tentativa de suicídio é considerada incapaz."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "A conduta correta integra as três doutrinas: (1) Salvamento em Poço — manter as fases (Análise de Risco, Monitoramento, Ventilação, Montagem do Sistema fora da boca, Acesso com EPRA/cinto/linha de vida, Salvamento); (2) Tentativa de Suicídio — designar abordador técnico, criar vínculo de confiança, empregar diálogo humanizado (técnicas como Sucesso Anterior, Outdoor, Ponte, Paráfrase Resumida), nunca confrontar, jamais mentir/seduzir; (3) Pacientes Psiquiátricos — preparar contenção se necessária no içamento, com mínimo de 5 socorristas (SAMU), iniciando pelos membros de maior risco, sem algemas/abraçadeiras."
+  },
+  {
+    "id": 79,
+    "nivel": "avancado",
+    "enunciado": "Cenário operacional final: a guarnição é acionada simultaneamente para corte de árvore de grande porte sobre rede de média tensão (13,8 kV) energizada, com vítima inconsciente sob a copa, em via pública molhada por chuva intensa. Considere as doutrinas de Operações de Corte de Árvore, Eletricidade e Análise de Riscos. Qual a sequência operacional CORRETA?",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Iniciar imediatamente o corte da árvore com motosserra e remoção da vítima, simultaneamente."
+      },
+      {
+        "letra": "B",
+        "texto": "(1) Aplicar 3S (Scene/Situação/Segurança), isolar área e manter distância mínima de 10 m; (2) acionar imediatamente CEA Equatorial via 193/CIODES/COI para desenergizar a rede e bloquear religamento automático; (3) classificar a árvore como PQI/CE (potencial de queda iminente, alto risco, requer apoio especializado e força tarefa); (4) NÃO tocar em árvore com rede energizada em contato; (5) confirmar ausência de tensão (NR-10) antes de qualquer aproximação à vítima ou ao vegetal; (6) realizar, então, retirada da vítima e iniciar o atendimento pré-hospitalar; (7) executar corte da árvore com força tarefa, EPI adequado, cuidados especiais por umidade do ambiente."
+      },
+      {
+        "letra": "C",
+        "texto": "Solicitar apenas reforço da Polícia Militar para isolamento e aguardar 24h."
+      },
+      {
+        "letra": "D",
+        "texto": "Realizar abordagem direta da vítima a 6 metros do veículo com bastão isolante, sem desenergização prévia."
+      },
+      {
+        "letra": "E",
+        "texto": "Cortar a árvore primeiro pelo tronco, mesmo com a rede energizada, para acelerar o socorro."
+      }
+    ],
+    "gabarito": "B",
+    "justificativa": "Esta é uma síntese da doutrina integrada do CBMAP. Eletricidade: 3S, distância mínima de 10 m, acionar CEA Equatorial (193/CIODES/COI), seguir NR-10 (seccionar, impedir reenergização, constatar ausência de tensão, aterramento temporário, proteção, sinalização); jamais tocar em árvore com rede energizada em contato (Situação 6); cuidados redobrados em chuva. Corte de Árvore: classificação PQI/CE pela complexidade e risco elétrico; solicitar apoio adicional / força tarefa; uso integral de EPI específico. Análise de Risco: priorizar segurança da equipe e evitar vítimas secundárias. A vítima só pode ser abordada após confirmada ausência de tensão na cena. Esta sequência reflete fielmente o conjunto das instruções do material."
+  }
+]

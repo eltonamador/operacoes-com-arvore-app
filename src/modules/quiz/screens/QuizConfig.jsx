@@ -88,7 +88,7 @@ export default function QuizConfig({ studentData, onStart, onBack }) {
         <button className="btn btn-primary btn-lg" onClick={handleStart}>
           Começar
         </button>
-        <button className="btn btn-ghost" onClick={onBack}>
+        <button className="btn btn-ghost" style={{ marginTop: 8, width: '100%' }} onClick={onBack}>
           Voltar
         </button>
       </div>

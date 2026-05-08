@@ -62,6 +62,7 @@ export default function PinEntry({ onValidated }) {
           </button>
           <button
             className="btn btn-ghost"
+            style={{ marginTop: 8, width: '100%' }}
             onClick={() => { setStudent(null); setPin('') }}
           >
             Trocar PIN

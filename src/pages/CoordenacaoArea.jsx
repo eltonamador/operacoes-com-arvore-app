@@ -936,6 +936,9 @@ export default function CoordenacaoArea() {
         >
           Consolidação
         </button>
+        <Link to="/coordenacao/quiz" className="filter-btn" style={{ textDecoration: 'none' }}>
+          Quiz Teórico
+        </Link>
       </div>
 
       {aba === 'avaliacoes' && (

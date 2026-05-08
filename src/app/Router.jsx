@@ -12,6 +12,8 @@ import EscadasApp from '../modules/escadas/EscadasApp'
 import PocoApp from '../modules/pocos/PocoApp'
 import CircuitoApp from '../modules/circuito/CircuitoApp'
 import TeoricaApp from '../modules/teorica/TeoricaApp'
+import QuizApp from '../modules/quiz/QuizApp'
+import QuizDashboard from '../modules/quiz/screens/QuizDashboard'
 
 export default function Router() {
   return (
@@ -101,6 +103,26 @@ export default function Router() {
             element={
               <ProtectedRoute roles={['aluno']}>
                 <AlunoArea />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Quiz — Aluno + Admin */}
+          <Route
+            path="/aluno/quiz"
+            element={
+              <ProtectedRoute roles={['aluno']}>
+                <QuizApp />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Quiz Dashboard — Coordenacao + Admin */}
+          <Route
+            path="/coordenacao/quiz"
+            element={
+              <ProtectedRoute roles={['coordenacao']}>
+                <QuizDashboard />
               </ProtectedRoute>
             }
           />
