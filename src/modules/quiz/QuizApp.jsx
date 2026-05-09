@@ -27,8 +27,19 @@ export default function QuizApp() {
   }
 
   async function handleQuizFinished() {
-    const r = engine.results
-    if (!r) return
+    const answers = engine.answers
+    const total = engine.totalQuestions
+    const acertos = answers.filter(a => a.acertou).length
+
+    const r = {
+      totalQuestoes: total,
+      acertos,
+      erros: answers.filter(a => !a.acertou).length,
+      pontuacao: answers.reduce((sum, a) => sum + a.pontos, 0),
+      percentual: Math.round((acertos / total) * 10000) / 100,
+      tempoTotal: answers.reduce((sum, a) => sum + a.tempo_gasto, 0),
+      respostas: answers,
+    }
 
     try {
       await saveQuizAttempt({
