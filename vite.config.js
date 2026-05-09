@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/apple-touch-icon.png'],
       manifest: {
-        name: 'CBMAP CFSD-26',
-        short_name: 'CBMAP',
+        name: 'Portal-STER',
+        short_name: 'Portal-STER',
         description: 'Portal de Avaliações do CFSD-26 — CBMAP',
         theme_color: '#b41414',
         background_color: '#1a1a2e',
