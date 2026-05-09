@@ -70,11 +70,11 @@ export default function PinEntry({ onValidated }) {
     <div className="quiz-container">
       <div className="quiz-card">
         <h2 className="quiz-card-title">Quiz Teórico</h2>
-        <p className="quiz-card-subtitle">Salvamento Terrestre — CFSD-26</p>
+        <p className="quiz-card-subtitle">Desconfia</p>
 
         {step === 'id' && (
           <form onSubmit={handleIdSubmit}>
-            <label className="quiz-label">Nº de Ordem / ID</label>
+            <label className="quiz-label">Nº do Aluno</label>
             <input
               type="text"
               inputMode="numeric"
