@@ -1,6 +1,7 @@
 import { calcScore, SECTIONS } from '../data/penalties'
 import { useMemo, useState } from 'react'
 import studentsData from '../../shared/data/students.json'
+import { getVisualIndividual } from '../../../utils/statusNota'
 
 export default function Signature({ state, goTo, setVistoData }) {
   const [pinDigitado, setPinDigitado] = useState('')
@@ -12,7 +13,7 @@ export default function Signature({ state, goTo, setVistoData }) {
   const { studentData, checkedItems, observations, customError } = state
   const customDiscount = parseFloat(customError?.discount) || 0
   const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
-  const isPassing = finalScore >= 7.0
+  const { label: statusLabel, visual } = getVisualIndividual(finalScore)
 
   const students = studentsData?.students || []
 
@@ -137,11 +138,11 @@ export default function Signature({ state, goTo, setVistoData }) {
               <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 12 }}>
                 Resultado
               </div>
-              <div style={{ fontSize: 36, fontWeight: 900, color: isPassing ? '#8ddf63' : '#ff6b6b' }}>
+              <div style={{ fontSize: 36, fontWeight: 900, color: visual.note }}>
                 {finalScore.toFixed(2).replace('.', ',')}
               </div>
-              <div style={{ marginTop: 6, fontWeight: 700, color: isPassing ? '#8ddf63' : '#ff6b6b' }}>
-                {isPassing ? 'APROVADO' : 'REPROVADO'}
+              <div style={{ marginTop: 6, fontWeight: 700, color: visual.label, textTransform: 'uppercase' }}>
+                {statusLabel}
               </div>
               <div style={{ marginTop: 10, color: 'var(--text-secondary)' }}>
                 Total de descontos: {totalDiscount.toFixed(2).replace('.', ',')}

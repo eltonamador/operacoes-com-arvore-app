@@ -1,11 +1,13 @@
 import { SECTIONS, calcScore } from '../data/penalties'
+import { getVisualIndividual } from '../../../utils/statusNota'
 
 export default function Summary({ state, reset, goTo, saveEvaluation, savedEvaluations }) {
   const { studentData, checkedItems, criticalErrors, observations, vistoConfirmado, vistoNomeConfirmacao, vistoDataHora, declaracaoCiencia, customError } = state
   const customDiscount = parseFloat(customError?.discount) || 0
   const hasCustomError = customError?.description?.trim() !== '' && customDiscount > 0
   const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
-  const isPassing = finalScore >= 7.0 && !criticalErrors
+  const { label: statusLabel, visual } = getVisualIndividual(finalScore)
+  const isPositive = visual.icon === '✅'
 
   const penalizedItems = []
   for (const section of SECTIONS) {
@@ -34,7 +36,6 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
         penalidades: Number(totalDiscount.toFixed(2)),
         observacoes: observations || '',
         itens_avaliados: {
-          resultado: isPassing ? 'APROVADO' : 'REPROVADO',
           erros_criticos: criticalErrors,
           visto_confirmado: state.vistoConfirmado,
           visto_data_hora: state.vistoDataHora,
@@ -122,10 +123,8 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
         <div
           className="result-banner-wrap"
           style={{
-            background: isPassing
-              ? 'linear-gradient(135deg, #0a1a00 0%, #1a2a00 100%)'
-              : 'linear-gradient(135deg, #1a0000 0%, #2a0a0a 100%)',
-            border: `2px solid ${isPassing ? '#4CAF50' : 'var(--red)'}`,
+            background: visual.bgGradient,
+            border: `2px solid ${visual.border}`,
             borderRadius: 'var(--radius)',
             padding: '20px 28px',
             display: 'flex',
@@ -134,32 +133,33 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
             flexWrap: 'wrap',
           }}
         >
-          <div style={{ fontSize: 52 }}>{isPassing ? '✅' : '❌'}</div>
+          <div style={{ fontSize: 52 }}>{visual.icon}</div>
           <div style={{ flex: 1 }}>
             <div
               style={{
                 fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: 2,
-                color: isPassing ? '#88cc44' : 'var(--red-light)',
+                color: visual.accent,
                 textTransform: 'uppercase',
                 marginBottom: 4,
               }}
             >
-              Resultado Final
+              Desempenho
             </div>
             <div
               style={{
                 fontSize: 28,
                 fontWeight: 900,
-                color: isPassing ? '#aee86a' : '#ff6666',
+                color: visual.label,
                 lineHeight: 1,
+                textTransform: 'uppercase',
               }}
             >
-              {isPassing ? 'APROVADO' : 'REPROVADO'}
+              {statusLabel}
             </div>
             {criticalErrors && (
-              <div style={{ fontSize: 13, color: '#ff8888', marginTop: 6 }}>
+              <div style={{ fontSize: 13, color: '#ffbb44', marginTop: 6 }}>
                 ⚠ Erros Críticos identificados na Etapa 1
               </div>
             )}
@@ -172,9 +172,9 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
               style={{
                 fontSize: 56,
                 fontWeight: 900,
-                color: isPassing ? '#FFD700' : '#ff6b6b',
+                color: visual.note,
                 lineHeight: 1,
-                textShadow: isPassing ? '0 0 30px rgba(255,215,0,0.4)' : '0 0 30px rgba(204,0,0,0.4)',
+                textShadow: visual.noteGlow,
               }}
             >
               {finalScore.toFixed(2).replace('.', ',')}
@@ -337,7 +337,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation, savedEvalu
                     style={{
                       fontSize: 22,
                       fontWeight: 900,
-                      color: isPassing ? 'var(--gold)' : 'var(--red-light)',
+                      color: isPositive ? 'var(--gold)' : visual.note,
                     }}
                   >
                     {finalScore.toFixed(2).replace('.', ',')}

@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
 import * as XLSX from 'xlsx'
+import { getStatusNotaIndividual, STATUS_INDIVIDUAL, labelIndividual } from '../../../utils/statusNota'
+import StatusBadge from '../../../components/StatusBadge'
 
 export default function AdvancedReports({ savedEvaluations, goTo }) {
   const [selectedPelotao, setSelectedPelotao] = useState(null)
@@ -90,20 +92,23 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
   const stats = useMemo(() => {
     const data = filteredEvaluations
     const total = data.length
-    const approved = data.filter(e => e.isPassing).length
-    const failed = total - approved
+    const statusOf = (e) => getStatusNotaIndividual(Number(e.finalScore || 0))
+    const acima = data.filter(e => statusOf(e) === STATUS_INDIVIDUAL.ACIMA).length
+    const naMedia = data.filter(e => statusOf(e) === STATUS_INDIVIDUAL.NA).length
+    const abaixo = data.filter(e => statusOf(e) === STATUS_INDIVIDUAL.ABAIXO).length
     const average = total > 0 ? (data.reduce((sum, e) => sum + e.finalScore, 0) / total).toFixed(2) : '0.00'
     const maxScore = total > 0 ? Math.max(...data.map(e => e.finalScore)) : 0
     const minScore = total > 0 ? Math.min(...data.map(e => e.finalScore)) : 0
 
     return {
       total,
-      approved,
-      failed,
+      acima,
+      naMedia,
+      abaixo,
       average,
       maxScore: maxScore.toFixed(2),
       minScore: minScore.toFixed(2),
-      approvalRate: total > 0 ? ((approved / total) * 100).toFixed(1) : '0.0',
+      atOrAboveRate: total > 0 ? (((acima + naMedia) / total) * 100).toFixed(1) : '0.0',
     }
   }, [filteredEvaluations])
 
@@ -170,15 +175,19 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
             <div className="stat-value">{stats.total}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Aprovados</div>
-            <div className="stat-value" style={{ color: '#8ddf63' }}>{stats.approved}</div>
+            <div className="stat-label">Acima da Média</div>
+            <div className="stat-value" style={{ color: '#8ddf63' }}>{stats.acima}</div>
             <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
-              ({stats.approvalRate}% de aprovação)
+              ({stats.atOrAboveRate}% ≥ média)
             </div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Reprovados</div>
-            <div className="stat-value" style={{ color: '#ff6b6b' }}>{stats.failed}</div>
+            <div className="stat-label">Na Média</div>
+            <div className="stat-value" style={{ color: '#cfd8dc' }}>{stats.naMedia}</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label">Abaixo da Média</div>
+            <div className="stat-value" style={{ color: '#ffcc4d' }}>{stats.abaixo}</div>
           </div>
           <div className="stat-card">
             <div className="stat-label">Média Geral</div>
@@ -300,26 +309,13 @@ export default function AdvancedReports({ savedEvaluations, goTo }) {
                           ...tdStyle,
                           textAlign: 'right',
                           fontWeight: 700,
-                          color: item.isPassing ? '#8ddf63' : '#ff6b6b',
                           fontSize: 15,
                         }}
                       >
                         {item.finalScore.toFixed(2).replace('.', ',')}
                       </td>
                       <td style={tdStyle}>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            padding: '4px 10px',
-                            borderRadius: 999,
-                            fontSize: 12,
-                            fontWeight: 700,
-                            background: item.isPassing ? 'rgba(76, 175, 80, 0.15)' : 'rgba(204, 0, 0, 0.15)',
-                            color: item.isPassing ? '#8ddf63' : '#ff6b6b',
-                          }}
-                        >
-                          {item.isPassing ? '✓ APROVADO' : '✗ REPROVADO'}
-                        </span>
+                        <StatusBadge tipo="individual" nota={item.finalScore} />
                       </td>
                     </tr>
                   ))}
@@ -349,7 +345,7 @@ function getFieldValue(item, key) {
     case 'ordem': return item.studentData?.ordem || ''
     case 'pelotao': return item.studentData?.pelotao || ''
     case 'nota': return item.finalScore.toFixed(2).replace('.', ',')
-    case 'status': return item.isPassing ? 'APROVADO' : 'REPROVADO'
+    case 'status': return labelIndividual(getStatusNotaIndividual(Number(item.finalScore || 0)))
     default: return ''
   }
 }

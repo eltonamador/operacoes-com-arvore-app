@@ -1,4 +1,5 @@
 import { SECTIONS, calcScore } from '../data/penalties'
+import { getVisualIndividual } from '../../../utils/statusNota'
 
 /**
  * Tela de resumo — Prova Poço (avaliação em grupo).
@@ -17,7 +18,8 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
   const customDiscount = parseFloat(customError?.discount) || 0
   const hasCustomError = customError?.description?.trim() !== '' && customDiscount > 0
   const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount, itemQuantities)
-  const isPassing = finalScore >= 7.0
+  const { label: statusLabel, visual } = getVisualIndividual(finalScore)
+  const isPositive = visual.icon === '✅'
 
   const penalizedItems = []
   for (const section of SECTIONS) {
@@ -38,7 +40,6 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
   async function handleSaveEvaluation() {
     try {
       const itensAvaliados = {
-        resultado: isPassing ? 'APROVADO' : 'REPROVADO',
         grupo_num: groupData.grupoNum,
         grupo_pelotao: groupData.pelotao,
         avaliacao_em_grupo: true,
@@ -120,28 +121,26 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
         <div
           className="result-banner-wrap"
           style={{
-            background: isPassing
-              ? 'linear-gradient(135deg, #0a1a00 0%, #1a2a00 100%)'
-              : 'linear-gradient(135deg, #1a0000 0%, #2a0a0a 100%)',
-            border: `2px solid ${isPassing ? '#4CAF50' : 'var(--red)'}`,
+            background: visual.bgGradient,
+            border: `2px solid ${visual.border}`,
             borderRadius: 'var(--radius)', padding: '20px 28px',
             display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap',
           }}
         >
-          <div style={{ fontSize: 52 }}>{isPassing ? '✅' : '❌'}</div>
+          <div style={{ fontSize: 52 }}>{visual.icon}</div>
           <div style={{ flex: 1 }}>
             <div style={{
               fontSize: 11, fontWeight: 700, letterSpacing: 2,
-              color: isPassing ? '#88cc44' : 'var(--red-light)',
+              color: visual.accent,
               textTransform: 'uppercase', marginBottom: 4,
             }}>
-              Resultado Final do Grupo
+              Desempenho do Grupo
             </div>
             <div style={{
               fontSize: 28, fontWeight: 900,
-              color: isPassing ? '#aee86a' : '#ff6666', lineHeight: 1,
+              color: visual.label, lineHeight: 1, textTransform: 'uppercase',
             }}>
-              {isPassing ? 'APROVADO' : 'REPROVADO'}
+              {statusLabel}
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
@@ -150,9 +149,9 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
             </div>
             <div style={{
               fontSize: 56, fontWeight: 900,
-              color: isPassing ? '#FFD700' : '#ff6b6b',
+              color: visual.note,
               lineHeight: 1,
-              textShadow: isPassing ? '0 0 30px rgba(255,215,0,0.4)' : '0 0 30px rgba(204,0,0,0.4)',
+              textShadow: visual.noteGlow,
             }}>
               {finalScore.toFixed(2).replace('.', ',')}
             </div>
@@ -303,7 +302,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
                 ))}
                 <div style={{ borderTop: '1px solid #2a2a2a', paddingTop: 8, display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)' }}>NOTA FINAL</span>
-                  <span style={{ fontSize: 22, fontWeight: 900, color: isPassing ? 'var(--gold)' : 'var(--red-light)' }}>
+                  <span style={{ fontSize: 22, fontWeight: 900, color: isPositive ? 'var(--gold)' : visual.note }}>
                     {finalScore.toFixed(2).replace('.', ',')}
                   </span>
                 </div>

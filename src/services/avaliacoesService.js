@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase'
 import { getStudentByOrdem } from '../modules/shared/utils/studentResolver'
+import { getStatusNotaIndividual, MEDIA } from '../utils/statusNota'
 
 /**
  * Transforma uma linha do banco de dados no formato de objeto UI.
@@ -34,7 +35,10 @@ export function mapDbToUi(row) {
     declaracaoCiencia: row.itens_avaliados?.declaracao_ciencia || false,
     totalDiscount: Number(row.penalidades || 0),
     finalScore: Number(row.nota_final || 0),
-    isPassing: row.itens_avaliados?.resultado === 'APROVADO',
+    // Status individual: derivado dinamicamente da nota (não mais do texto 'APROVADO' legacy).
+    statusIndividual: getStatusNotaIndividual(Number(row.nota_final || 0)),
+    // Mantido apenas para compat retroativa: "está na média ou acima" — não é mais "aprovado".
+    isPassing: Number(row.nota_final || 0) >= MEDIA,
     raw: row,
   }
 }

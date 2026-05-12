@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom'
 import { fetchAvaliacoesByModulo } from '../services/avaliacoesService'
 import { fetchConsolidacaoTodos } from '../services/consolidacaoService'
 import PortalLayout from '../components/PortalLayout'
+import {
+  getStatusNotaIndividual,
+  STATUS_INDIVIDUAL,
+  labelIndividual,
+} from '../utils/statusNota'
+import StatusBadge from '../components/StatusBadge'
 
 // ═══════════════════════════════════════════════
 //  CONSTANTS
@@ -28,15 +34,16 @@ const MODULE_OPTIONS = [
 ]
 
 const RESULTADO_OPTIONS = [
-  { value: 'all', label: 'Todos os resultados' },
-  { value: 'aprovado', label: 'Aprovado' },
-  { value: 'reprovado', label: 'Reprovado' },
+  { value: 'all', label: 'Todos os desempenhos' },
+  { value: 'acima', label: 'Acima da média' },
+  { value: 'na', label: 'Na média' },
+  { value: 'abaixo', label: 'Abaixo da média' },
 ]
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'Todos os status' },
-  { value: 'apto', label: 'Apto' },
-  { value: 'naoapto', label: 'Não Apto' },
+  { value: 'apto', label: 'Na/Acima da Média Final' },
+  { value: 'naoapto', label: 'Verificação Final' },
   { value: 'progresso', label: 'Em Progresso' },
 ]
 
@@ -61,6 +68,57 @@ function avg(arr) {
 // ═══════════════════════════════════════════════
 //  CHART PRIMITIVES
 // ═══════════════════════════════════════════════
+
+function DonutChart3({ acima, naMedia, abaixo, size = 140 }) {
+  const total = acima + naMedia + abaixo
+  if (total === 0) return <div style={{ width: size, height: size }} className="chart-empty-ring" />
+
+  const r = size / 2 - 12
+  const cx = size / 2
+  const cy = size / 2
+  const circ = 2 * Math.PI * r
+  const acArc = (acima / total) * circ
+  const naArc = (naMedia / total) * circ
+  const abArc = (abaixo / total) * circ
+  const offsetNa = circ / 4 - acArc
+  const offsetAb = circ / 4 - acArc - naArc
+  const acimaPct = total > 0 ? (acima + naMedia) / total : 0
+
+  return (
+    <svg width={size} height={size} style={{ flexShrink: 0 }}>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--border)" strokeWidth={18} />
+      {abArc > 0 && (
+        <circle cx={cx} cy={cy} r={r} fill="none"
+          stroke="#E0A800" strokeWidth={18} strokeOpacity={0.85}
+          strokeDasharray={`${abArc} ${circ - abArc}`}
+          strokeDashoffset={offsetAb}
+          transform={`rotate(-90 ${cx} ${cy})`} />
+      )}
+      {naArc > 0 && (
+        <circle cx={cx} cy={cy} r={r} fill="none"
+          stroke="#7890a8" strokeWidth={18}
+          strokeDasharray={`${naArc} ${circ - naArc}`}
+          strokeDashoffset={offsetNa}
+          transform={`rotate(-90 ${cx} ${cy})`} />
+      )}
+      {acArc > 0 && (
+        <circle cx={cx} cy={cy} r={r} fill="none"
+          stroke="var(--success)" strokeWidth={18}
+          strokeDasharray={`${acArc} ${circ - acArc}`}
+          strokeDashoffset={circ / 4}
+          transform={`rotate(-90 ${cx} ${cy})`} />
+      )}
+      <text x={cx} y={cy - 7} textAnchor="middle" dominantBaseline="middle"
+        fontSize={20} fontWeight={900} fill="var(--text-primary)">
+        {`${Math.round(acimaPct * 100)}%`}
+      </text>
+      <text x={cx} y={cy + 14} textAnchor="middle" dominantBaseline="middle"
+        fontSize={9} fontWeight={600} fill="var(--text-muted)" letterSpacing={0.4}>
+        ≥ MÉDIA
+      </text>
+    </svg>
+  )
+}
 
 function DonutChart({ pass, fail, size = 140 }) {
   const total = pass + fail
@@ -100,7 +158,7 @@ function DonutChart({ pass, fail, size = 140 }) {
       </text>
       <text x={cx} y={cy + 14} textAnchor="middle" dominantBaseline="middle"
         fontSize={10} fontWeight={600} fill="var(--text-muted)" letterSpacing={0.5}>
-        APROVAÇÃO
+        APTIDÃO
       </text>
     </svg>
   )
@@ -238,8 +296,10 @@ function ChartSection({ title, children, defaultOpen = true }) {
 // ═══════════════════════════════════════════════
 
 function AvaliacoesCharts({ visiveis }) {
-  const pass = visiveis.filter((a) => a.isPassing).length
-  const fail = visiveis.filter((a) => !a.isPassing).length
+  const statusOf = (a) => getStatusNotaIndividual(Number(a.finalScore || 0))
+  const acima = visiveis.filter((a) => statusOf(a) === STATUS_INDIVIDUAL.ACIMA).length
+  const naMedia = visiveis.filter((a) => statusOf(a) === STATUS_INDIVIDUAL.NA).length
+  const abaixo = visiveis.filter((a) => statusOf(a) === STATUS_INDIVIDUAL.ABAIXO).length
   const total = visiveis.length
 
   const mediaGeral = useMemo(() => {
@@ -251,7 +311,10 @@ function AvaliacoesCharts({ visiveis }) {
     return MODULE_ORDER.map((mid) => {
       const avs = visiveis.filter((a) => a.moduleId === mid)
       if (avs.length === 0) return null
-      const p = avs.filter((a) => a.isPassing).length
+      const p = avs.filter((a) => {
+        const s = statusOf(a)
+        return s === STATUS_INDIVIDUAL.ACIMA || s === STATUS_INDIVIDUAL.NA
+      }).length
       const pct = Math.round((p / avs.length) * 100)
       const mediaM = avg(avs.map((a) => a.finalScore).filter((n) => typeof n === 'number'))
       return { label: MODULE_LABELS[mid], total: avs.length, pass: p, pct, media: mediaM }
@@ -264,34 +327,40 @@ function AvaliacoesCharts({ visiveis }) {
     <ChartSection title="Painel Gerencial — Avaliações">
       <div className="kpi-grid">
         <KpiCard label="Total" value={total} accent="var(--gold)" />
-        <KpiCard label="Aprovados" value={pass}
-          sub={`${total > 0 ? Math.round((pass / total) * 100) : 0}%`} accent="var(--success)" />
-        <KpiCard label="Reprovados" value={fail}
-          sub={`${total > 0 ? Math.round((fail / total) * 100) : 0}%`} accent="var(--danger)" />
+        <KpiCard label="Acima da Média" value={acima}
+          sub={`${total > 0 ? Math.round((acima / total) * 100) : 0}%`} accent="var(--success)" />
+        <KpiCard label="Na Média" value={naMedia}
+          sub={`${total > 0 ? Math.round((naMedia / total) * 100) : 0}%`} accent="#7890a8" />
+        <KpiCard label="Abaixo da Média" value={abaixo}
+          sub={`${total > 0 ? Math.round((abaixo / total) * 100) : 0}%`} accent="#E0A800" />
         <KpiCard label="Média Geral"
           value={mediaGeral !== null ? mediaGeral.toFixed(2) : '—'} accent="var(--gold)" />
       </div>
 
       <div className="chart-row-2col">
         <div className="chart-card">
-          <p className="chart-card-title">Aprovação Geral</p>
+          <p className="chart-card-title">Desempenho Geral</p>
           <div className="donut-wrapper">
-            <DonutChart pass={pass} fail={fail} size={150} />
+            <DonutChart3 acima={acima} naMedia={naMedia} abaixo={abaixo} size={150} />
             <div className="donut-legend">
               <div className="donut-legend-item">
                 <span className="donut-dot" style={{ background: 'var(--success)' }} />
-                <span>Aprovados <strong>{pass}</strong></span>
+                <span>Acima da média <strong>{acima}</strong></span>
               </div>
               <div className="donut-legend-item">
-                <span className="donut-dot" style={{ background: 'var(--danger)', opacity: 0.75 }} />
-                <span>Reprovados <strong>{fail}</strong></span>
+                <span className="donut-dot" style={{ background: '#7890a8' }} />
+                <span>Na média <strong>{naMedia}</strong></span>
+              </div>
+              <div className="donut-legend-item">
+                <span className="donut-dot" style={{ background: '#E0A800', opacity: 0.85 }} />
+                <span>Abaixo da média <strong>{abaixo}</strong></span>
               </div>
             </div>
           </div>
         </div>
 
         <div className="chart-card chart-card--grow">
-          <p className="chart-card-title">Aprovação por Módulo</p>
+          <p className="chart-card-title">≥ Média por Módulo</p>
           <HBarChart
             items={porModulo.map((m) => ({
               label: m.label,
@@ -386,10 +455,10 @@ function ConsolidacaoCharts({ visiveis }) {
     <ChartSection title="Painel Gerencial — Consolidação">
       <div className="kpi-grid">
         <KpiCard label="Total" value={total} accent="var(--gold)" />
-        <KpiCard label="Aptos" value={aptos}
+        <KpiCard label="≥ Média Final" value={aptos}
           sub={`${total > 0 ? Math.round((aptos / total) * 100) : 0}%`} accent="var(--success)" />
-        <KpiCard label="Não Aptos" value={naoAptos}
-          sub={`${total > 0 ? Math.round((naoAptos / total) * 100) : 0}%`} accent="var(--danger)" />
+        <KpiCard label="Verificação Final" value={naoAptos}
+          sub={`${total > 0 ? Math.round((naoAptos / total) * 100) : 0}%`} accent="#E55A1E" />
         <KpiCard label="Em Progresso" value={emProgresso} accent="#5b7fff" />
         <KpiCard label="Média Final"
           value={mediaGeral !== null ? mediaGeral.toFixed(2) : '—'} accent="var(--gold)" />
@@ -472,8 +541,10 @@ function AvaliacoesTab({ avaliacoes, loading, error }) {
       if (filtroModulo !== 'all' && av.moduleId !== filtroModulo) return false
       if (filtroPelotao !== 'all' && av.studentData.pelotao !== filtroPelotao) return false
       if (filtroResultado !== 'all') {
-        if (filtroResultado === 'aprovado' && !av.isPassing) return false
-        if (filtroResultado === 'reprovado' && av.isPassing) return false
+        const s = getStatusNotaIndividual(Number(av.finalScore || 0))
+        if (filtroResultado === 'acima' && s !== STATUS_INDIVIDUAL.ACIMA) return false
+        if (filtroResultado === 'na' && s !== STATUS_INDIVIDUAL.NA) return false
+        if (filtroResultado === 'abaixo' && s !== STATUS_INDIVIDUAL.ABAIXO) return false
       }
       if (filtroBusca.trim()) {
         const q = normalize(filtroBusca)
@@ -588,9 +659,7 @@ function AvaliacoesTab({ avaliacoes, loading, error }) {
                         {typeof av.finalScore === 'number' ? av.finalScore.toFixed(2) : '—'}
                       </td>
                       <td className="center">
-                        <span className={av.isPassing ? 'badge-pass' : 'badge-fail'}>
-                          {av.isPassing ? 'APROVADO' : 'REPROVADO'}
-                        </span>
+                        <StatusBadge tipo="individual" nota={av.finalScore} />
                       </td>
                       <td>{MODULE_LABELS[av.moduleId] || av.moduleId || '—'}</td>
                     </tr>
@@ -718,7 +787,7 @@ function ConsolidacaoTab({ consolidacoes, loading, error }) {
                   {visiveis.map((aluno) => {
                     const { vc1, vc2, vc3, mediaFinal, apto } = aluno.consolidacao
                     const badgeClass = apto === true ? 'badge-pass' : apto === false ? 'badge-fail' : 'badge-neutral'
-                    const badgeText = apto === true ? 'APTO' : apto === false ? 'NÃO APTO' : 'EM PROGRESSO'
+                    const badgeText = apto === true ? '≥ MÉDIA FINAL' : apto === false ? 'VERIFICAÇÃO FINAL' : 'EM PROGRESSO'
 
                     const fmtMod = (modId, modName) => {
                       const score = aluno.modulos?.[modId]?.finalScore

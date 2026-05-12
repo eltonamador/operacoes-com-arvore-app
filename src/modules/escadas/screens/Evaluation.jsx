@@ -1,11 +1,13 @@
 import { SECTIONS, calcScore } from '../data/penalties'
+import { getVisualIndividual } from '../../../utils/statusNota'
 
 export default function Evaluation({ state, toggleItem, setObservations, setCustomError, goTo }) {
   const { checkedItems, observations, customError } = state
 
   const customDiscount = parseFloat(customError.discount) || 0
   const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount)
-  const isPassing = finalScore >= 7.0
+  const { label: statusLabel, visual } = getVisualIndividual(finalScore)
+  const isPositive = visual.icon === '✅'
 
   function formatDiscount(val) {
     return `–${val.toFixed(2).replace('.', ',')}`
@@ -118,16 +120,17 @@ export default function Evaluation({ state, toggleItem, setObservations, setCust
               </div>
               <div className="score-row final" style={{ flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <span className="score-final-label">Nota Final</span>
-                <span className={`score-final-value ${isPassing ? 'passing' : 'failing'}`}>
+                <span className={`score-final-value ${isPositive ? 'passing' : 'failing'}`}>
                   {finalScore.toFixed(2).replace('.', ',')}
                 </span>
                 <span style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: isPassing ? 'var(--gold)' : 'var(--red-light)',
+                  color: visual.label,
                   letterSpacing: 1,
+                  textTransform: 'uppercase',
                 }}>
-                  {isPassing ? '✓ APROVADO' : '✗ REPROVADO'}
+                  {statusLabel}
                 </span>
               </div>
             </div>

@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react'
 import * as XLSX from 'xlsx'
+import { getStatusNotaIndividual, STATUS_INDIVIDUAL, labelIndividual } from '../../../utils/statusNota'
+import StatusBadge from '../../../components/StatusBadge'
 
 const TZ = 'America/Sao_Paulo'
 
@@ -100,33 +102,37 @@ export default function AdvancedReports({
   // Estatísticas
   const stats = useMemo(() => {
     const total = filteredEvaluations.length
-    const approved = filteredEvaluations.filter(item => item.isPassing).length
-    const failed = total - approved
+    const statusOf = (item) => getStatusNotaIndividual(Number(item.finalScore || 0))
+    const acima = filteredEvaluations.filter(item => statusOf(item) === STATUS_INDIVIDUAL.ACIMA).length
+    const naMedia = filteredEvaluations.filter(item => statusOf(item) === STATUS_INDIVIDUAL.NA).length
+    const abaixo = filteredEvaluations.filter(item => statusOf(item) === STATUS_INDIVIDUAL.ABAIXO).length
+    const atOrAbove = acima + naMedia
     const average = total > 0
       ? (filteredEvaluations.reduce((sum, item) => sum + Number(item.finalScore || 0), 0) / total).toFixed(2)
       : '0.00'
-    
-    // Ranking por pelotão
+
+    // Ranking por pelotão (% que ficou na média ou acima)
     const pelotaoStats = {}
     filteredEvaluations.forEach(item => {
       const pelotao = item.studentData?.pelotao || 'Sem Pelotão'
       if (!pelotaoStats[pelotao]) {
-        pelotaoStats[pelotao] = { total: 0, approved: 0, sum: 0 }
+        pelotaoStats[pelotao] = { total: 0, atOrAbove: 0, sum: 0 }
       }
       pelotaoStats[pelotao].total++
-      if (item.isPassing) pelotaoStats[pelotao].approved++
+      const s = statusOf(item)
+      if (s === STATUS_INDIVIDUAL.ACIMA || s === STATUS_INDIVIDUAL.NA) pelotaoStats[pelotao].atOrAbove++
       pelotaoStats[pelotao].sum += Number(item.finalScore || 0)
     })
 
     const pelotaoRanking = Object.entries(pelotaoStats).map(([pelotao, data]) => ({
       pelotao,
       total: data.total,
-      approved: data.approved,
-      approvalRate: data.total > 0 ? ((data.approved / data.total) * 100).toFixed(1) : '0.0',
+      atOrAbove: data.atOrAbove,
+      atOrAboveRate: data.total > 0 ? ((data.atOrAbove / data.total) * 100).toFixed(1) : '0.0',
       average: data.total > 0 ? (data.sum / data.total).toFixed(2) : '0.00',
-    })).sort((a, b) => b.approvalRate - a.approvalRate)
+    })).sort((a, b) => b.atOrAboveRate - a.atOrAboveRate)
 
-    return { total, approved, failed, average, pelotaoRanking }
+    return { total, acima, naMedia, abaixo, atOrAbove, average, pelotaoRanking }
   }, [filteredEvaluations])
 
   // Datas únicas
@@ -157,7 +163,7 @@ export default function AdvancedReports({
       if (exportColumns.data) row.push(formatDate(item.studentData?.data))
       if (exportColumns.avaliador) row.push(item.studentData?.avaliador || '—')
       if (exportColumns.finalScore) row.push(Number(item.finalScore || 0).toFixed(2).replace('.', ','))
-      if (exportColumns.isPassing) row.push(item.isPassing ? 'APROVADO' : 'REPROVADO')
+      if (exportColumns.isPassing) row.push(labelIndividual(getStatusNotaIndividual(Number(item.finalScore || 0))))
       if (exportColumns.savedAt) row.push(formatDateTime(item.savedAt))
       return row
     })
@@ -187,7 +193,7 @@ export default function AdvancedReports({
       Data: formatDate(item.studentData?.data),
       Avaliador: item.studentData?.avaliador || '—',
       Nota: Number(item.finalScore || 0).toFixed(2).replace('.', ','),
-      Resultado: item.isPassing ? 'APROVADO' : 'REPROVADO',
+      Resultado: labelIndividual(getStatusNotaIndividual(Number(item.finalScore || 0))),
       'Salvo em': formatDateTime(item.savedAt),
     }))
 
@@ -395,21 +401,25 @@ export default function AdvancedReports({
             <div className="stat-value">{stats.total}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Aprovados</div>
-            <div className="stat-value" style={{ color: '#8ddf63' }}>{stats.approved}</div>
+            <div className="stat-label">Acima da Média</div>
+            <div className="stat-value" style={{ color: '#8ddf63' }}>{stats.acima}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Reprovados</div>
-            <div className="stat-value" style={{ color: '#ff6b6b' }}>{stats.failed}</div>
+            <div className="stat-label">Na Média</div>
+            <div className="stat-value" style={{ color: '#cfd8dc' }}>{stats.naMedia}</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label">Abaixo da Média</div>
+            <div className="stat-value" style={{ color: '#ffcc4d' }}>{stats.abaixo}</div>
           </div>
           <div className="stat-card">
             <div className="stat-label">Média Geral</div>
             <div className="stat-value">{String(stats.average).replace('.', ',')}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Taxa Aprovação</div>
+            <div className="stat-label">≥ Média</div>
             <div className="stat-value" style={{ color: stats.total > 0 ? '#8ddf63' : 'var(--text-secondary)' }}>
-              {stats.total > 0 ? `${((stats.approved / stats.total) * 100).toFixed(1)}%` : '0.0%'}
+              {stats.total > 0 ? `${((stats.atOrAbove / stats.total) * 100).toFixed(1)}%` : '0.0%'}
             </div>
           </div>
         </div>
@@ -570,20 +580,7 @@ export default function AdvancedReports({
                         <strong>{Number(item.finalScore || 0).toFixed(2).replace('.', ',')}</strong>
                       </td>
                       <td style={tdStyle}>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            padding: '4px 10px',
-                            borderRadius: 999,
-                            fontSize: 12,
-                            fontWeight: 700,
-                            background: item.isPassing ? 'rgba(76, 175, 80, 0.15)' : 'rgba(204, 0, 0, 0.15)',
-                            color: item.isPassing ? '#8ddf63' : '#ff6b6b',
-                            border: `1px solid ${item.isPassing ? 'rgba(76, 175, 80, 0.35)' : 'rgba(204, 0, 0, 0.35)'}`,
-                          }}
-                        >
-                          {item.isPassing ? 'APROVADO' : 'REPROVADO'}
-                        </span>
+                        <StatusBadge tipo="individual" nota={item.finalScore} />
                       </td>
                       <td style={tdStyle}>{formatDateTime(item.savedAt)}</td>
                       <td style={tdStyle}>

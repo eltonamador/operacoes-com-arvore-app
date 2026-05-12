@@ -1,4 +1,5 @@
 import { fetchAvaliacoesByDataAndModulo } from '../services/avaliacoesService'
+import { getStatusNotaIndividual, STATUS_INDIVIDUAL, labelIndividual } from './statusNota'
 
 export async function generateVistoProvaReport(pelotao, data, avaliador) {
   let evaluations
@@ -34,8 +35,10 @@ export async function generateVistoProvaReport(pelotao, data, avaliador) {
     return `${d}/${m}/${y}`
   }
 
-  const approved = filtered.filter(e => e.isPassing).length
-  const failed = filtered.length - approved
+  const statusOf = (e) => getStatusNotaIndividual(Number(e.finalScore || 0))
+  const acima = filtered.filter(e => statusOf(e) === STATUS_INDIVIDUAL.ACIMA).length
+  const naMedia = filtered.filter(e => statusOf(e) === STATUS_INDIVIDUAL.NA).length
+  const abaixo = filtered.filter(e => statusOf(e) === STATUS_INDIVIDUAL.ABAIXO).length
   const avgScore = filtered.length > 0
     ? (filtered.reduce((sum, e) => sum + e.finalScore, 0) / filtered.length).toFixed(2).replace('.', ',')
     : '0,00'
@@ -369,12 +372,16 @@ export async function generateVistoProvaReport(pelotao, data, avaliador) {
             <div class="stat-lbl">Total</div>
           </div>
           <div class="stat-box stat-approved">
-            <div class="stat-num">${approved}</div>
-            <div class="stat-lbl">Aprovados</div>
+            <div class="stat-num">${acima}</div>
+            <div class="stat-lbl">Acima da Média</div>
+          </div>
+          <div class="stat-box stat-neutral">
+            <div class="stat-num">${naMedia}</div>
+            <div class="stat-lbl">Na Média</div>
           </div>
           <div class="stat-box stat-failed">
-            <div class="stat-num">${failed}</div>
-            <div class="stat-lbl">Reprovados</div>
+            <div class="stat-num">${abaixo}</div>
+            <div class="stat-lbl">Abaixo da Média</div>
           </div>
           <div class="stat-box stat-avg">
             <div class="stat-num">${avgScore}</div>
@@ -399,10 +406,10 @@ export async function generateVistoProvaReport(pelotao, data, avaliador) {
               <tr>
                 <td class="col-num">${item.studentData?.ordem || '—'}</td>
                 <td class="col-nome">${item.studentData?.nome || '—'}</td>
-                <td class="col-nota ${item.isPassing ? 'nota-ok' : 'nota-fail'}">${item.finalScore.toFixed(2).replace('.', ',')}</td>
+                <td class="col-nota ${statusOf(item) === STATUS_INDIVIDUAL.ABAIXO ? 'nota-fail' : 'nota-ok'}">${item.finalScore.toFixed(2).replace('.', ',')}</td>
                 <td class="col-status">
-                  <span class="badge ${item.isPassing ? 'badge-ok' : 'badge-fail'}">
-                    ${item.isPassing ? 'APROVADO' : 'REPROVADO'}
+                  <span class="badge ${statusOf(item) === STATUS_INDIVIDUAL.ABAIXO ? 'badge-fail' : 'badge-ok'}">
+                    ${labelIndividual(statusOf(item))}
                   </span>
                 </td>
                 <td class="col-assinatura"><div class="assinatura-line"></div></td>

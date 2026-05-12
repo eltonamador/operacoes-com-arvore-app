@@ -1,5 +1,68 @@
 # wake-up.md
 
+## Sprint 2026-05-12 — Lógica de Resultado: Desempenho vs. Verificação Final
+
+### O que foi feito
+
+Substituída a lógica "APROVADO/REPROVADO" das avaliações individuais por status de desempenho em 3 níveis. Reprovação só passa a existir via "Verificação Final" na consolidação (média final < 7).
+
+**Regras novas:**
+- **Avaliação individual:** `< 7` → "Abaixo da média" (âmbar); `= 7` → "Na média" (neutro); `> 7` → "Acima da média" (verde).
+- **Consolidação final** (`(VC1+VC2+VC3)/3`): `< 7` → "Verificação Final"; `= 7` → "Na Média Final"; `> 7` → "Acima da Média Final".
+
+**Arquivos criados:**
+- `src/utils/statusNota.js` — funções puras `getStatusNotaIndividual`, `getStatusMediaFinal`, `labelIndividual`, `labelFinal`, `getVisualIndividual`, paleta `TONE_VISUAL`, constantes `STATUS_INDIVIDUAL`/`STATUS_FINAL`, `MEDIA = 7`.
+- `src/components/StatusBadge.jsx` — badge unificado (props `tipo: 'individual' | 'final'`).
+- `docs/plans/2026-05-12-status-desempenho.md`, `docs/decisions/2026-05-12-status-desempenho.md`.
+
+**Arquivos alterados (~30):**
+- Serviços: `avaliacoesService.js` (status dinâmico da nota), `consolidacaoService.js` (adiciona `statusFinal`; mantém `apto` por compat).
+- Telas (5 módulos × 5 telas): `Evaluation`, `Signature`, `Summary`, `Reports`, `AdvancedReports` em motosserra/escadas/pocos/circuito/teorica. Summary parou de gravar `itens_avaliados.resultado`.
+- Portal: `CoordenacaoArea.jsx` e `AlunoArea.jsx` (KPIs 3 segmentos, novo `DonutChart3`, filtros, exportações, badges).
+- Impressão: `vistoProvaReport.js` (cards e badges com nova nomenclatura).
+
+**Modelo de dados:** sem migration. O campo `itens_avaliados.resultado` em registros antigos é **ignorado**; o status é recalculado a partir de `nota_final`. Novos saves não gravam mais esse campo.
+
+**Itens removidos:**
+- Texto "O aluno pode ser reprovado independentemente da nota final" em `motosserra/Evaluation.jsx`. O toggle `criticalErrors` permanece como informativo, sem afetar status.
+
+**Fora do escopo:**
+- Módulo `quiz` (gamificação; não compõe VC).
+
+**Riscos:**
+- Exportações externas (planilhas) que dependam do texto "APROVADO"/"REPROVADO" passam a receber "Acima da média" / "Na média" / "Abaixo da média".
+- Cor âmbar e contraste em tema claro/escuro devem ser validados manualmente.
+
+**Validação:** manual/limitada — não há suíte de testes no projeto. Necessário testar no navegador: lançamento → assinatura → relatório → ranking → exportação CSV/XLSX/impressão; e que avaliações antigas exibam status recalculado pela nota (nunca "Reprovado").
+
+---
+
+## Sprint 2026-05-12 — Módulo de Estatísticas do Quiz Teórico
+
+### O que foi feito
+
+Painel `QuizDashboard` evoluiu de 3 para 4 abas (Ranking, Por Aluno, Por Questão, Sugestão de Prova) com cálculo estatístico extraído para serviço puro.
+
+**Arquivos criados:**
+- `src/modules/quiz/services/quizStatsService.js` — funções puras: `buildStudentRanking`, `buildStudentDetail`, `buildQuestionStats`, `computeDiscriminationIndex`, `suggestExamQuestions`, `classifyQuestion`, `buildOverview`. Não depende de React.
+- `src/modules/quiz/screens/QuizAlunoDetalhe.jsx` — drill-down do aluno (evolução, desempenho por nível, mais erradas/acertadas, respostas detalhadas).
+- `src/modules/quiz/screens/QuizExamSuggestion.jsx` — gera 10 melhores questões com score (0,4 · dificuldade próxima de 60% + 0,6 · discriminação), com cotas por nível (4/4/2), substituição, remoção e exportação CSV.
+
+**Arquivo alterado:**
+- `src/modules/quiz/screens/QuizDashboard.jsx` — passa a consumir o service; ranking agregado por aluno com 5 critérios de desempate; cards de resumo; filtros por nível e faixa de taxa; ordenação por coluna; classificação visual (muito-fácil/equilibrada/difícil/crítica); distribuição de alternativas A–E; índice D exibido.
+
+**Modelo de dados:** sem migration. `useQuizEngine` já grava em cada item de `respostas` os campos `questao_id`, `nivel`, `resposta_marcada`, `resposta_correta`, `acertou`, `tempo_gasto`, `pontos` — suficiente para tudo.
+
+**Critério de desempate do ranking:** % geral → acertos → menos tentativas → % na última tentativa → ordem alfabética.
+
+**Índice de discriminação (D):** top/bottom 27% das tentativas por percentual; D = acerto%_sup − acerto%_inf.
+
+**Validação:** manual/limitada — `node --check` no service passou; JSX não tem suíte de testes no projeto. Necessário testar no navegador o fluxo das 4 abas com dados reais de `quiz_attempts`.
+
+**O que não foi alterado:** `useQuizEngine`, `quizService`, fluxo do quiz, rotas, demais módulos.
+
+---
+
 ## Sprint 2026-04-30 — Ranking progressivo por estágios de VC
 
 ### O que foi feito

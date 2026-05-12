@@ -1,12 +1,13 @@
 import { supabase } from '../lib/supabase'
 import { mapDbToUi } from './avaliacoesService'
+import { getStatusMediaFinal, MEDIA } from '../utils/statusNota'
 
-const NOTA_MINIMA_APTO = 7
+const NOTA_MINIMA_APTO = MEDIA
 
 /**
  * Calcula VC1, VC2, VC3 e Média Final a partir das últimas avaliações por módulo.
  * @param {Object} modulos - { escadas, pocos, motosserra, circuito, teorica } — objeto UI ou undefined
- * @returns {{ vc1, vc2, vc3, mediaFinal, apto }} — valores null quando módulo não foi avaliado
+ * @returns {{ vc1, vc2, vc3, mediaFinal, statusFinal, apto }} — valores null quando módulo não foi avaliado
  */
 export function calcularConsolidacao(modulos) {
   const n = (mod) => (mod?.finalScore ?? null)
@@ -23,14 +24,17 @@ export function calcularConsolidacao(modulos) {
 
   const vc3 = n(modulos.teorica)
 
-  const mediaFinal =
+  const { media: mediaFinal, status: statusFinal } =
     vc1 !== null && vc2 !== null && vc3 !== null
-      ? (vc1 + vc2 + vc3) / 3
-      : null
+      ? getStatusMediaFinal(vc1, vc2, vc3)
+      : { media: null, status: null }
 
+  // Mantido por compat: true quando há aprovação automática (média ≥ 7).
+  // ATENÇÃO: ausência de apto NÃO significa "reprovado" — significa que o aluno
+  // deverá realizar "Verificação Final" conforme regulamento da Academia.
   const apto = mediaFinal !== null ? mediaFinal >= NOTA_MINIMA_APTO : null
 
-  return { vc1, vc2, vc3, mediaFinal, apto }
+  return { vc1, vc2, vc3, mediaFinal, statusFinal, apto }
 }
 
 /**

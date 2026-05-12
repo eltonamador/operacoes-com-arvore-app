@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { getVisualIndividual } from '../../../utils/statusNota'
 
 export default function Evaluation({ state, goTo, setTheoricaScore, setObservations }) {
   const navigate = useNavigate()
@@ -8,7 +9,7 @@ export default function Evaluation({ state, goTo, setTheoricaScore, setObservati
 
   const notaNum = parseFloat(nota)
   const isValidNota = !isNaN(notaNum) && notaNum >= 0 && notaNum <= 10
-  const isPassing = isValidNota && notaNum >= 7.0
+  const { label: statusLabel, visual } = getVisualIndividual(isValidNota ? notaNum : 0)
 
   function handleNotaChange(e) {
     const val = e.target.value
@@ -91,17 +92,17 @@ export default function Evaluation({ state, goTo, setTheoricaScore, setObservati
               <div
                 className="result-banner"
                 style={{
-                  background: isPassing ? 'var(--success-bg)' : 'var(--danger-bg)',
-                  border: `1px solid ${isPassing ? 'var(--success-border)' : 'var(--danger-border)'}`,
+                  background: visual.bgGradient,
+                  border: `1px solid ${visual.border}`,
                   marginBottom: '20px',
                 }}
               >
                 <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4 }}>
-                  Resultado
+                  Desempenho
                 </div>
                 <div
                   className="score-final-value"
-                  style={{ color: isPassing ? 'var(--success)' : 'var(--danger)' }}
+                  style={{ color: visual.note }}
                 >
                   {notaNum.toFixed(2).replace('.', ',')}
                 </div>
@@ -109,13 +110,13 @@ export default function Evaluation({ state, goTo, setTheoricaScore, setObservati
                   style={{
                     fontSize: 14,
                     fontWeight: 700,
-                    color: isPassing ? 'var(--success)' : 'var(--danger)',
+                    color: visual.label,
                     marginTop: 4,
                     textTransform: 'uppercase',
                     letterSpacing: '1px',
                   }}
                 >
-                  {isPassing ? 'APROVADO' : 'REPROVADO'}
+                  {statusLabel}
                 </div>
               </div>
             )}

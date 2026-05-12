@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { getVisualIndividual } from '../../../utils/statusNota'
 
 export default function Summary({ state, reset, goTo, saveEvaluation }) {
   const navigate = useNavigate()
@@ -15,7 +16,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
   const notaNum = parseFloat(theoricaScore)
   const isValidNota = !isNaN(notaNum) && notaNum >= 0 && notaNum <= 10
   const finalScore = isValidNota ? notaNum : 0
-  const isPassing = finalScore >= 7.0
+  const { label: statusLabel, visual } = getVisualIndividual(finalScore)
 
   function formatDate(dateStr) {
     if (!dateStr) return '—'
@@ -41,7 +42,6 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
         penalidades: 0,
         observacoes: observations || '',
         itens_avaliados: {
-          resultado: isPassing ? 'APROVADO' : 'REPROVADO',
           tipo_prova: 'teorica',
           nota_teorica: Number(finalScore.toFixed(2)),
           visto_confirmado: vistoConfirmado || false,
@@ -125,8 +125,8 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
             <div
               className="result-banner"
               style={{
-                background: isPassing ? 'var(--success-bg)' : 'var(--danger-bg)',
-                border: `1px solid ${isPassing ? 'var(--success-border)' : 'var(--danger-border)'}`,
+                background: visual.bgGradient,
+                border: `1px solid ${visual.border}`,
                 marginBottom: '20px',
               }}
             >
@@ -135,7 +135,7 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
               </div>
               <div
                 className="score-final-value"
-                style={{ color: isPassing ? 'var(--success)' : 'var(--danger)' }}
+                style={{ color: visual.note }}
               >
                 {finalScore.toFixed(2).replace('.', ',')}
               </div>
@@ -143,13 +143,13 @@ export default function Summary({ state, reset, goTo, saveEvaluation }) {
                 style={{
                   fontSize: 16,
                   fontWeight: 700,
-                  color: isPassing ? 'var(--success)' : 'var(--danger)',
+                  color: visual.label,
                   marginTop: 6,
                   textTransform: 'uppercase',
                   letterSpacing: '1px',
                 }}
               >
-                {isPassing ? 'APROVADO' : 'REPROVADO'}
+                {statusLabel}
               </div>
             </div>
 

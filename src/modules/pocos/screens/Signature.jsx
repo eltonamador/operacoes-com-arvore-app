@@ -1,6 +1,7 @@
 import { calcScore, SECTIONS } from '../data/penalties'
 import { useMemo, useState } from 'react'
 import studentsData from '../../shared/data/students.json'
+import { getVisualIndividual } from '../../../utils/statusNota'
 
 /**
  * Tela de assinatura — Prova Poço (avaliação em grupo).
@@ -25,7 +26,7 @@ export default function Signature({ state, goTo, confirmMemberSignature }) {
 
   const customDiscount = parseFloat(customError?.discount) || 0
   const { totalDiscount, finalScore } = calcScore(checkedItems, customDiscount, itemQuantities)
-  const isPassing = finalScore >= 7.0
+  const { label: statusLabel, visual } = getVisualIndividual(finalScore)
 
   // Resolve o PIN do membro atual:
   // integrantes extras têm pin explícito; os demais buscam no students.json por id
@@ -170,11 +171,11 @@ export default function Signature({ state, goTo, confirmMemberSignature }) {
               <div style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: '#FFD700', fontWeight: 700, marginBottom: 12 }}>
                 Resultado do Grupo
               </div>
-              <div style={{ fontSize: 36, fontWeight: 900, color: isPassing ? '#8ddf63' : '#ff6b6b' }}>
+              <div style={{ fontSize: 36, fontWeight: 900, color: visual.note }}>
                 {finalScore.toFixed(2).replace('.', ',')}
               </div>
-              <div style={{ marginTop: 6, fontWeight: 700, color: isPassing ? '#8ddf63' : '#ff6b6b' }}>
-                {isPassing ? 'APROVADO' : 'REPROVADO'}
+              <div style={{ marginTop: 6, fontWeight: 700, color: visual.label, textTransform: 'uppercase' }}>
+                {statusLabel}
               </div>
               <div style={{ marginTop: 10, color: 'rgba(255,255,255,0.65)' }}>
                 Total de descontos: {totalDiscount.toFixed(2).replace('.', ',')}

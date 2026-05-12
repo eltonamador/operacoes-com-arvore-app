@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { getStatusNotaIndividual, STATUS_INDIVIDUAL } from '../../../utils/statusNota'
+import StatusBadge from '../../../components/StatusBadge'
 
 const TZ = 'America/Sao_Paulo'
 
@@ -34,8 +36,10 @@ export default function Reports({
     : savedEvaluations
 
   const total = filteredByDate.length
-  const approved = filteredByDate.filter(item => item.isPassing).length
-  const failed = total - approved
+  const statusOf = (item) => getStatusNotaIndividual(Number(item.finalScore || 0))
+  const acima = filteredByDate.filter(item => statusOf(item) === STATUS_INDIVIDUAL.ACIMA).length
+  const naMedia = filteredByDate.filter(item => statusOf(item) === STATUS_INDIVIDUAL.NA).length
+  const abaixo = filteredByDate.filter(item => statusOf(item) === STATUS_INDIVIDUAL.ABAIXO).length
   const average =
     total > 0
       ? (
@@ -170,12 +174,16 @@ export default function Reports({
             <div className="stat-value">{total}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Aprovados</div>
-            <div className="stat-value" style={{ color: '#8ddf63' }}>{approved}</div>
+            <div className="stat-label">Acima da Média</div>
+            <div className="stat-value" style={{ color: '#8ddf63' }}>{acima}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Reprovados</div>
-            <div className="stat-value" style={{ color: '#ff6b6b' }}>{failed}</div>
+            <div className="stat-label">Na Média</div>
+            <div className="stat-value" style={{ color: '#cfd8dc' }}>{naMedia}</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label">Abaixo da Média</div>
+            <div className="stat-value" style={{ color: '#ffcc4d' }}>{abaixo}</div>
           </div>
           <div className="stat-card">
             <div className="stat-label">Média Geral</div>
@@ -236,20 +244,7 @@ export default function Reports({
                         <strong>{Number(item.finalScore || 0).toFixed(2).replace('.', ',')}</strong>
                       </td>
                       <td style={tdStyle}>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            padding: '4px 10px',
-                            borderRadius: 999,
-                            fontSize: 12,
-                            fontWeight: 700,
-                            background: item.isPassing ? 'rgba(76, 175, 80, 0.15)' : 'rgba(204, 0, 0, 0.15)',
-                            color: item.isPassing ? '#8ddf63' : '#ff6b6b',
-                            border: `1px solid ${item.isPassing ? 'rgba(76, 175, 80, 0.35)' : 'rgba(204, 0, 0, 0.35)'}`,
-                          }}
-                        >
-                          {item.isPassing ? 'APROVADO' : 'REPROVADO'}
-                        </span>
+                        <StatusBadge tipo="individual" nota={item.finalScore} />
                       </td>
                       <td style={tdStyle}>{formatDateTime(item.savedAt)}</td>
                       <td style={tdStyle}>
