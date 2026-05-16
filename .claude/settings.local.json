@@ -4,7 +4,8 @@
       "Bash(node --check src/modules/quiz/services/quizStatsService.js)",
       "Bash(dir docs\\\\wake-up.md)",
       "Bash(findstr wake *)",
-      "mcp__plugin_context-mode_context-mode__ctx_execute"
+      "mcp__plugin_context-mode_context-mode__ctx_execute",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute"
     ]
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchAvaliacoesByModulo } from '../services/avaliacoesService'
 import { fetchConsolidacaoTodos } from '../services/consolidacaoService'
@@ -827,6 +827,7 @@ function ConsolidacaoTab({ consolidacoes, loading, error }) {
 
 const ESTAGIO_LABELS = {
   vc1: 'Parcial — VC1',
+  vc2: 'Parcial — VC2',
   vc1vc2: 'Parcial — VC1 + VC2',
   final: 'Final',
 }
@@ -837,10 +838,16 @@ const TIEBREAK_INFO = {
     'Desempate 1º: maior nota em Poço',
     'Desempate 2º: menor número de ordem',
   ],
+  vc2: [
+    'Ordenação: maior nota VC2 (Motosserra + Circuito)',
+    'Desempate 1º: maior nota em Circuito',
+    'Desempate 2º: menor número de ordem',
+  ],
   vc1vc2: [
     'Ordenação: maior média VC1 + VC2',
     'Desempate 1º: maior nota em VC2',
-    'Desempate 2º: menor número de ordem',
+    'Desempate 2º: maior nota em Circuito',
+    'Desempate 3º: menor número de ordem',
   ],
   final: [
     'Ordenação: maior Média Final',
@@ -925,6 +932,95 @@ function TiebreakInfo({ estagio }) {
   )
 }
 
+function AlunoInfoHint({ aluno, estagio }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    if (!open) return
+    const onDocClick = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    const onEsc = (e) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onDocClick)
+    document.addEventListener('touchstart', onDocClick)
+    document.addEventListener('keydown', onEsc)
+    return () => {
+      document.removeEventListener('mousedown', onDocClick)
+      document.removeEventListener('touchstart', onDocClick)
+      document.removeEventListener('keydown', onEsc)
+    }
+  }, [open])
+
+  const mods = aluno.modulos || {}
+  const cons = aluno.consolidacao || {}
+  const rows = []
+  if (estagio === 'vc1') {
+    rows.push(['Escadas', mods.escadas?.finalScore])
+    rows.push(['Poço', mods.pocos?.finalScore])
+  } else if (estagio === 'vc2') {
+    rows.push(['Motosserra', mods.motosserra?.finalScore])
+    rows.push(['Circuito', mods.circuito?.finalScore])
+  } else if (estagio === 'vc1vc2') {
+    rows.push(['VC1', cons.vc1])
+    rows.push(['  Escadas', mods.escadas?.finalScore])
+    rows.push(['  Poço', mods.pocos?.finalScore])
+    rows.push(['VC2', cons.vc2])
+    rows.push(['  Motosserra', mods.motosserra?.finalScore])
+    rows.push(['  Circuito', mods.circuito?.finalScore])
+  } else {
+    return null
+  }
+
+  return (
+    <span ref={ref} style={{ position: 'relative', display: 'inline-block', marginLeft: '6px', verticalAlign: 'middle' }}>
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); setOpen((v) => !v) }}
+        aria-label={`Ver notas parciais de ${aluno.nome || 'aluno'}`}
+        title="Ver notas parciais"
+        style={{
+          width: 18, height: 18, borderRadius: '50%',
+          background: 'rgba(255,255,255,0.08)',
+          border: '1px solid rgba(255,255,255,0.18)',
+          color: 'var(--text-muted)',
+          fontSize: 11, fontWeight: 700, lineHeight: 1,
+          cursor: 'pointer', padding: 0, userSelect: 'none',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        }}
+      >
+        i
+      </button>
+      {open && (
+        <div role="dialog" style={{
+          position: 'absolute',
+          top: 'calc(100% + 6px)',
+          left: 0,
+          background: '#1c1c1e',
+          border: '1px solid rgba(255,255,255,0.12)',
+          borderRadius: 10,
+          padding: '10px 14px',
+          zIndex: 120,
+          minWidth: 180,
+          maxWidth: 'calc(100vw - 32px)',
+          boxShadow: '0 8px 28px rgba(0,0,0,0.45)',
+          whiteSpace: 'nowrap',
+        }}>
+          <p style={{ margin: '0 0 6px', fontWeight: 700, fontSize: 12, color: '#fff' }}>
+            Notas parciais
+          </p>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none', fontSize: 12, color: '#d1d1d6', lineHeight: 1.7 }}>
+            {rows.map(([label, val]) => (
+              <li key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 16 }}>
+                <span>{label}</span>
+                <strong style={{ color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{fmtNota(val)}</strong>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </span>
+  )
+}
+
 function RankingTab({ consolidacoes, loading, error }) {
   const [filtroBusca, setFiltroBusca] = useState('')
   const [filtroPelotao, setFiltroPelotao] = useState('all')
@@ -939,7 +1035,7 @@ function RankingTab({ consolidacoes, loading, error }) {
     const temVC1 = consolidacoes.some((a) => a.consolidacao.vc1 !== null)
     const temVC2 = consolidacoes.some((a) => a.consolidacao.vc2 !== null)
     const temFinal = consolidacoes.some((a) => a.consolidacao.mediaFinal !== null)
-    return { vc1: temVC1, vc1vc2: temVC1 || temVC2, final: temFinal }
+    return { vc1: temVC1, vc2: temVC2, vc1vc2: temVC1 || temVC2, final: temFinal }
   }, [consolidacoes])
 
   const estagioDefault = useMemo(() => {
@@ -1024,6 +1120,9 @@ function RankingTab({ consolidacoes, loading, error }) {
     }
 
     // Estágios parciais
+    const round2 = (v) => Math.round(v * 100) / 100
+    const numOr = (v, def = -1) => (typeof v === 'number' ? v : def)
+
     let candidatos
     let getScore
 
@@ -1032,32 +1131,60 @@ function RankingTab({ consolidacoes, loading, error }) {
       getScore = (a) => {
         const { vc1, vc2 } = a.consolidacao
         const vals = [vc1, vc2].filter((v) => v !== null)
-        return vals.reduce((s, v) => s + v, 0) / vals.length
+        return round2(vals.reduce((s, v) => s + v, 0) / vals.length)
       }
+    } else if (estagio === 'vc2') {
+      candidatos = consolidacoes.filter((a) => a.consolidacao.vc2 !== null)
+      getScore = (a) => round2(a.consolidacao.vc2)
     } else {
       candidatos = consolidacoes.filter((a) => a.consolidacao.vc1 !== null)
-      getScore = (a) => a.consolidacao.vc1
+      getScore = (a) => round2(a.consolidacao.vc1)
     }
 
-    const ordenados = [...candidatos].sort((a, b) => {
+    // Critérios de desempate em ordem (do mais forte ao mais fraco).
+    // Cada item: { key, label, value(aluno) }. value menor (ordem) ou maior (notas).
+    let tiebreakers
+    if (estagio === 'vc1') {
+      tiebreakers = [
+        { key: 'poco', label: 'Desempate por Poço', dir: 'desc', value: (a) => numOr(a.modulos?.pocos?.finalScore) },
+        { key: 'ordem', label: 'Desempate por nº ordem', dir: 'asc', value: (a) => Number(a.ordem || 0) },
+      ]
+    } else if (estagio === 'vc2') {
+      tiebreakers = [
+        { key: 'circ', label: 'Desempate por Circuito', dir: 'desc', value: (a) => numOr(a.modulos?.circuito?.finalScore) },
+        { key: 'ordem', label: 'Desempate por nº ordem', dir: 'asc', value: (a) => Number(a.ordem || 0) },
+      ]
+    } else {
+      tiebreakers = [
+        { key: 'vc2', label: 'Desempate por VC2', dir: 'desc', value: (a) => numOr(a.consolidacao.vc2) },
+        { key: 'circ', label: 'Desempate por Circuito', dir: 'desc', value: (a) => numOr(a.modulos?.circuito?.finalScore) },
+        { key: 'ordem', label: 'Desempate por nº ordem', dir: 'asc', value: (a) => Number(a.ordem || 0) },
+      ]
+    }
+
+    const compare = (a, b) => {
       const sa = getScore(a)
       const sb = getScore(b)
       if (sb !== sa) return sb - sa
-
-      if (estagio === 'vc1') {
-        const pocoa = a.modulos?.pocos?.finalScore ?? -1
-        const pocob = b.modulos?.pocos?.finalScore ?? -1
-        if (pocoa !== pocob) return pocob - pocoa
+      for (const t of tiebreakers) {
+        const va = t.value(a)
+        const vb = t.value(b)
+        if (va !== vb) return t.dir === 'asc' ? va - vb : vb - va
       }
+      return 0
+    }
 
-      if (estagio === 'vc1vc2') {
-        const vc2a = a.consolidacao.vc2 ?? -1
-        const vc2b = b.consolidacao.vc2 ?? -1
-        if (vc2a !== vc2b) return vc2b - vc2a
+    const ordenados = [...candidatos].sort(compare)
+
+    // Determina qual tiebreaker definiu a posição vs o aluno anterior.
+    const findTiebreakerLabel = (aluno, prev) => {
+      for (const t of tiebreakers) {
+        const va = t.value(aluno)
+        const vb = t.value(prev)
+        if (va !== vb) return t.label
       }
-
-      return Number(a.ordem || 0) - Number(b.ordem || 0)
-    })
+      return 'Empate mantido'
+    }
 
     let pos = 1
     return ordenados.map((aluno, idx) => {
@@ -1067,27 +1194,8 @@ function RankingTab({ consolidacoes, loading, error }) {
         const sa = getScore(aluno)
         const sb = getScore(prev)
         if (sa === sb) {
-          if (estagio === 'vc1') {
-            const pocoa = aluno.modulos?.pocos?.finalScore
-            const pocob = prev.modulos?.pocos?.finalScore
-            if (pocoa !== pocob) {
-              desempate = 'Desempate por Poço'
-              pos = idx + 1
-            }
-          } else if (estagio === 'vc1vc2') {
-            const vc2a = aluno.consolidacao.vc2
-            const vc2b = prev.consolidacao.vc2
-            if (vc2a !== vc2b) {
-              desempate = 'Desempate por VC2'
-              pos = idx + 1
-            }
-          }
-          if (desempate === '—') {
-            desempate = 'Desempate por nº ordem'
-            const aOrdem = Number(aluno.ordem || 0)
-            const bOrdem = Number(prev.ordem || 0)
-            if (aOrdem !== bOrdem) pos = idx + 1
-          }
+          desempate = findTiebreakerLabel(aluno, prev)
+          if (desempate !== 'Empate mantido') pos = idx + 1
         } else {
           pos = idx + 1
         }
@@ -1115,11 +1223,14 @@ function RankingTab({ consolidacoes, loading, error }) {
   }
 
   const isFinal = estagio === 'final'
+  const showVC1Col = estagio === 'vc1' || estagio === 'vc1vc2' || isFinal
+  const showVC2Col = estagio === 'vc2' || estagio === 'vc1vc2' || isFinal
+  const showScoreCol = estagio === 'vc1vc2' || isFinal
 
   return (
     <>
       <div className="filter-bar" style={{ marginBottom: '16px' }}>
-        {['vc1', 'vc1vc2', 'final'].map((e) => (
+        {['vc1', 'vc2', 'vc1vc2', 'final'].map((e) => (
           <button
             key={e}
             onClick={() => setEstagioManual(e)}
@@ -1183,10 +1294,10 @@ function RankingTab({ consolidacoes, loading, error }) {
                     <th>Aluno</th>
                     <th>Ordem</th>
                     <th>Pelotão</th>
-                    <th className="center">VC1</th>
-                    <th className="center">VC2</th>
+                    {showVC1Col && <th className="center">VC1</th>}
+                    {showVC2Col && <th className="center">VC2</th>}
                     {isFinal && <th className="center">VC3</th>}
-                    <th className="center">{isFinal ? 'Média Final' : 'Média Parcial'}</th>
+                    {showScoreCol && <th className="center">{isFinal ? 'Média Final' : 'Média Parcial'}</th>}
                     <th>Critério</th>
                   </tr>
                 </thead>
@@ -1237,15 +1348,20 @@ function RankingTab({ consolidacoes, loading, error }) {
                             </span>
                           )}
                         </td>
-                        <td style={{ fontWeight: aluno.posicao <= 3 ? 700 : 400 }}>{aluno.nome || '—'}</td>
+                        <td style={{ fontWeight: aluno.posicao <= 3 ? 700 : 400 }}>
+                          {aluno.nome || '—'}
+                          {!isFinal && <AlunoInfoHint aluno={aluno} estagio={estagio} />}
+                        </td>
                         <td>{aluno.ordem || '—'}</td>
                         <td>{aluno.pelotao || '—'}</td>
-                        <td className="center">{fmtNota(vc1)}</td>
-                        <td className="center">{fmtNota(vc2)}</td>
+                        {showVC1Col && <td className="center">{fmtNota(vc1)}</td>}
+                        {showVC2Col && <td className="center">{fmtNota(vc2)}</td>}
                         {isFinal && <td className="center">{fmtNota(vc3)}</td>}
-                        <td className="center" style={{ fontWeight: 700, color: 'var(--gold)' }}>
-                          {fmtNota(aluno.scoreParcial)}
-                        </td>
+                        {showScoreCol && (
+                          <td className="center" style={{ fontWeight: 700, color: 'var(--gold)' }}>
+                            {fmtNota(aluno.scoreParcial)}
+                          </td>
+                        )}
                         <td style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{aluno.desempate}</td>
                       </tr>
                     )
