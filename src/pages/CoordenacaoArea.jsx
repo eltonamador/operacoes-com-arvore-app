@@ -10,6 +10,7 @@ import {
   labelIndividual,
 } from '../utils/statusNota'
 import StatusBadge from '../components/StatusBadge'
+import RelatorioPendencias from './coordenacao/RelatorioPendencias'
 
 // ═══════════════════════════════════════════════
 //  CONSTANTS
@@ -1009,6 +1010,12 @@ export default function CoordenacaoArea() {
         >
           Consolidação
         </button>
+        <button
+          onClick={() => setAba('pendencias')}
+          className={`filter-btn${aba === 'pendencias' ? ' filter-btn--active' : ''}`}
+        >
+          Pendências
+        </button>
         <Link to="/coordenacao/quiz" className="filter-btn" style={{ textDecoration: 'none' }}>
           Quiz Teórico
         </Link>
@@ -1025,6 +1032,8 @@ export default function CoordenacaoArea() {
           error={errorConsolidacao}
         />
       )}
+
+      {aba === 'pendencias' && <RelatorioPendencias />}
 
       <Link to="/" className="portal-back-link">
         ← Voltar ao Portal

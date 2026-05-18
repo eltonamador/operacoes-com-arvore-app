@@ -134,35 +134,57 @@ export async function fetchAvaliacoesByNumeroOrdem(numero_ordem) {
   return (data || []).map(mapDbToUi)
 }
 
+// Lock in-flight: evita que clique duplo ou retry em rede lenta crie registros duplicados.
+// Escopo: módulo (singleton no client). Aplica-se aos 4 módulos + batch do Poço.
+let _savePending = false
+
 /**
  * Insere múltiplas avaliações de uma vez (avaliação em grupo).
  * Retorna array de objetos no formato UI.
+ * Bloqueia chamadas concorrentes para evitar duplicidade no banco.
  */
 export async function saveAvaliacoesBatch(registros) {
-  const { data, error } = await supabase
-    .from('avaliacoes')
-    .insert(registros)
-    .select()
+  if (_savePending) {
+    throw new Error('Já existe um salvamento em andamento. Aguarde a confirmação antes de tentar novamente.')
+  }
+  _savePending = true
+  try {
+    const { data, error } = await supabase
+      .from('avaliacoes')
+      .insert(registros)
+      .select()
 
-  if (error) throw error
+    if (error) throw error
 
-  return (data || []).map(mapDbToUi)
+    return (data || []).map(mapDbToUi)
+  } finally {
+    _savePending = false
+  }
 }
 
 /**
  * Insere uma nova avaliação no banco.
  * Retorna o objeto salvo no formato UI.
+ * Bloqueia chamadas concorrentes para evitar duplicidade no banco.
  */
 export async function saveAvaliacao(dadosAvaliacao) {
-  const { data, error } = await supabase
-    .from('avaliacoes')
-    .insert([dadosAvaliacao])
-    .select()
-    .single()
+  if (_savePending) {
+    throw new Error('Já existe um salvamento em andamento. Aguarde a confirmação antes de tentar novamente.')
+  }
+  _savePending = true
+  try {
+    const { data, error } = await supabase
+      .from('avaliacoes')
+      .insert([dadosAvaliacao])
+      .select()
+      .single()
 
-  if (error) throw error
+    if (error) throw error
 
-  return mapDbToUi(data)
+    return mapDbToUi(data)
+  } finally {
+    _savePending = false
+  }
 }
 
 /**

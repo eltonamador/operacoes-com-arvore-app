@@ -88,6 +88,7 @@ src/
     PortalHome.jsx
     AvaliadorArea.jsx
     CoordenacaoArea.jsx
+    coordenacao/RelatorioPendencias.jsx — aba "Pendências" (read-only)
     AlunoArea.jsx
   contexts/
     AuthContext.jsx
@@ -98,6 +99,9 @@ src/
     ThemeToggle.jsx
   services/
     avaliacoesService.js          — fetchAvaliacoes, saveAvaliacao, deleteAvaliacao, etc.
+    pendenciasService.js          — cruzamento alunos × avaliações (relatório de pendências, read-only)
+  hooks/
+    usePendencias.js              — wrapper de loading/error/reload do relatório de pendências
   modules/
     motosserra/                   — módulo completo com AdvancedReports
     escadas/                      — módulo completo com AdvancedReports
@@ -179,6 +183,7 @@ Alunos e instrutores mantidos em JSON estático em `src/modules/shared/data/`. A
 - Nota calculada em tempo real com checklist de penalidades.
 - Camada de serviço centralizada (`avaliacoesService.js`).
 - CoordenacaoArea cobre os 4 módulos com visão consolidada.
+- Aba "Pendências" em CoordenacaoArea cruza alunos × avaliações da turma 2026 e expõe duplicidades/PIN pendente para conferência manual (read-only, sem alterar banco).
 
 ---
 

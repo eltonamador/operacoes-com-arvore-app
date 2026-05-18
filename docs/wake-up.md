@@ -1,5 +1,44 @@
 # wake-up.md
 
+## Sprint 2026-05-17 — Relatório de Pendências (Coordenação)
+
+### O que foi feito
+
+Nova aba **"Pendências"** em `CoordenacaoArea.jsx` para conferência manual: cruza `students.json` (~180 alunos da CFSD-26) com a tabela `avaliacoes` e classifica cada aluno em 6 situações (COMPLETO, PENDENTE PARCIAL, SEM NENHUMA AVALIAÇÃO, POSSÍVEL DUPLICIDADE, ASSINATURA/PIN PENDENTE, REQUER ANÁLISE).
+
+**Regras aplicadas:**
+- Escopo: 4 avaliações práticas (`escadas`, `pocos`, `motosserra`, `circuito`). Teórica fora.
+- Janela: `data_avaliacao >= '2026-01-01'`.
+- Duplicidade: chave `(numero_ordem, module_id)` — inclui Poço.
+- Aluno órfão (em `avaliacoes` mas não em `students.json`) → REQUER_ANALISE.
+- PIN: Poço lê `assinatura_individual.visto_confirmado`; demais lêem `visto_confirmado`.
+- **Read-only.** Sem `UPDATE`/`DELETE`, sem migration, sem alterar cálculo de média.
+
+**Arquivos criados:**
+- `src/services/pendenciasService.js` — funções puras (`analisarAluno`, `construirRelatorio`, `montarEstatisticas`) + `fetchRelatorioPendencias`.
+- `src/hooks/usePendencias.js`.
+- `src/pages/coordenacao/RelatorioPendencias.jsx` — KPIs, filtros, tabela, exportação CSV/XLSX.
+- `docs/decisions/2026-05-17-relatorio-pendencias.md`.
+
+**Arquivos alterados:**
+- `src/pages/CoordenacaoArea.jsx` — adiciona aba "Pendências".
+
+**Guard adicional (mesma sprint):**
+- `avaliacoesService.saveAvaliacao` e `saveAvaliacoesBatch` ganharam **lock in-flight** (`_savePending`). Chamadas concorrentes lançam erro em vez de criar 2º registro. Protege contra clique duplo e retry em rede lenta nos 4 módulos + batch do Poço. UI exibe o erro via mecanismo já existente em cada Summary.
+
+**Fora do escopo (propostas para fases futuras):**
+- Migration adicionando `UNIQUE` em `avaliacoes` (pré-requisito: limpar duplicatas manualmente usando este relatório).
+- Trocar `INSERT` por `upsert` em `avaliacoesService.saveAvaliacao`.
+- Validar PIN no servidor.
+
+**Riscos:**
+- `students.json` desatualizado pode listar alunos transferidos/desligados.
+- Registros antigos sem campo de assinatura podem aparecer como PIN_PENDENTE.
+
+**Validação:** manual/limitada — sem suíte de testes. Conferir no navegador: total de alunos = 180, situações por amostra (1 completo, 1 parcial, 1 duplicado, 1 sem nenhuma, 1 órfão se houver), filtros, exportação CSV/XLSX.
+
+---
+
 ## Sprint 2026-05-12 — Lógica de Resultado: Desempenho vs. Verificação Final
 
 ### O que foi feito
